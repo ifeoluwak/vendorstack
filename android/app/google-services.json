@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "401355648289",
+    "project_id": "vendorstack-5364b",
+    "storage_bucket": "vendorstack-5364b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401355648289:android:7c77d273a8ff9d0947a260",
+        "android_client_info": {
+          "package_name": "com.vendorstack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "401355648289-q4qgj8trs95rs4jk7amred98jv67j2nb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjVKWROjNMI-3jQsdZRmJVH-J4ESobCkA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "401355648289-q4qgj8trs95rs4jk7amred98jv67j2nb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
