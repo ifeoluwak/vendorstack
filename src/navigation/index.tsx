@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import messaging from '@react-native-firebase/messaging';
 import {Platform} from 'react-native';
+import RNBootSplash from "react-native-bootsplash";
 
 import HomeScreen from '../screens/home';
 import VendorScreen from '../screens/vendor';
@@ -77,6 +78,7 @@ export default function RootNavigation() {
     if (Platform.OS === 'ios') {
       requestUserPermission();
     }
+    RNBootSplash.hide({fade: true, duration: 500}); // fade with custom duration
   }, []);
   return (
     <RootStack.Navigator initialRouteName="Home">

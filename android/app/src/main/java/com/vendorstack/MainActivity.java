@@ -2,6 +2,8 @@ package com.vendorstack;
 
 import android.os.Bundle;
 
+import com.zoontek.rnbootsplash.RNBootSplash;
+
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
@@ -12,6 +14,7 @@ public class MainActivity extends ReactActivity {
   //react-native-screens override
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        RNBootSplash.init(this);
         super.onCreate(null);
     }
 
