@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {View, ScrollView, ActivityIndicator} from 'react-native';
 import TouchableScale from 'react-native-touchable-scale';
-import {ListItem, Avatar, Text} from '@rneui/themed';
+import {ListItem, Avatar, Text, Icon} from '@rneui/themed';
 
 import {themeColors} from '../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
 import {Dispatch, RootState} from '../../redux/store';
 import moment from 'moment';
+import {s} from 'react-native-size-matters';
 
 function OrderDetailScreen({navigation, route}) {
   const orderId = route?.params?.id;
@@ -186,6 +187,47 @@ function OrderDetailScreen({navigation, route}) {
               </ListItem.Content>
             </ListItem>
           </View>
+
+          {order?.business?.pre_order_notice ? (
+            <ListItem
+              Component={TouchableScale}
+              friction={90}
+              tension={100}
+              activeScale={0.95}
+              containerStyle={{
+                borderRadius: 7,
+                backgroundColor: themeColors.pico,
+                // height: 90,
+                width: '100%',
+                marginTop: s(20),
+                paddingVertical: s(20),
+              }}>
+              <Icon
+                name="alert-circle"
+                type="feather"
+                color={themeColors.white}
+                size={s(20)}
+              />
+              <ListItem.Content>
+                <ListItem.Title
+                  style={{
+                    color: themeColors.white,
+                    fontWeight: 'bold',
+                    paddingBottom: 8,
+                  }}>
+                  Notice
+                </ListItem.Title>
+                <ListItem.Subtitle
+                  style={{
+                    color: themeColors.white,
+                  }}>
+                  {order?.business?.post_order_notice}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem>
+          ) : (
+            <></>
+          )}
 
           <View style={{paddingTop: 25, width: '100%'}}>
             <Text h4 style={{color: themeColors.white, paddingBottom: 10}}>

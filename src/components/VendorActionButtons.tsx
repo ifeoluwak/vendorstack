@@ -2,13 +2,15 @@ import {useNavigation} from '@react-navigation/native';
 import {Button, Icon} from '@rneui/themed';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {themeColors} from '../constants/color';
-import {Dispatch} from '../redux/store';
+import {Dispatch, RootState} from '../redux/store';
 
 function VendorActionButtons(props) {
   const navigation = useNavigation();
   const dispatch = useDispatch<Dispatch>();
+
+  const {token} = useSelector((root: RootState) => root.authModel);
 
   const handleFollow = () => {
     dispatch.userModel.followVendor({vendorId: props.id});
@@ -38,6 +40,10 @@ function VendorActionButtons(props) {
         }}
         size="sm"
         radius={4}
+        // disabledStyle={{
+        //   backgroundColor: themeColors.white,
+        // }}
+        disabled={!token}
         loading={props.followLoading}
         onPress={props.followed ? handleUnFollow : handleFollow}
       />

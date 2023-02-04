@@ -10,8 +10,8 @@ import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/lib/integration/react';
 
 import {persistor, store} from './src/redux/store';
-import {View} from 'react-native';
 import {themeColors} from './src/constants/color';
+import Splash from './src/components/Splash';
 
 const navTheme = {
   ...DefaultTheme,
@@ -25,11 +25,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <Provider store={store}>
-        <PersistGate
-          loading={
-            <View style={{flex: 1, backgroundColor: themeColors.mazarine}} />
-          }
-          persistor={persistor}>
+        <PersistGate loading={<Splash />} persistor={persistor}>
           <NavigationContainer theme={navTheme}>
             <Host>
               <RootNavigation />

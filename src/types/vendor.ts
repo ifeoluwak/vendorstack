@@ -11,6 +11,9 @@ export type Vendor = {
   biography: string;
   category: string;
   url: string;
+  state: string;
+  pre_order_notice: string;
+  post_order_notice: string;
   website: string;
   ig_username: string;
   created_at: string;

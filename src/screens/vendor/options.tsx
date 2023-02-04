@@ -57,19 +57,17 @@ function VendorOptionsScreen({navigation, route}) {
         nav: () => navigation.navigate('AddReview', {id: vendorId}),
       },
       {
+        label: 'Contact Vendor',
+        icon: 'at-sign',
+        nav: () => navigation.navigate('VendorContact', {vendor}),
+      },
+      {
         label: 'Make a complaint',
         icon: 'alert-triangle',
         nav: () => navigation.navigate('Orders'),
       },
     ],
-    [
-      dispatch.userModel,
-      navigation,
-      userBizSubscription,
-      vendor?.ig_username,
-      vendor?.website,
-      vendorId,
-    ],
+    [dispatch.userModel, navigation, userBizSubscription, vendor, vendorId],
   );
 
   React.useEffect(() => {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {View, FlatList} from 'react-native';
 import {ListItem, Avatar, Button, Badge, Icon} from '@rneui/themed';
 import {Paystack, paystackProps} from 'react-native-paystack-webview';
-import { StackActions } from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
 
 import {themeColors} from '../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
@@ -10,6 +10,7 @@ import {Dispatch, RootState} from '../../redux/store';
 import {getCartItems, getCartTotalPrice} from '../../helpers';
 import {styles} from './style';
 import TouchableScale from 'react-native-touchable-scale';
+import {s} from 'react-native-size-matters';
 
 function BasketScreen({navigation, route}) {
   const vendorId = route?.params.id;
@@ -17,12 +18,15 @@ function BasketScreen({navigation, route}) {
   const loading = useSelector(
     (root: RootState) => root.loading.models.cartModel,
   );
+  const {token} = useSelector((root: RootState) => root.authModel);
   const {cart} = useSelector((root: RootState) => root.cartModel);
+  const {vendors} = useSelector((root: RootState) => root.vendorModel);
   const {defaultAddress, profile} = useSelector(
     (root: RootState) => root.userModel,
   );
 
   const vendorCart = cart?.[vendorId] || {};
+  const vendor = vendors?.[vendorId];
 
   const dispatch = useDispatch<Dispatch>();
 
@@ -56,10 +60,10 @@ function BasketScreen({navigation, route}) {
   }, [navigation, dispatch]);
 
   React.useEffect(() => {
-    if (!defaultAddress) {
+    if (!defaultAddress && token) {
       dispatch.userModel.getUserAddresses();
     }
-  }, [defaultAddress, dispatch.userModel]);
+  }, [defaultAddress, dispatch.userModel, token]);
 
   const items = getCartItems(vendorCart);
 
@@ -176,7 +180,7 @@ function BasketScreen({navigation, route}) {
                   backgroundColor: themeColors.pico,
                   height: 90,
                   width: '100%',
-                  marginTop: 70,
+                  marginTop: s(65),
                 }}>
                 <ListItem.Content>
                   <ListItem.Title
@@ -198,34 +202,87 @@ function BasketScreen({navigation, route}) {
                 </ListItem.Content>
                 <ListItem.Chevron color={themeColors.white} />
               </ListItem>
+
+              {vendor?.pre_order_notice ? (
+                <ListItem
+                  Component={TouchableScale}
+                  friction={90}
+                  tension={100}
+                  activeScale={0.95}
+                  containerStyle={{
+                    borderRadius: 7,
+                    backgroundColor: themeColors.pico,
+                    // height: 90,
+                    width: '100%',
+                    marginTop: s(20),
+                    paddingVertical: s(20),
+                  }}>
+                  <Icon
+                    name="alert-circle"
+                    type="feather"
+                    color={themeColors.harley_davidson}
+                    size={s(20)}
+                  />
+                  <ListItem.Content>
+                    <ListItem.Title
+                      style={{
+                        color: themeColors.white,
+                        fontWeight: 'bold',
+                        paddingBottom: 8,
+                      }}>
+                      Notice
+                    </ListItem.Title>
+                    <ListItem.Subtitle
+                      style={{
+                        color: themeColors.white,
+                      }}>
+                      {vendor?.pre_order_notice}
+                    </ListItem.Subtitle>
+                  </ListItem.Content>
+                </ListItem>
+              ) : (
+                <></>
+              )}
             </>
           }
         />
       </View>
 
-      <View style={styles.btnView}>
-        {defaultAddress ? (
+      {token ? (
+        <View style={styles.btnView}>
+          {defaultAddress ? (
+            <Button
+              title={`Pay ₦${getCartTotalPrice(vendorCart)}`}
+              titleStyle={{fontWeight: 'bold'}}
+              buttonStyle={styles.btnStyle}
+              radius={30}
+              onPress={() => paystackWebViewRef.current.startTransaction()}
+              disabled={loading}
+              disabledStyle={{backgroundColor: themeColors.pico}}
+              loading={loading}
+              // onPress={handlePay}
+            />
+          ) : (
+            <Button
+              title="Add Address"
+              titleStyle={{fontWeight: 'bold'}}
+              buttonStyle={styles.btnStyle}
+              radius={30}
+              onPress={() => navigation.navigate('Address')}
+            />
+          )}
+        </View>
+      ) : (
+        <View style={styles.btnView}>
           <Button
-            title="Pay now"
+            title="Login"
             titleStyle={{fontWeight: 'bold'}}
             buttonStyle={styles.btnStyle}
             radius={30}
-            onPress={() => paystackWebViewRef.current.startTransaction()}
-            disabled={loading}
-            disabledStyle={{backgroundColor: themeColors.pico}}
-            loading={loading}
-            // onPress={handlePay}
+            onPress={() => navigation.navigate('Login')}
           />
-        ) : (
-          <Button
-            title="Add Address"
-            titleStyle={{fontWeight: 'bold'}}
-            buttonStyle={styles.btnStyle}
-            radius={30}
-            onPress={() => navigation.navigate('Address')}
-          />
-        )}
-      </View>
+        </View>
+      )}
 
       <Paystack
         paystackKey="pk_test_2babf474a1fa34f8deef8c247210032f5c693e22"

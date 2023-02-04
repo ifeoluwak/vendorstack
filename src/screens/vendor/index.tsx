@@ -43,6 +43,8 @@ function VendorScreen({navigation, route}) {
       root.loading.effects.vendorModel.getVendorProducts,
   );
 
+  // const {token} = useSelector((root: RootState) => root.authModel);
+
   const followLoading = useSelector(
     (root: RootState) =>
       root.loading.effects.userModel.followVendor ||

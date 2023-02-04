@@ -31,6 +31,7 @@ import {Order} from '../types/general';
 import VendorOptionsScreen from '../screens/vendor/options';
 import BusinessWalletScreen from '../screens/business/wallet';
 import AddReviewScreen from '../screens/vendor/addReview';
+import VendorContactScreen from '../screens/vendor/contact';
 
 type RootStackParamList = {
   Home: undefined;
@@ -57,6 +58,7 @@ type RootStackParamList = {
   AddAddress: undefined;
   Vendor: {id: string; title: string};
   VendorOptions: {id: string};
+  VendorContact: {id: string};
   Feed: {sort: 'latest' | 'top'} | undefined;
 };
 
@@ -81,7 +83,7 @@ export default function RootNavigation() {
     RNBootSplash.hide({fade: true, duration: 500}); // fade with custom duration
   }, []);
   return (
-    <RootStack.Navigator initialRouteName="Home">
+    <RootStack.Navigator detachInactiveScreens={false} initialRouteName="Home">
       <RootStack.Screen name="Home" component={HomeScreen} />
       <RootStack.Screen name="Vendor" component={VendorScreen} />
       <RootStack.Screen name="VendorOptions" component={VendorOptionsScreen} />
@@ -92,6 +94,7 @@ export default function RootNavigation() {
       <RootStack.Screen name="Orders" component={UserOrdersScreen} />
       <RootStack.Screen name="OrderDetail" component={OrderDetailScreen} />
       <RootStack.Screen name="AddReview" component={AddReviewScreen} />
+      <RootStack.Screen name="VendorContact" component={VendorContactScreen} />
       <RootStack.Screen
         name="BusinessProducts"
         component={BusinessProductsScreen}

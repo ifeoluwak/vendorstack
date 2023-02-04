@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {View, FlatList, ActivityIndicator} from 'react-native';
-import {Button, Text} from '@rneui/themed';
-import { SvgXml } from 'react-native-svg';
+import {Button} from '@rneui/themed';
 
 import {themeColors} from '../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
@@ -9,12 +8,12 @@ import {Dispatch, RootState} from '../../redux/store';
 import {styles} from './style';
 import HomeTrendingProduct from '../../components/HomeTrendingProduct';
 import HomeUserVendors from '../../components/HomeUserVendors';
-import HomeSectionCategory from '../../components/HomeSectionCategory';
 import PromotedProductList from '../../components/PromotedProductList';
 import HomeTrendingVendor from '../../components/HomeTrendingVendor';
 import HomeTopRatedVendor from '../../components/HomeTopRatedVendor';
 
 import Logo from '../../assets/images/vendorstack2.svg';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 function HomeScreen({navigation}) {
   const dispatch = useDispatch<Dispatch>();
@@ -112,7 +111,7 @@ function HomeScreen({navigation}) {
   // ]
 
   return (
-    <View style={styles.container}>
+    <Animated.View entering={FadeIn} style={styles.container}>
       {loading ? (
         <ActivityIndicator color={themeColors.white} size="large" />
       ) : (
@@ -127,10 +126,7 @@ function HomeScreen({navigation}) {
         contentContainerStyle={{ paddingBottom: 50 }}
         showsVerticalScrollIndicator={false}
       />
-      {/* <HomeUserVendors onRefresh={onRefresh} />
-
-      <HomeTrendingProduct /> */}
-    </View>
+    </Animated.View>
   );
 }
 

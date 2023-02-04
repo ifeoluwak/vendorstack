@@ -33,7 +33,6 @@ function HomeUserVendors() {
               navigation.navigate('Vendor', {
                 id: item.business.id,
                 title: item.business.name,
-                product_id: item.id,
               })
             }
             containerStyle={styles.listContainerStyle}>
