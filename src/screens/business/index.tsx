@@ -24,7 +24,11 @@ function BusinessScreen({navigation}) {
           title: profile?.user?.business?.name,
         }),
     },
-    {label: 'Profile', icon: 'user', nav: () => {}},
+    {
+      label: 'Profile',
+      icon: 'user',
+      nav: () => navigation.navigate('BusinessProfile'),
+    },
     {
       label: 'Wallet',
       icon: 'credit-card',

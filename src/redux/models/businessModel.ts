@@ -81,6 +81,13 @@ const businessModel = createModel<RootModel>()({
         dispatch.generalModel.getOrder(payload.id);
       } catch ({response}) {}
     },
+    async updateBusinessProfile(payload: Partial<Product>) {
+      try {
+        await BusinessApi.updateBusinessProfile(payload);
+        dispatch.businessModel.getBusinessProfile();
+        return true;
+      } catch ({response}) {}
+    },
     async updateProduct(payload: Partial<Product>) {
       try {
         await BusinessApi.updateProduct(payload);

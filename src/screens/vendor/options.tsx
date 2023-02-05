@@ -16,6 +16,7 @@ function VendorOptionsScreen({navigation, route}) {
     return model.subscribeToVendor || model.unSubscribeToVendor;
   });
   const {vendors} = useSelector((root: RootState) => root.vendorModel);
+  const {token} = useSelector((root: RootState) => root.authModel);
   const {userBizSubscription} = useSelector(
     (root: RootState) => root.userModel,
   );
@@ -37,25 +38,29 @@ function VendorOptionsScreen({navigation, route}) {
         icon: 'globe',
         nav: () => Linking.openURL(vendor?.website || ''),
       },
-      {
-        label: userBizSubscription
-          ? 'Unsubscribe to newsletter'
-          : 'Subscribe to newsletter',
-        icon: 'mail',
-        nav: () => {
-          userBizSubscription
-            ? dispatch.userModel.unSubscribeToVendor({
-                vendor_id: vendorId,
-                subscriber_id: userBizSubscription.id,
-              })
-            : dispatch.userModel.subscribeToVendor(vendorId);
-        },
-      },
-      {
-        label: 'Rate Vendor',
-        icon: 'thumbs-up',
-        nav: () => navigation.navigate('AddReview', {id: vendorId}),
-      },
+      ...(token
+        ? [
+            {
+              label: userBizSubscription
+                ? 'Unsubscribe to newsletter'
+                : 'Subscribe to newsletter',
+              icon: 'mail',
+              nav: () => {
+                userBizSubscription
+                  ? dispatch.userModel.unSubscribeToVendor({
+                      vendor_id: vendorId,
+                      subscriber_id: userBizSubscription.id,
+                    })
+                  : dispatch.userModel.subscribeToVendor(vendorId);
+              },
+            },
+            {
+              label: 'Rate Vendor',
+              icon: 'thumbs-up',
+              nav: () => navigation.navigate('AddReview', {id: vendorId}),
+            },
+          ]
+        : []),
       {
         label: 'Contact Vendor',
         icon: 'at-sign',
@@ -67,7 +72,14 @@ function VendorOptionsScreen({navigation, route}) {
         nav: () => navigation.navigate('Orders'),
       },
     ],
-    [dispatch.userModel, navigation, userBizSubscription, vendor, vendorId],
+    [
+      dispatch.userModel,
+      navigation,
+      userBizSubscription,
+      vendor,
+      vendorId,
+      token,
+    ],
   );
 
   React.useEffect(() => {

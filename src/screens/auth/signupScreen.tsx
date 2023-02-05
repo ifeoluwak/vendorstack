@@ -8,7 +8,7 @@ import {Dispatch, RootState} from '../../redux/store';
 import {themeColors} from '../../constants/color';
 import {Button, Icon, Input, Text} from '@rneui/themed';
 import {styles} from './style';
-import { useFCMToken } from '../../hooks/useFCMToken';
+import {useFCMToken} from '../../hooks/useFCMToken';
 
 const SignupSchema = Yup.object().shape({
   first_name: Yup.string()

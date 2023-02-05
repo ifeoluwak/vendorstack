@@ -33,11 +33,11 @@ export function getOrdersFromVendor(vendorId: string) {
 export const logout = () => {
   store.dispatch.authModel.setState({token: ''});
   store.dispatch.cartModel.setState({cart: {}});
-  store.dispatch.vendorModel.setState({
-    searchResult: [],
-    products: null,
-    vendors: {},
-  });
+  // store.dispatch.vendorModel.setState({
+  //   searchResult: [],
+  //   products: null,
+  //   vendors: {},
+  // });
   store.dispatch.userModel.setState({
     profile: null,
     userVendors: [],
@@ -48,8 +48,8 @@ export const logout = () => {
     userBizSubscription: null,
   });
   store.dispatch.generalModel.setState({
-    order_status: [],
-    orders: {},
+    // order_status: [],
+    // orders: {},
     // trending_products: [],
   });
   store.dispatch.businessModel.setState({

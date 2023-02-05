@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import messaging from '@react-native-firebase/messaging';
 import {Platform} from 'react-native';
-import RNBootSplash from "react-native-bootsplash";
+import RNBootSplash from 'react-native-bootsplash';
 
 import HomeScreen from '../screens/home';
 import VendorScreen from '../screens/vendor';
@@ -82,6 +82,7 @@ export default function RootNavigation() {
     }
     RNBootSplash.hide({fade: true, duration: 500}); // fade with custom duration
   }, []);
+
   return (
     <RootStack.Navigator detachInactiveScreens={false} initialRouteName="Home">
       <RootStack.Screen name="Home" component={HomeScreen} />

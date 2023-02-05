@@ -26,6 +26,10 @@ export default {
     ApiHandler.get('/api/get_user_wallet', null, {}),
   updateOrderStatus: (data: {id: string; status: string}) =>
     ApiHandler.post('/api/update_business_order_status', data, {}),
+  updateBusinessProfile: (data: Partial<Vendor>) =>
+    ApiHandler.post('/api/update_business_profile', data, {
+      'Content-type': 'multipart/form-data',
+    }),
   updateProduct: (data: Partial<Product>) =>
     ApiHandler.post('/api/update_business_product', data, {
       'Content-type': 'multipart/form-data',
