@@ -15,7 +15,7 @@ import {Avatar, Button, Input, Text} from '@rneui/themed';
 import {styles} from './style';
 import {DropDownFlatlist} from '../../../components/DropDown';
 import {useStateAndLga} from '../../../hooks/useStateAndLga';
-import {Vendor} from '../../../types/vendor';
+import {Category} from '../../../types/general';
 
 const BusinessSchema = Yup.object().shape({
   name: Yup.string()
@@ -34,12 +34,15 @@ const BusinessSchema = Yup.object().shape({
   state: Yup.string().required('Enter a state'),
   orderNoticeInfo: Yup.string(),
   address: Yup.string(),
+  category: Yup.string().required('Required'),
 });
 
-const BusinessProfileScreen = ({navigation}) => {
+const BusinessCreateScreen = ({navigation}) => {
   const [image, setImage] = useState<ImagePickerResponse | null>(null);
   const [state, setState] = useState('');
+  const [category, setCategory] = useState<Category | null>(null);
   const [stateDropDown, setStateDropDown] = useState(false);
+  const [catDropDown, setCatDropDown] = useState(false);
 
   const dispatch = useDispatch<Dispatch>();
 
@@ -50,12 +53,10 @@ const BusinessProfileScreen = ({navigation}) => {
   );
 
   const {categories} = useSelector((root: RootState) => root.generalModel);
-  const {
-    user: {businesses, _id},
-  } = useSelector((root: RootState) => root.userModel);
 
   useEffect(() => {
     navigation.setOptions({
+      headerTitle: 'Create Business',
       headerTintColor: themeColors.white,
       headerStyle: {
         backgroundColor: themeColors.mazarine,
@@ -81,54 +82,50 @@ const BusinessProfileScreen = ({navigation}) => {
     setImage(result);
   };
 
-  const business: Vendor = businesses[0];
-
   return (
     <Formik
       initialValues={{
-        _id: business?._id,
-        name: business?.name || '',
-        description: business.description || '',
-        website: business?.website || '',
-        phone: business?.phone || '',
-        country: business?.country || '',
-        state: business?.state || '',
-        address: business?.address || '',
-        postalCode: business?.postalCode || '',
-        socialUsername: business?.socialUsername || '',
+        name: 'Yahoo Shop',
+        logo: '',
+        description:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
+        website: 'https://www.google.com',
+        phone: '09029601481',
+        country: 'NG',
+        state: '',
+        address: '',
+        postalCode: '',
+        category: '',
+        socialUsername: 'yahooshop',
         socialAccountId: '17841431289134915',
         socialAccountUserId: '134978675987913',
         socialType: 'INSTAGRAM',
-        orderNoticeInfo: business?.orderNoticeInfo || '',
-        userId: _id,
+        orderNoticeInfo: '',
       }}
       validationSchema={BusinessSchema}
       onSubmit={async values => {
-        if (image?.assets?.[0]?.base64) {
-          values.logo = 'data:image/png;base64,' + image?.assets?.[0]?.base64;
-        }
-
-        const success = await dispatch.businessModel.updateBusiness({
+        const success = await dispatch.businessModel.createBusiness({
           ...values,
-          categories: [business?.categories?.[0]?._id],
+          categories: [category?._id],
+          logo: 'data:image/png;base64,' + image?.assets?.[0]?.base64 || '',
         });
         if (success) {
-          navigation.goBack();
+          //   navigation.goBack();
+          navigation.dispatch(StackActions.replace('BusinessMore'));
         }
       }}>
       {({
         handleChange,
         handleBlur,
         handleSubmit,
+        setFieldValue,
         isValid,
         touched,
         errors,
         values,
       }) => (
         <>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{flexGrow: 1, paddingBottom: 100}}>
+          <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 100}}>
             <View style={styles.container}>
               <View style={{height: 30}} />
               <View style={{paddingHorizontal: 10, width: '100%'}}>
@@ -137,7 +134,7 @@ const BusinessProfileScreen = ({navigation}) => {
                     size="xlarge"
                     rounded
                     source={{
-                      uri: image ? image?.assets?.[0]?.uri : business.logo,
+                      uri: image ? image?.assets?.[0]?.uri : null,
                     }}
                     containerStyle={{backgroundColor: 'grey'}}>
                     <Avatar.Accessory
@@ -147,23 +144,6 @@ const BusinessProfileScreen = ({navigation}) => {
                       style={{backgroundColor: themeColors.white}}
                     />
                   </Avatar>
-                  {image ? (
-                    <Button
-                      title="Revert"
-                      type="clear"
-                      titleStyle={{color: themeColors.white}}
-                      icon={{
-                        name: 'corner-up-left',
-                        type: 'feather',
-                        size: 15,
-                        color: 'white',
-                      }}
-                      onPress={() => setImage(null)}
-                      iconContainerStyle={{marginRight: 10}}
-                    />
-                  ) : (
-                    <></>
-                  )}
                 </View>
                 <View style={{height: 30}} />
                 <Input
@@ -238,16 +218,6 @@ const BusinessProfileScreen = ({navigation}) => {
                   autoCapitalize="none"
                 />
                 <Input
-                  placeholder="Category"
-                  label="Category"
-                  placeholderTextColor={themeColors.white}
-                  value={business?.categories?.[0]?.name}
-                  inputStyle={{color: themeColors.white}}
-                  inputContainerStyle={{borderColor: themeColors.white}}
-                  containerStyle={{flex: 4}}
-                  editable={false}
-                />
-                <Input
                   placeholder="Address"
                   label="Address"
                   placeholderTextColor={themeColors.white}
@@ -283,6 +253,29 @@ const BusinessProfileScreen = ({navigation}) => {
                   )}
                 </View>
 
+                <View style={styles.dropDownCategory}>
+                  <TouchableOpacity
+                    onPress={() => setCatDropDown(!catDropDown)}
+                    style={styles.btnDropDown}>
+                    <Text style={styles.btnDropDownText}>
+                      {category?.name ? category.name : 'Select a category'}
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={styles.customErrorText}>{errors.category}</Text>
+
+                  {catDropDown && (
+                    <DropDownFlatlist
+                      data={categories}
+                      onSelect={data => {
+                        handleChange('category')(data._id);
+                        setCatDropDown(false);
+                        console.log(data);
+                        setCategory(data);
+                      }}
+                    />
+                  )}
+                </View>
+
                 <View style={{height: 50}} />
                 <Button
                   title={'Save'}
@@ -293,18 +286,53 @@ const BusinessProfileScreen = ({navigation}) => {
                   }}
                   size="lg"
                   radius={7}
-                  disabled={!isValid || loading}
+                  disabled={!isValid || loading || !image}
                   disabledStyle={{backgroundColor: themeColors.pico}}
                   loading={loading}
                   onPress={handleSubmit}
                 />
               </View>
+              {/* <View style={{alignItems: 'flex-start'}}>
+                  <CheckBox
+                    center
+                    title="Is Active"
+                    textStyle={{color: themeColors.white}}
+                    checked={values.active}
+                    onPress={() => setFieldValue('active', !values.active)}
+                    containerStyle={{backgroundColor: 'transparent'}}
+                    checkedColor={themeColors.white}
+                  />
+                  <CheckBox
+                    center
+                    title="Out of stock"
+                    textStyle={{color: themeColors.white}}
+                    checked={values.out_of_stock}
+                    onPress={() =>
+                      setFieldValue('out_of_stock', !values.out_of_stock)
+                    }
+                    containerStyle={{backgroundColor: 'transparent'}}
+                    checkedColor={themeColors.white}
+                  />
+                </View> */}
             </View>
           </ScrollView>
+          {/* <View style={styles.btnView}>
+            <Button
+              title={'Save'}
+              titleStyle={{color: themeColors.white, fontWeight: 'bold'}}
+              buttonStyle={{backgroundColor: themeColors.pico, width: '100%'}}
+              size="lg"
+              radius={7}
+              disabled={!isValid || loading || !image}
+              disabledStyle={{backgroundColor: themeColors.pico}}
+              loading={loading}
+              onPress={handleSubmit}
+            />
+          </View> */}
         </>
       )}
     </Formik>
   );
 };
 
-export default BusinessProfileScreen;
+export default BusinessCreateScreen;

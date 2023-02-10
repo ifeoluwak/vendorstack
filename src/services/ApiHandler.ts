@@ -2,10 +2,13 @@ import axios from 'axios';
 import {logout} from '../helpers';
 import {store} from '../redux/store';
 
+const tokens = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2UyOTM0ZDBkOWEyMzYzYmUzYjZiOWQiLCJmaXJzdE5hbWUiOiJpZmVvbHV3YSIsImxhc3ROYW1lIjoia2luZyIsIndhbGxldCI6eyJ3YWxsZXRJZCI6IjZlOWZhMzlkLWNjZDUtNDNhYy05ZGJiLTMzYTY5MjAwYTJlOCIsIndpdGhkcmF3YWxCYWxhbmNlIjowLCJjdXJyZW50QmFsYW5jZSI6MCwicGVuZGluZ0JhbGFuY2UiOjAsImJvb2tCYWxhbmNlIjowfSwidHlwZSI6IlVTRVIiLCJ1c2VybmFtZSI6ImlmZW9sdXdha2luZzI0QGdtYWlsLmNvbSIsInBhc3N3b3JkIjpudWxsLCJidXNpbmVzc2VzIjpbXSwiYnVzaW5lc3NGb2xsb3dpbmdzIjpbXSwiYWRkcmVzc2VzIjpbXSwiY3JlYXRlZEF0IjoiMjAyMy0wMi0wN1QxODowNzowOS41NjhaIiwidXBkYXRlZEF0IjoiMjAyMy0wMi0wN1QxODowNzowOS41NjhaIiwiX192IjowLCJpYXQiOjE2NzU3OTM1NDEsImV4cCI6MTY3NTg3OTk0MX0.8xrqq96-bXOf5tLLqW5CaQyHl6VwSuUerWfYuOk-iFc`;
+
 axios.defaults.headers['Content-Type'] = 'application/json';
 axios.defaults.headers.Accept = 'application/json';
 axios.defaults.timeout = 15000;
-const BASE_URL = 'https://3838-109-180-229-29.ngrok.io/';
+// const BASE_URL = 'https://3838-109-180-229-29.ngrok.io/';
+const BASE_URL = 'https://8824-197-210-78-57.eu.ngrok.io/api/v1';
 axios.defaults.baseURL = BASE_URL;
 
 async function handleRequest(req: any) {
@@ -16,7 +19,8 @@ async function handleRequest(req: any) {
     const token = reduxStore.authModel.token;
     // console.log({token});
     if (token) {
-      req.headers['Authorization'] = `Token ${token}`;
+      // req.headers['Authorization'] = `Token ${token}`;
+      req.headers['Authorization'] = `Bearer ${token}`;
       // console.log(req);
       return req;
     }

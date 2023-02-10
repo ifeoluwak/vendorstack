@@ -63,7 +63,7 @@ function BusinessProductsScreen({navigation, route}) {
               <Avatar
                 rounded
                 source={{
-                  uri: item.url,
+                  uri: item.photo,
                 }}
               />
               <ListItem.Content>
@@ -71,17 +71,20 @@ function BusinessProductsScreen({navigation, route}) {
                   {item.name}
                 </ListItem.Title>
                 <ListItem.Subtitle style={styles.listSubTitle}>
-                  Price: {item.price}
+                  Price: {item.sellingPrice}
                 </ListItem.Subtitle>
                 <ListItem.Subtitle style={[styles.listSubTitle]}>
-                  In stock: {item.qty} | Sold:{' '}
-                  {item.orders.reduce((prev, curr) => prev + curr.qty, 0)}{' '}
+                  In stock: {item.quantity}
                 </ListItem.Subtitle>
               </ListItem.Content>
               <ListItem.Chevron color={themeColors.white} />
             </ListItem>
           )}
-          contentContainerStyle={{paddingTop: 10, flexGrow: 1}}
+          contentContainerStyle={{
+            paddingTop: 10,
+            paddingBottom: 100,
+            flexGrow: 1,
+          }}
         />
       </View>
 

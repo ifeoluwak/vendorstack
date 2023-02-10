@@ -12,6 +12,7 @@ import {logout} from '../../helpers';
 
 function MoreScreen({navigation}) {
   const {token} = useSelector((root: RootState) => root.authModel);
+  const {user} = useSelector((root: RootState) => root.userModel);
 
   const anonymousMenus = [
     {label: 'Login', icon: 'log-in', nav: () => navigation.navigate('Login')},
@@ -34,6 +35,15 @@ function MoreScreen({navigation}) {
       icon: 'map-pin',
       nav: () => navigation.navigate('Address'),
     },
+    ...(!user?.businesses?.length
+      ? [
+          {
+            label: 'Create business',
+            icon: 'shopping-bag',
+            nav: () => navigation.navigate('BusinessCreate'),
+          },
+        ]
+      : []),
     {label: 'Help & Support', icon: 'help-circle', nav: () => {}},
     {label: 'Log Out', icon: 'power', nav: logout},
   ];

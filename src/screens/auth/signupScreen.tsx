@@ -11,11 +11,11 @@ import {styles} from './style';
 import {useFCMToken} from '../../hooks/useFCMToken';
 
 const SignupSchema = Yup.object().shape({
-  first_name: Yup.string()
+  firstName: Yup.string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Required'),
-  last_name: Yup.string()
+  lastName: Yup.string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Required'),
@@ -23,21 +23,21 @@ const SignupSchema = Yup.object().shape({
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Required'),
-  username: Yup.string()
-    .min(5, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Required'),
-  email: Yup.string().email('Invalid email').required('Required'),
+  // username: Yup.string()
+  //   .min(5, 'Too Short!')
+  //   .max(50, 'Too Long!')
+  //   .required('Required'),
+  username: Yup.string().email('Invalid email').required('Required'),
 });
 
 const SignupScreen = ({navigation}) => {
   const dispatch = useDispatch<Dispatch>();
   const [showPassword, setShowPassword] = useState(false);
 
-  const fcmToken = useFCMToken();
+  // const fcmToken = useFCMToken();
 
   const loading = useSelector(
-    (root: RootState) => root.loading.effects.authModel.login,
+    (root: RootState) => root.loading.effects.authModel.register,
   );
 
   React.useEffect(() => {
@@ -46,23 +46,23 @@ const SignupScreen = ({navigation}) => {
     });
   }, [navigation]);
 
-  console.log({fcmToken});
+  // console.log({fcmToken});
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <Formik
         initialValues={{
-          first_name: '',
-          last_name: '',
+          firstName: '',
+          lastName: '',
           username: '',
-          email: '',
+          // email: '',
           password: '',
         }}
         validationSchema={SignupSchema}
         onSubmit={async values => {
           const success = await dispatch.authModel.register({
             ...values,
-            fcmToken,
+            // fcmToken,
           });
           if (success) {
             navigation.goBack();
@@ -91,11 +91,11 @@ const SignupScreen = ({navigation}) => {
             <Input
               placeholder="First name"
               placeholderTextColor={themeColors.white}
-              onChangeText={handleChange('first_name')}
-              onBlur={handleBlur('first_name')}
-              value={values.first_name}
-              errorMessage={touched.first_name ? errors.first_name : ''}
-              renderErrorMessage={touched.first_name}
+              onChangeText={handleChange('firstName')}
+              onBlur={handleBlur('firstName')}
+              value={values.firstName}
+              errorMessage={touched.firstName ? errors.firstName : ''}
+              renderErrorMessage={touched.firstName}
               inputStyle={{color: themeColors.white}}
               inputContainerStyle={{borderColor: themeColors.white}}
               autoCapitalize="none"
@@ -103,16 +103,16 @@ const SignupScreen = ({navigation}) => {
             <Input
               placeholder="Last name"
               placeholderTextColor={themeColors.white}
-              onChangeText={handleChange('last_name')}
-              onBlur={handleBlur('last_name')}
-              value={values.last_name}
-              errorMessage={touched.last_name ? errors.last_name : ''}
-              renderErrorMessage={touched.last_name}
+              onChangeText={handleChange('lastName')}
+              onBlur={handleBlur('lastName')}
+              value={values.lastName}
+              errorMessage={touched.lastName ? errors.lastName : ''}
+              renderErrorMessage={touched.lastName}
               inputStyle={{color: themeColors.white}}
               inputContainerStyle={{borderColor: themeColors.white}}
               autoCapitalize="none"
             />
-            <Input
+            {/* <Input
               placeholder="Username"
               placeholderTextColor={themeColors.white}
               onChangeText={handleChange('username')}
@@ -123,15 +123,15 @@ const SignupScreen = ({navigation}) => {
               inputStyle={{color: themeColors.white}}
               inputContainerStyle={{borderColor: themeColors.white}}
               autoCapitalize="none"
-            />
+            /> */}
             <Input
               placeholder="Email"
               placeholderTextColor={themeColors.white}
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
-              errorMessage={touched.email ? errors.email : ''}
-              // renderErrorMessage={touched.email}
+              onChangeText={handleChange('username')}
+              onBlur={handleBlur('username')}
+              value={values.username}
+              errorMessage={touched.username ? errors.username : ''}
+              // renderErrorMessage={touched.username}
               inputStyle={{color: themeColors.white}}
               inputContainerStyle={{borderColor: themeColors.white}}
               autoCapitalize="none"

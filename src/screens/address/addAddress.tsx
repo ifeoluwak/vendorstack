@@ -12,17 +12,17 @@ import {DropDownFlatlist} from '../../components/DropDown';
 import {useStateAndLga} from '../../hooks/useStateAndLga';
 
 const AddressSchema = Yup.object().shape({
-  address: Yup.string()
+  streetName: Yup.string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Required'),
   state: Yup.string().required('Required'),
   lga: Yup.string().required('Required'),
-  phone: Yup.string()
-    .min(5, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Required'),
-  name: Yup.string(),
+  // phone: Yup.string()
+  //   .min(5, 'Too Short!')
+  //   .max(50, 'Too Long!')
+  //   .required('Required'),
+  description: Yup.string(),
 });
 
 const AddAddressScreen = ({navigation}) => {
@@ -50,9 +50,19 @@ const AddAddressScreen = ({navigation}) => {
   }, [navigation, dispatch]);
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <Formik
-        initialValues={{address: '', phone: '', name: '', state: '', lga: ''}}
+        initialValues={{
+          streetName: '',
+          // phone: '',
+          name: '',
+          state: '',
+          lga: '',
+          busStop: '',
+          description: '',
+          country: 'NG',
+          isCurrentAddress: true,
+        }}
         validationSchema={AddressSchema}
         onSubmit={async values => {
           const success = await dispatch.userModel.createAddress(values);
@@ -75,11 +85,11 @@ const AddAddressScreen = ({navigation}) => {
               <Input
                 placeholder="Address"
                 placeholderTextColor={themeColors.white}
-                onChangeText={handleChange('address')}
-                onBlur={handleBlur('address')}
-                value={values.address}
-                errorMessage={errors.address}
-                renderErrorMessage={touched.address}
+                onChangeText={handleChange('streetName')}
+                onBlur={handleBlur('streetName')}
+                value={values.streetName}
+                errorMessage={errors.streetName}
+                renderErrorMessage={touched.streetName}
                 inputStyle={{color: themeColors.white}}
                 inputContainerStyle={{borderColor: themeColors.white}}
                 autoCapitalize="none"
@@ -126,7 +136,7 @@ const AddAddressScreen = ({navigation}) => {
                   />
                 )}
               </View>
-              <Input
+              {/* <Input
                 placeholder="Phone"
                 placeholderTextColor={themeColors.white}
                 onChangeText={handleChange('phone')}
@@ -137,15 +147,15 @@ const AddAddressScreen = ({navigation}) => {
                 inputStyle={{color: themeColors.white}}
                 inputContainerStyle={{borderColor: themeColors.white}}
                 autoCapitalize="none"
-              />
+              /> */}
               <Input
-                placeholder="Name (Optional)"
+                placeholder="Description (Optional)"
                 placeholderTextColor={themeColors.white}
-                onChangeText={handleChange('name')}
-                onBlur={handleBlur('name')}
-                value={values.name}
-                errorMessage={errors.name}
-                renderErrorMessage={touched.name}
+                onChangeText={handleChange('description')}
+                onBlur={handleBlur('description')}
+                value={values.description}
+                errorMessage={errors.description}
+                renderErrorMessage={touched.description}
                 inputStyle={{color: themeColors.white}}
                 inputContainerStyle={{borderColor: themeColors.white}}
                 autoCapitalize="none"

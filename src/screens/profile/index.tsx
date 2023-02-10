@@ -10,25 +10,25 @@ import {styles} from './style';
 import {Dispatch, RootState} from '../../redux/store';
 
 const ProfileSchema = Yup.object().shape({
-  first_name: Yup.string()
+  firstName: Yup.string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Required'),
-  last_name: Yup.string()
+  lastName: Yup.string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Required'),
-  phone: Yup.string()
-    .min(10, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Required'),
-  age_range: Yup.string().required('Required'),
+  // phone: Yup.string()
+  //   .min(10, 'Too Short!')
+  //   .max(50, 'Too Long!')
+  //   .required('Required'),
+  // age_range: Yup.string().required('Required'),
 });
 
 function ProfileScreen({navigation}) {
   const dispatch = useDispatch<Dispatch>();
 
-  const {profile} = useSelector((root: RootState) => root.userModel);
+  const {user} = useSelector((root: RootState) => root.userModel);
   const {age_ranges} = useSelector((root: RootState) => root.generalModel);
   const loading = useSelector(
     (root: RootState) => root.loading.effects.userModel.updateUserProfile,
@@ -50,7 +50,7 @@ function ProfileScreen({navigation}) {
     });
   }, [navigation]);
 
-  if (!profile) {
+  if (!user) {
     return (
       <Text h4 style={{color: themeColors.white, textAlign: 'center'}}>
         Something went wrong
@@ -61,10 +61,10 @@ function ProfileScreen({navigation}) {
   return (
     <Formik
       initialValues={{
-        first_name: profile?.user?.first_name,
-        last_name: profile?.user?.last_name,
-        age_range: profile?.age_range?.id,
-        phone: profile?.phone,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        // age_range: profile?.age_range?.id,
+        // phone: profile?.phone,
       }}
       enableReinitialize
       validationSchema={ProfileSchema}
@@ -89,11 +89,11 @@ function ProfileScreen({navigation}) {
           <Input
             placeholder="First name"
             placeholderTextColor={themeColors.white}
-            onChangeText={handleChange('first_name')}
-            onBlur={handleBlur('first_name')}
-            value={values.first_name}
-            errorMessage={touched.first_name ? errors.first_name : ''}
-            renderErrorMessage={touched.first_name}
+            onChangeText={handleChange('firstName')}
+            onBlur={handleBlur('firstName')}
+            value={values.firstName}
+            errorMessage={touched.firstName ? errors.firstName : ''}
+            renderErrorMessage={touched.firstName}
             inputStyle={{color: themeColors.white}}
             inputContainerStyle={{borderColor: themeColors.white}}
             autoCapitalize="none"
@@ -101,16 +101,16 @@ function ProfileScreen({navigation}) {
           <Input
             placeholder="Last name"
             placeholderTextColor={themeColors.white}
-            onChangeText={handleChange('last_name')}
-            onBlur={handleBlur('last_name')}
-            value={values.last_name}
-            errorMessage={touched.last_name ? errors.last_name : ''}
-            renderErrorMessage={touched.last_name}
+            onChangeText={handleChange('lastName')}
+            onBlur={handleBlur('lastName')}
+            value={values.lastName}
+            errorMessage={touched.lastName ? errors.lastName : ''}
+            renderErrorMessage={touched.lastName}
             inputStyle={{color: themeColors.white}}
             inputContainerStyle={{borderColor: themeColors.white}}
             autoCapitalize="none"
           />
-          <Input
+          {/* <Input
             placeholder="Phone number"
             placeholderTextColor={themeColors.white}
             onChangeText={handleChange('phone')}
@@ -121,8 +121,8 @@ function ProfileScreen({navigation}) {
             inputStyle={{color: themeColors.white}}
             inputContainerStyle={{borderColor: themeColors.white}}
             autoCapitalize="none"
-          />
-          <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+          /> */}
+          {/* <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
             {age_ranges.map(age => {
               const selected = age.id === values.age_range;
               return (
@@ -144,8 +144,8 @@ function ProfileScreen({navigation}) {
                 />
               );
             })}
-          </View>
-          <Text style={styles.customErrorText}>{errors.age_range}</Text>
+          </View> */}
+          {/* <Text style={styles.customErrorText}>{errors.age_range}</Text> */}
           <View style={{height: 50}} />
           <View style={{width: '100%'}}>
             <Button

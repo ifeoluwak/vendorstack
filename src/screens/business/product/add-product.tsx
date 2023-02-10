@@ -19,9 +19,21 @@ const ProductSchema = Yup.object().shape({
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Required'),
-  price: Yup.string()
-    .min(1, 'Too Short!')
+  costPrice: Yup.string()
+    .min(1, 'Add cost price')
     .max(9, 'Too Long!')
+    .required('Required'),
+  sellingPrice: Yup.string()
+    .min(1, 'Add selling price')
+    .max(9, 'Too Long!')
+    .required('Required'),
+  quantity: Yup.string()
+    .min(1, 'Add Quantity')
+    .max(5, 'Too Long!')
+    .required('Required'),
+  description: Yup.string()
+    .min(4, 'Add Description')
+    .max(200, 'Too Long!')
     .required('Required'),
 });
 
@@ -48,8 +60,9 @@ const BusinessAddProductScreen = ({navigation, route}) => {
     const result = await launchImageLibrary({
       mediaType: 'photo',
       quality: 0.5,
-      maxHeight: 1000,
-      maxWidth: 800,
+      maxHeight: 400,
+      maxWidth: 650,
+      includeBase64: true,
     });
     setImage(result);
   };
@@ -58,31 +71,20 @@ const BusinessAddProductScreen = ({navigation, route}) => {
     <Formik
       initialValues={{
         name: '',
-        price: '0',
-        discount_price: '0',
-        desc: '',
-        qty: '1',
-        active: false,
-        out_of_stock: false,
+        costPrice: '',
+        sellingPrice: '',
+        description: '',
+        quantity: '1',
       }}
       validationSchema={ProductSchema}
       onSubmit={async values => {
-        const form = new FormData();
-        form.append('name', values.name);
-        form.append('price', values.price);
-        form.append('discount_price', values.discount_price);
-        form.append('desc', values.desc);
-        form.append('qty', values.qty);
-        form.append('active', values.active);
-        form.append('out_of_stock', values.out_of_stock);
-        if (image?.assets?.[0]) {
-          form.append('image', {
-            uri: image?.assets?.[0].uri,
-            name: image?.assets?.[0].fileName,
-            type: image?.assets?.[0].type,
-          });
-        }
-        const success = await dispatch.businessModel.addProduct(form);
+        const success = await dispatch.businessModel.addProduct({
+          ...values,
+          costPrice: +values.costPrice,
+          sellingPrice: +values.sellingPrice,
+          quantity: +values.quantity,
+          photo: 'data:image/png;base64,' + image?.assets?.[0]?.base64 || '',
+        });
         if (success) {
           navigation.goBack();
         }
@@ -135,12 +137,12 @@ const BusinessAddProductScreen = ({navigation, route}) => {
                 <Input
                   placeholder="Description"
                   placeholderTextColor={themeColors.white}
-                  onChangeText={handleChange('desc')}
-                  onBlur={handleBlur('desc')}
-                  value={values.desc}
+                  onChangeText={handleChange('description')}
+                  onBlur={handleBlur('description')}
+                  value={values.description}
                   multiline
-                  errorMessage={errors.desc}
-                  renderErrorMessage={touched.desc}
+                  errorMessage={errors.description}
+                  renderErrorMessage={touched.description}
                   inputStyle={{color: themeColors.white, height: 90}}
                   inputContainerStyle={{borderColor: themeColors.white}}
                   autoCapitalize="none"
@@ -151,14 +153,14 @@ const BusinessAddProductScreen = ({navigation, route}) => {
                     justifyContent: 'space-between',
                   }}>
                   <Input
-                    placeholder="Price"
-                    label="Price"
+                    placeholder="0"
+                    label="Selling Price"
                     placeholderTextColor={themeColors.white}
-                    onChangeText={handleChange('price')}
-                    onBlur={handleBlur('price')}
-                    value={values.price}
-                    errorMessage={errors.price}
-                    renderErrorMessage={touched.price}
+                    onChangeText={handleChange('sellingPrice')}
+                    onBlur={handleBlur('sellingPrice')}
+                    value={values.sellingPrice}
+                    errorMessage={errors.sellingPrice}
+                    renderErrorMessage={touched.sellingPrice}
                     inputStyle={{color: themeColors.white}}
                     inputContainerStyle={{borderColor: themeColors.white}}
                     containerStyle={{flex: 4}}
@@ -166,14 +168,14 @@ const BusinessAddProductScreen = ({navigation, route}) => {
                     keyboardType="number-pad"
                   />
                   <Input
-                    placeholder="Discount Price"
-                    label="Discount Price"
+                    placeholder="0"
+                    label="Cost Price"
                     placeholderTextColor={themeColors.white}
-                    onChangeText={handleChange('discount_price')}
-                    onBlur={handleBlur('discount_price')}
-                    value={values.discount_price}
-                    errorMessage={errors.discount_price}
-                    renderErrorMessage={touched.discount_price}
+                    onChangeText={handleChange('costPrice')}
+                    onBlur={handleBlur('costPrice')}
+                    value={values.costPrice}
+                    errorMessage={errors.costPrice}
+                    renderErrorMessage={touched.costPrice}
                     inputStyle={{color: themeColors.white}}
                     inputContainerStyle={{borderColor: themeColors.white}}
                     containerStyle={{flex: 4}}
@@ -185,38 +187,16 @@ const BusinessAddProductScreen = ({navigation, route}) => {
                   placeholder="Quantity"
                   label="Quantity"
                   placeholderTextColor={themeColors.white}
-                  onChangeText={handleChange('qty')}
-                  onBlur={handleBlur('qty')}
-                  value={values.qty}
-                  errorMessage={errors.qty}
-                  renderErrorMessage={touched.qty}
+                  onChangeText={handleChange('quantity')}
+                  onBlur={handleBlur('quantity')}
+                  value={values.quantity}
+                  errorMessage={errors.quantity}
+                  renderErrorMessage={touched.quantity}
                   inputStyle={{color: themeColors.white}}
                   inputContainerStyle={{borderColor: themeColors.white}}
                   autoCapitalize="none"
                   keyboardType="number-pad"
                 />
-                <View style={{alignItems: 'flex-start'}}>
-                  <CheckBox
-                    center
-                    title="Is Active"
-                    textStyle={{color: themeColors.white}}
-                    checked={values.active}
-                    onPress={() => setFieldValue('active', !values.active)}
-                    containerStyle={{backgroundColor: 'transparent'}}
-                    checkedColor={themeColors.white}
-                  />
-                  <CheckBox
-                    center
-                    title="Out of stock"
-                    textStyle={{color: themeColors.white}}
-                    checked={values.out_of_stock}
-                    onPress={() =>
-                      setFieldValue('out_of_stock', !values.out_of_stock)
-                    }
-                    containerStyle={{backgroundColor: 'transparent'}}
-                    checkedColor={themeColors.white}
-                  />
-                </View>
               </View>
               <View style={{height: 50}} />
             </View>

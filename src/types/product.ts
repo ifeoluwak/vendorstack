@@ -1,21 +1,17 @@
 import {OrderItem} from './general';
 
 export type Product = {
-  id: string;
+  _id: string;
   name: string;
-  price: string;
-  discount_price: string;
-  final_price: string;
-  qty: number;
-  desc: string;
-  media_url: string;
-  url: string;
+  photo: string;
+  description: string;
+  quantity: number | string;
+  costPrice: number | string;
+  sellingPrice: number | string;
+  businessId: string;
+  createdAt: string;
   active: boolean;
-  media_type: 'img' | 'video';
-  origin: 'default' | 'instagram';
-  out_of_stock: boolean;
-  thumbnail_url: string;
-  orders: OrderItem[];
+  pin: boolean;
 };
 
 export type ProductLean = {

@@ -32,6 +32,7 @@ import VendorOptionsScreen from '../screens/vendor/options';
 import BusinessWalletScreen from '../screens/business/wallet';
 import AddReviewScreen from '../screens/vendor/addReview';
 import VendorContactScreen from '../screens/vendor/contact';
+import BusinessCreateScreen from '../screens/business/create';
 
 type RootStackParamList = {
   Home: undefined;
@@ -44,6 +45,7 @@ type RootStackParamList = {
   Address: undefined;
   Orders: undefined;
   AddReview: undefined;
+  BusinessCreate: undefined;
   BusinessCustomers: undefined;
   BusinessMore: undefined;
   BusinessProfile: undefined;
@@ -97,6 +99,10 @@ export default function RootNavigation() {
       <RootStack.Screen name="AddReview" component={AddReviewScreen} />
       <RootStack.Screen name="VendorContact" component={VendorContactScreen} />
       <RootStack.Screen
+        name="BusinessCreate"
+        component={BusinessCreateScreen}
+      />
+      <RootStack.Screen
         name="BusinessProducts"
         component={BusinessProductsScreen}
       />
@@ -110,9 +116,14 @@ export default function RootNavigation() {
       />
       <RootStack.Screen
         name="BusinessProfile"
+        options={{title: 'Update Business'}}
         component={BusinessProfileScreen}
       />
-      <RootStack.Screen name="BusinessMore" component={BusinessScreen} />
+      <RootStack.Screen
+        name="BusinessMore"
+        options={{title: 'Your Business'}}
+        component={BusinessScreen}
+      />
       <RootStack.Screen
         name="BusinessOrders"
         component={BusinessOrdersScreen}

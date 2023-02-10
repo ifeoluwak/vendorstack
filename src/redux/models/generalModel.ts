@@ -38,7 +38,8 @@ const generalModel = createModel<RootModel>()({
     async getCategories() {
       try {
         const {data} = await GeneralApi.getCategories();
-        dispatch.generalModel.setState({categories: data.categories});
+        console.log('getCategories', data);
+        dispatch.generalModel.setState({categories: data});
       } catch ({response}) {}
     },
     async getOrder(id: string, state) {

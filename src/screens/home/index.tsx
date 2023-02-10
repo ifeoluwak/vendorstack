@@ -14,6 +14,7 @@ import HomeTopRatedVendor from '../../components/HomeTopRatedVendor';
 
 import Logo from '../../assets/images/vendorstack2.svg';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import HomeHeaderRight from '../../components/HomeHeaderRight';
 
 function HomeScreen({navigation}) {
   const dispatch = useDispatch<Dispatch>();
@@ -21,19 +22,19 @@ function HomeScreen({navigation}) {
   const loading = useSelector(
     (root: RootState) => root.loading.models.userModel,
   );
-  const {profile} = useSelector((root: RootState) => root.userModel);
+  const {user} = useSelector((root: RootState) => root.userModel);
   const {token} = useSelector((root: RootState) => root.authModel);
 
   const onRefresh = () => {
     if (token) {
-      dispatch.userModel.getUserVendors();
+      // dispatch.userModel.getUserVendors();
       dispatch.userModel.getUserProfile();
-      dispatch.userModel.getUserOrders();
+      // dispatch.userModel.getUserOrders();
     }
     Promise.all([
-      dispatch.generalModel.getTrendingProducts(),
-      dispatch.generalModel.getTrendingVendors(),
-      dispatch.generalModel.getTopratedVendors(),
+      // dispatch.generalModel.getTrendingProducts(),
+      // dispatch.generalModel.getTrendingVendors(),
+      // dispatch.generalModel.getTopratedVendors(),
     ]);
   };
 
@@ -47,45 +48,10 @@ function HomeScreen({navigation}) {
       headerShadowVisible: false,
       headerLeft: () => <Logo style={{ marginLeft: 8 }} />,
       headerRight: () => (
-        <View style={{flexDirection: 'row'}}>
-          <Button
-            icon={{
-              name: 'search',
-              type: 'feather',
-              size: 24,
-              color: themeColors.white,
-            }}
-            type="clear"
-            onPress={() => navigation.navigate('Search')}
-          />
-          {profile?.user?.business ? (
-            <Button
-              icon={{
-                name: 'shopping-bag',
-                type: 'feather',
-                size: 24,
-                color: themeColors.white,
-              }}
-              type="clear"
-              onPress={() => navigation.navigate('BusinessMore')}
-            />
-          ) : (
-            <></>
-          )}
-          <Button
-            icon={{
-              name: 'menu',
-              type: 'feather',
-              size: 24,
-              color: themeColors.white,
-            }}
-            type="clear"
-            onPress={() => navigation.navigate('More')}
-          />
-        </View>
+        <HomeHeaderRight hasBusiness={!!user?.businesses?.length} />
       ),
     });
-  }, [navigation, profile]);
+  }, [navigation, user]);
 
   React.useEffect(() => {
     onRefresh();

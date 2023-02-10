@@ -1,27 +1,30 @@
-import {Profile, UserFollows} from './../../types/user';
+import {Profile, User, UserFollows} from './../../types/user';
 import {Address, AgeRange, Order, Review} from './../../types/general';
 import {AxiosResponse} from 'axios';
 import ApiHandler from '../ApiHandler';
 
 export default {
-  createAddress: (data: Partial<Address>) =>
-    ApiHandler.post('/api/user_address_create', data, {}),
-  deleteAddress: (data: Partial<Address>) =>
-    ApiHandler.post('/api/delete_user_address', data, {}),
+  createAddress: (data: Partial<Address>, userID: string) =>
+    ApiHandler.post(`/users/${userID}/address`, data, {}),
+  deleteAddress: (addressId: string, userID: string) =>
+    ApiHandler.delete(`/users/${userID}/address/${addressId}`, null, {}),
   getUserAddresses: (): Promise<AxiosResponse<Address[], any>> =>
     ApiHandler.get('/api/get_user_addresses', {}, {}),
   getUserVendors: (): Promise<AxiosResponse<UserFollows[], any>> =>
     ApiHandler.get('/api/get_user_vendors', null, {}),
   getUserOrders: (): Promise<AxiosResponse<Order[], any>> =>
     ApiHandler.get('/api/get_user_orders', null, {}),
-  getUserProfile: (): Promise<AxiosResponse<Profile, any>> =>
-    ApiHandler.get('/api/get_user_profile', null, {}),
-  updateUserProfile: (data: {
-    first_name: string;
-    last_name: string;
-    age_range: AgeRange;
-    phone: string;
-  }) => ApiHandler.post('/api/update_user_profile', data, {}),
+  getUserProfile: (): Promise<AxiosResponse<User, any>> =>
+    ApiHandler.get('/users/me', null, {}),
+  updateUserProfile: (
+    data: {
+      firstName: string;
+      lastName: string;
+      // age_range: AgeRange;
+      // phone: string;
+    },
+    userID: string,
+  ) => ApiHandler.put(`/users/${userID}`, data, {}),
   updateUserDeviceToken: (token: string) =>
     ApiHandler.post('/api/save_user_device_token', {token}, {}),
   followVendor: (data: {vendorId: string}) =>

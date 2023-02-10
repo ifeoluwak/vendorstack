@@ -23,11 +23,14 @@ const authModel = createModel<RootModel>()({
     async login(payload) {
       try {
         const {data} = await AuthApi.login(payload);
-        dispatch.authModel.setState({token: data.token});
-        if (payload.fcmToken) {
-          dispatch.userModel.updateUserDeviceToken(payload.fcmToken);
+        console.log('login', data);
+        if (data.accessToken) {
+          dispatch.authModel.setState({token: data.accessToken});
         }
-        dispatch.userModel.getUserProfile();
+        // if (payload.fcmToken) {
+        //   dispatch.userModel.updateUserDeviceToken(payload.fcmToken);
+        // }
+        // dispatch.userModel.getUserProfile();
         return true;
       } catch ({response}) {
         const messages = Object.values(response?.data).flat();
@@ -37,12 +40,14 @@ const authModel = createModel<RootModel>()({
     async register(payload) {
       try {
         const {data} = await AuthApi.register(payload);
-        dispatch.authModel.setState({token: data.token});
-        dispatch.userModel.setState({profile: data.user});
-        if (payload.fcmToken) {
-          dispatch.userModel.updateUserDeviceToken(payload.fcmToken);
-        }
-        return true;
+        console.log('register', data);
+        await dispatch.authModel.login(payload);
+        // dispatch.authModel.setState({token: data.token});
+        // dispatch.userModel.setState({profile: data.user});
+        // if (payload.fcmToken) {
+        //   dispatch.userModel.updateUserDeviceToken(payload.fcmToken);
+        // }
+        // return true;
       } catch ({response}) {
         const messages = Object.values(response?.data).flat();
         Alert.alert('Error', messages.join('\n'));

@@ -16,7 +16,7 @@ export const DropDownFlatlist = ({
   const renderItem = ({item}) => {
     return (
       <TouchableOpacity
-        key={item.id || item.name || item}
+        key={item?.id || item?._id || item?.name || item}
         onPress={() => onSelect(item)}>
         <Text style={style.dropDownLabels}>{item.name || item}</Text>
       </TouchableOpacity>

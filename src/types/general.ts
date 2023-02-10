@@ -1,10 +1,11 @@
-import { User } from './user';
+import {User} from './user';
 import {Product} from './product';
 import {Vendor} from './vendor';
 
 export type Category = {
-  id: string;
-  slug: string;
+  _id: string;
+  code: string;
+  description: string;
   name: string;
 };
 
@@ -15,11 +16,14 @@ export type AgeRange = {
 };
 
 export type Address = {
-  id: string;
-  address: string;
-  phone: string;
-  name: string;
+  _id: string;
+  addressId: string;
+  streetName: string;
+  busStop: string;
+  country: string;
   state: string;
+  description: string;
+  lga: string;
 };
 
 export type Order = {

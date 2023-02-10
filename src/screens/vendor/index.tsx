@@ -45,11 +45,11 @@ function VendorScreen({navigation, route}) {
 
   // const {token} = useSelector((root: RootState) => root.authModel);
 
-  const followLoading = useSelector(
-    (root: RootState) =>
-      root.loading.effects.userModel.followVendor ||
-      root.loading.effects.userModel.unfollowVendor,
-  );
+  // const followLoading = useSelector(
+  //   (root: RootState) =>
+  //     root.loading.effects.userModel.followVendor ||
+  //     root.loading.effects.userModel.unfollowVendor,
+  // );
   const {cart} = useSelector((root: RootState) => root.cartModel);
   const {products, vendors} = useSelector(
     (root: RootState) => root.vendorModel,
@@ -61,8 +61,8 @@ function VendorScreen({navigation, route}) {
     return products ? products[vendorId] : [];
   }, [products, vendorId]);
 
-  const followed = getVendorInFollows(vendorId);
-  const orders = getOrdersFromVendor(vendorId);
+  // const followed = getVendorInFollows(vendorId);
+  // const orders = getOrdersFromVendor(vendorId);
 
   useEffect(() => {
     if (vendorId) {

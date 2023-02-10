@@ -19,9 +19,21 @@ const ProductSchema = Yup.object().shape({
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Required'),
-  price: Yup.string()
-    .min(1, 'Too Short!')
+  costPrice: Yup.string()
+    .min(1, 'Add cost price')
     .max(9, 'Too Long!')
+    .required('Required'),
+  sellingPrice: Yup.string()
+    .min(1, 'Add selling price')
+    .max(9, 'Too Long!')
+    .required('Required'),
+  quantity: Yup.string()
+    .min(1, 'Add Quantity')
+    .max(5, 'Too Long!')
+    .required('Required'),
+  description: Yup.string()
+    .min(4, 'Add Description')
+    .max(200, 'Too Long!')
     .required('Required'),
 });
 
@@ -50,207 +62,207 @@ const ProductDetailScreen = ({navigation, route}) => {
     const result = await launchImageLibrary({
       mediaType: 'photo',
       quality: 0.5,
-      maxHeight: 1000,
-      maxWidth: 800,
+      maxHeight: 400,
+      maxWidth: 650,
+      includeBase64: true,
     });
     setImage(result);
   };
 
+  console.log('product', product);
+
   return (
-    <ScrollView contentContainerStyle={{flexGrow: 1}}>
-      <Formik
-        initialValues={{
-          name: product.name,
-          price: product.price,
-          discount_price: product.discount_price,
-          desc: product.desc,
-          qty: `${product.qty}`,
-          active: product.active,
-          out_of_stock: product.out_of_stock,
-        }}
-        validationSchema={ProductSchema}
-        onSubmit={async values => {
-          const form = new FormData();
-          form.append('id', product.id);
-          form.append('name', values.name);
-          form.append('price', values.price);
-          form.append('discount_price', values.discount_price);
-          form.append('desc', values.desc);
-          form.append('qty', values.qty);
-          form.append('active', values.active);
-          form.append('out_of_stock', values.out_of_stock);
-          if (image?.assets?.[0]) {
-            form.append('image', {
-              uri: image?.assets?.[0].uri,
-              name: image?.assets?.[0].fileName,
-              type: image?.assets?.[0].type,
-            });
-          }
-          const success = await dispatch.businessModel.updateProduct(form);
-          if (success) {
-            navigation.goBack();
-          }
-        }}>
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          setFieldValue,
-          isValid,
-          touched,
-          errors,
-          values,
-        }) => (
-          <View style={styles.container}>
-            <View style={{height: 30}} />
-            <View style={{paddingHorizontal: 10, width: '100%'}}>
-              <View style={{alignItems: 'center'}}>
-                <Avatar
-                  size="xlarge"
-                  rounded
-                  source={{
-                    uri: image ? image?.assets?.[0]?.uri : product.url,
-                  }}
-                  containerStyle={{backgroundColor: 'grey'}}>
-                  <Avatar.Accessory
-                    size={34}
-                    onPress={handleImage}
-                    color={themeColors.pico}
-                    style={{backgroundColor: themeColors.white}}
-                  />
-                </Avatar>
-                {image ? (
-                  <Button
-                    title="Revert"
-                    type="clear"
-                    titleStyle={{color: themeColors.white}}
-                    icon={{
-                      name: 'corner-up-left',
-                      type: 'feather',
-                      size: 15,
-                      color: 'white',
-                    }}
-                    onPress={() => setImage(null)}
-                    iconContainerStyle={{marginRight: 10}}
-                  />
-                ) : (
-                  <></>
-                )}
-              </View>
+    <Formik
+      initialValues={{
+        _id: product._id,
+        name: product.name || '',
+        costPrice: `${product.costPrice}` || '',
+        sellingPrice: `${product.sellingPrice}` || '',
+        description: product.description || '',
+        quantity: `${product.quantity}` || '1',
+      }}
+      validationSchema={ProductSchema}
+      onSubmit={async values => {
+        if (image?.assets?.[0]?.base64) {
+          values.photo = 'data:image/png;base64,' + image?.assets?.[0]?.base64;
+        }
+        const success = await dispatch.businessModel.updateProduct({
+          ...values,
+          costPrice: +values.costPrice,
+          sellingPrice: +values.sellingPrice,
+          quantity: +values.quantity,
+        });
+        if (success) {
+          navigation.goBack();
+        }
+      }}>
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        setFieldValue,
+        isValid,
+        touched,
+        errors,
+        values,
+      }) => (
+        <>
+          <ScrollView contentContainerStyle={{flexGrow: 1}}>
+            <View style={styles.container}>
               <View style={{height: 30}} />
-              <Input
-                placeholder="Name"
-                label="Name"
-                placeholderTextColor={themeColors.white}
-                onChangeText={handleChange('name')}
-                onBlur={handleBlur('name')}
-                value={values.name}
-                errorMessage={errors.name}
-                renderErrorMessage={touched.name}
-                inputStyle={{color: themeColors.white}}
-                inputContainerStyle={{borderColor: themeColors.white}}
-                autoCapitalize="none"
-              />
-              <Input
-                placeholder="Description"
-                placeholderTextColor={themeColors.white}
-                onChangeText={handleChange('desc')}
-                onBlur={handleBlur('desc')}
-                value={values.desc}
-                multiline
-                errorMessage={errors.desc}
-                renderErrorMessage={touched.desc}
-                inputStyle={{color: themeColors.white, height: 90}}
-                inputContainerStyle={{borderColor: themeColors.white}}
-                autoCapitalize="none"
-              />
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <View style={{paddingHorizontal: 10, width: '100%'}}>
+                <View style={{alignItems: 'center'}}>
+                  <Avatar
+                    size="xlarge"
+                    rounded
+                    source={{
+                      uri: image ? image?.assets?.[0]?.uri : product.photo,
+                    }}
+                    containerStyle={{backgroundColor: 'grey'}}>
+                    <Avatar.Accessory
+                      size={34}
+                      onPress={handleImage}
+                      color={themeColors.pico}
+                      style={{backgroundColor: themeColors.white}}
+                    />
+                  </Avatar>
+                  {image ? (
+                    <Button
+                      title="Revert"
+                      type="clear"
+                      titleStyle={{color: themeColors.white}}
+                      icon={{
+                        name: 'corner-up-left',
+                        type: 'feather',
+                        size: 15,
+                        color: 'white',
+                      }}
+                      onPress={() => setImage(null)}
+                      iconContainerStyle={{marginRight: 10}}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                </View>
+                <View style={{height: 30}} />
                 <Input
-                  placeholder="Price"
-                  label="Price"
+                  placeholder="Name"
+                  label="Name"
                   placeholderTextColor={themeColors.white}
-                  onChangeText={handleChange('price')}
-                  onBlur={handleBlur('price')}
-                  value={values.price}
-                  errorMessage={errors.price}
-                  renderErrorMessage={touched.price}
+                  onChangeText={handleChange('name')}
+                  onBlur={handleBlur('name')}
+                  value={values.name}
+                  errorMessage={errors.name}
+                  renderErrorMessage={touched.name}
                   inputStyle={{color: themeColors.white}}
                   inputContainerStyle={{borderColor: themeColors.white}}
-                  containerStyle={{flex: 4}}
                   autoCapitalize="none"
-                  keyboardType="decimal-pad"
                 />
                 <Input
-                  placeholder="Discount Price"
-                  label="Discount Price"
+                  placeholder="Description"
                   placeholderTextColor={themeColors.white}
-                  onChangeText={handleChange('discount_price')}
-                  onBlur={handleBlur('discount_price')}
-                  value={values.discount_price}
-                  errorMessage={errors.discount_price}
-                  renderErrorMessage={touched.discount_price}
+                  onChangeText={handleChange('description')}
+                  onBlur={handleBlur('description')}
+                  value={values.description}
+                  multiline
+                  errorMessage={errors.description}
+                  renderErrorMessage={touched.description}
+                  inputStyle={{color: themeColors.white, height: 90}}
+                  inputContainerStyle={{borderColor: themeColors.white}}
+                  autoCapitalize="none"
+                />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Input
+                    placeholder="0"
+                    label="Selling Price"
+                    placeholderTextColor={themeColors.white}
+                    onChangeText={handleChange('sellingPrice')}
+                    onBlur={handleBlur('sellingPrice')}
+                    value={values.sellingPrice}
+                    errorMessage={errors.sellingPrice}
+                    renderErrorMessage={touched.sellingPrice}
+                    inputStyle={{color: themeColors.white}}
+                    inputContainerStyle={{borderColor: themeColors.white}}
+                    containerStyle={{flex: 4}}
+                    autoCapitalize="none"
+                    keyboardType="number-pad"
+                  />
+                  <Input
+                    placeholder="0"
+                    label="Cost Price"
+                    placeholderTextColor={themeColors.white}
+                    onChangeText={handleChange('costPrice')}
+                    onBlur={handleBlur('costPrice')}
+                    value={values.costPrice}
+                    errorMessage={errors.costPrice}
+                    renderErrorMessage={touched.costPrice}
+                    inputStyle={{color: themeColors.white}}
+                    inputContainerStyle={{borderColor: themeColors.white}}
+                    containerStyle={{flex: 4}}
+                    autoCapitalize="none"
+                    keyboardType="number-pad"
+                  />
+                </View>
+                <Input
+                  placeholder="Quantity"
+                  label="Quantity"
+                  placeholderTextColor={themeColors.white}
+                  onChangeText={handleChange('quantity')}
+                  onBlur={handleBlur('quantity')}
+                  value={values.quantity}
+                  errorMessage={errors.quantity}
+                  renderErrorMessage={touched.quantity}
                   inputStyle={{color: themeColors.white}}
                   inputContainerStyle={{borderColor: themeColors.white}}
-                  containerStyle={{flex: 4}}
                   autoCapitalize="none"
-                  keyboardType="decimal-pad"
+                  keyboardType="number-pad"
                 />
+                {/* <View style={{alignItems: 'flex-start'}}>
+                  <CheckBox
+                    center
+                    title="Is Active"
+                    textStyle={{color: themeColors.white}}
+                    checked={values.active}
+                    onPress={() => setFieldValue('active', !values.active)}
+                    containerStyle={{backgroundColor: 'transparent'}}
+                    checkedColor={themeColors.white}
+                  />
+                  <CheckBox
+                    center
+                    title="Out of stock"
+                    textStyle={{color: themeColors.white}}
+                    checked={values.out_of_stock}
+                    onPress={() =>
+                      setFieldValue('out_of_stock', !values.out_of_stock)
+                    }
+                    containerStyle={{backgroundColor: 'transparent'}}
+                    checkedColor={themeColors.white}
+                  />
+                </View> */}
               </View>
-              <Input
-                placeholder="Quantity"
-                label="Quantity"
-                placeholderTextColor={themeColors.white}
-                onChangeText={handleChange('qty')}
-                onBlur={handleBlur('qty')}
-                value={values.qty}
-                errorMessage={errors.qty}
-                renderErrorMessage={touched.qty}
-                inputStyle={{color: themeColors.white}}
-                inputContainerStyle={{borderColor: themeColors.white}}
-                autoCapitalize="none"
-              />
-              <View style={{alignItems: 'flex-start'}}>
-                <CheckBox
-                  center
-                  title="Is Active"
-                  textStyle={{color: themeColors.white}}
-                  checked={values.active}
-                  onPress={() => setFieldValue('active', !values.active)}
-                  containerStyle={{backgroundColor: 'transparent'}}
-                  checkedColor={themeColors.white}
-                />
-                <CheckBox
-                  center
-                  title="Out of stock"
-                  textStyle={{color: themeColors.white}}
-                  checked={values.out_of_stock}
-                  onPress={() =>
-                    setFieldValue('out_of_stock', !values.out_of_stock)
-                  }
-                  containerStyle={{backgroundColor: 'transparent'}}
-                  checkedColor={themeColors.white}
-                />
-              </View>
+              <View style={{height: 50}} />
             </View>
-            <View style={{height: 50}} />
-            <View style={styles.btnView}>
-              <Button
-                title={'Save'}
-                titleStyle={{color: themeColors.white, fontWeight: 'bold'}}
-                buttonStyle={{backgroundColor: themeColors.pico, width: '100%'}}
-                size="lg"
-                radius={7}
-                disabled={!isValid || loading}
-                disabledStyle={{backgroundColor: themeColors.pico}}
-                loading={loading}
-                onPress={handleSubmit}
-              />
-            </View>
+          </ScrollView>
+          <View style={styles.btnView}>
+            <Button
+              title={'Save'}
+              titleStyle={{color: themeColors.white, fontWeight: 'bold'}}
+              buttonStyle={{backgroundColor: themeColors.pico, width: '100%'}}
+              size="lg"
+              radius={7}
+              disabled={!isValid || loading}
+              disabledStyle={{backgroundColor: themeColors.pico}}
+              loading={loading}
+              onPress={handleSubmit}
+            />
           </View>
-        )}
-      </Formik>
-    </ScrollView>
+        </>
+      )}
+    </Formik>
   );
 };
 

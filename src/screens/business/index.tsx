@@ -16,7 +16,7 @@ function BusinessScreen({navigation}) {
 
   const menus = [
     {
-      label: 'Your Page',
+      label: 'Storefront',
       icon: 'shopping-bag',
       nav: () =>
         navigation.navigate('Vendor', {

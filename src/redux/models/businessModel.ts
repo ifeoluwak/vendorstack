@@ -4,6 +4,7 @@ import {Address, Order, WithdrawRequest} from './../../types/general';
 import {createModel} from '@rematch/core';
 import {RootModel} from '.';
 import {BusinessApi, UserApi} from '../../services/apis';
+import {Vendor} from '../../types/vendor';
 
 type BusinessProp = {
   products: Product[] | [];
@@ -34,16 +35,21 @@ const businessModel = createModel<RootModel>()({
     },
   },
   effects: dispatch => ({
-    async createAddress(payload: Partial<Address>) {
+    async createBusiness(payload, state) {
+      const {user} = state.userModel;
       try {
-        await UserApi.createAddress(payload);
+        payload.userId = user?._id;
+        const {data} = await BusinessApi.createBusiness(payload);
+        await dispatch.userModel.getUserProfile();
+        console.log('createBusiness', data);
         return true;
       } catch ({response}) {}
     },
-    async getBusinessProfile() {
+    async updateBusiness(payload: Partial<Vendor>) {
       try {
-        const {data} = await UserApi.getUserProfile();
-        dispatch.businessModel.setState({profile: data});
+        await BusinessApi.updateBusiness(payload, payload._id!);
+        dispatch.userModel.getUserProfile();
+        return true;
       } catch ({response}) {}
     },
     async getBusinessOrders() {
@@ -56,12 +62,6 @@ const businessModel = createModel<RootModel>()({
       try {
         const {data} = await BusinessApi.getBusinessCustomers();
         dispatch.businessModel.setState({customers: data});
-      } catch ({response}) {}
-    },
-    async getBusinessProducts() {
-      try {
-        const {data} = await BusinessApi.getBusinessProducts();
-        dispatch.businessModel.setState({products: data});
       } catch ({response}) {}
     },
     async getBusinessWallet() {
@@ -81,23 +81,59 @@ const businessModel = createModel<RootModel>()({
         dispatch.generalModel.getOrder(payload.id);
       } catch ({response}) {}
     },
-    async updateBusinessProfile(payload: Partial<Product>) {
+    async getBusinessProducts(_, state) {
+      const {
+        user: {businesses},
+      } = state.userModel;
+      const businessId = businesses?.[0]?._id;
       try {
-        await BusinessApi.updateBusinessProfile(payload);
-        dispatch.businessModel.getBusinessProfile();
-        return true;
+        const {data} = await BusinessApi.getBusinessProducts(businessId);
+        dispatch.businessModel.setState({products: data.results});
       } catch ({response}) {}
     },
-    async updateProduct(payload: Partial<Product>) {
+    async updateProduct(payload: Partial<Product>, state) {
+      const {
+        user: {_id: userId, businesses},
+      } = state.userModel;
+      const businessId = businesses?.[0]?._id;
       try {
-        await BusinessApi.updateProduct(payload);
+        await BusinessApi.updateProduct(
+          {
+            ...payload,
+            businessId,
+            userId,
+          },
+          payload._id,
+        );
         dispatch.businessModel.getBusinessProducts();
         return true;
       } catch ({response}) {}
     },
-    async addProduct(payload: Partial<Product>) {
+    async addProduct(payload: Partial<Product>, state) {
+      const {
+        user: {_id: userId, businesses},
+      } = state.userModel;
+      const businessId = businesses?.[0]?._id;
       try {
-        await BusinessApi.addProduct(payload);
+        await BusinessApi.addProduct({
+          ...payload,
+          businessId,
+          userId,
+        });
+        dispatch.businessModel.getBusinessProducts();
+        return true;
+      } catch ({response}) {}
+    },
+    async setProductActive(productId: string) {
+      try {
+        await BusinessApi.setProductActive(productId);
+        dispatch.businessModel.getBusinessProducts();
+        return true;
+      } catch ({response}) {}
+    },
+    async pinProduct(productId: string) {
+      try {
+        await BusinessApi.pinProduct(productId);
         dispatch.businessModel.getBusinessProducts();
         return true;
       } catch ({response}) {}

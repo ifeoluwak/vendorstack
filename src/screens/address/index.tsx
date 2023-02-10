@@ -12,7 +12,7 @@ function AddressScreen({navigation, route}) {
   const loading = useSelector(
     (root: RootState) => root.loading.effects.userModel.getUserAddresses,
   );
-  const {addresses, defaultAddress} = useSelector(
+  const {user, defaultAddress} = useSelector(
     (root: RootState) => root.userModel,
   );
 
@@ -28,10 +28,6 @@ function AddressScreen({navigation, route}) {
     });
   }, [navigation, dispatch]);
 
-  React.useEffect(() => {
-    dispatch.userModel.getUserAddresses();
-  }, [dispatch]);
-
   return (
     <View style={styles.container}>
       {loading ? (
@@ -41,7 +37,7 @@ function AddressScreen({navigation, route}) {
       )}
       <View style={styles.itemWrapper}>
         <FlatList
-          data={addresses}
+          data={user?.addresses}
           renderItem={({item}) => (
             <ListItem
               Component={TouchableScale}
@@ -52,17 +48,17 @@ function AddressScreen({navigation, route}) {
               tension={100}
               activeScale={0.95}
               containerStyle={styles.listContainer}>
-              {defaultAddress?.id === item.id ? (
+              {defaultAddress?._id === item._id ? (
                 <Icon name="check" type="feather" color={themeColors.white} />
               ) : (
                 <Icon name="circle" type="feather" color={themeColors.white} />
               )}
               <ListItem.Content>
                 <ListItem.Title style={styles.listTitle}>
-                  {item.address}
+                  {item.streetName}
                 </ListItem.Title>
                 <ListItem.Subtitle style={styles.listSubTitle}>
-                  {item.name} | {item.phone}
+                  {item.lga} | {item.state}
                 </ListItem.Subtitle>
               </ListItem.Content>
               <Icon

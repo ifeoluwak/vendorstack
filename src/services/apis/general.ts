@@ -5,8 +5,8 @@ import ApiHandler from '../ApiHandler';
 import {TopRatedVendor, TrendingVendor} from '../../types/vendor';
 
 export default {
-  getCategories: (): Promise<AxiosResponse<{categories: Category[]}, any>> =>
-    ApiHandler.get('/api/get_category_api', null, {}),
+  getCategories: (): Promise<AxiosResponse<Category[], any>> =>
+    ApiHandler.get('/users/categories', null, {}),
   getAgeRange: (): Promise<AxiosResponse<AgeRange[], any>> =>
     ApiHandler.get('/api/get_age_range', null, {}),
   getOrder: (id: string): Promise<AxiosResponse<Order, any>> =>

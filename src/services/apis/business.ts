@@ -6,10 +6,10 @@ import {AxiosResponse} from 'axios';
 import ApiHandler from '../ApiHandler';
 
 export default {
-  createAddress: (data: Partial<Address>) =>
-    ApiHandler.post('/api/user_address_create', data, {}),
-  getBusinessProducts: (): Promise<AxiosResponse<Product[], any>> =>
-    ApiHandler.get('/api/get_business_products', null, {}),
+  createBusiness: (data: Partial<Vendor>) =>
+    ApiHandler.post('/businesses', data, {}),
+  updateBusiness: (data: Partial<Vendor>, businessId: string) =>
+    ApiHandler.patch(`/businesses/${businessId}`, data, {}),
   getBusinessCustomers: (): Promise<AxiosResponse<Customer[], any>> =>
     ApiHandler.get('/api/get_business_customers', null, {}),
   getBusinessOrders: (): Promise<AxiosResponse<Order[], any>> =>
@@ -26,16 +26,21 @@ export default {
     ApiHandler.get('/api/get_user_wallet', null, {}),
   updateOrderStatus: (data: {id: string; status: string}) =>
     ApiHandler.post('/api/update_business_order_status', data, {}),
-  updateBusinessProfile: (data: Partial<Vendor>) =>
-    ApiHandler.post('/api/update_business_profile', data, {
-      'Content-type': 'multipart/form-data',
-    }),
-  updateProduct: (data: Partial<Product>) =>
-    ApiHandler.post('/api/update_business_product', data, {
-      'Content-type': 'multipart/form-data',
-    }),
+  getBusinessProducts: (
+    businessId: string,
+    limit = 20,
+  ): Promise<AxiosResponse<{results: Product[]}, any>> =>
+    ApiHandler.get(
+      `/products?productBusinessId=${businessId}&limit=${limit}`,
+      null,
+      {},
+    ),
+  updateProduct: (data: Partial<Product>, productId: string) =>
+    ApiHandler.patch(`/products/${productId}`, data, {}),
+  setProductActive: (productId: string) =>
+    ApiHandler.put(`/products/${productId}/active`, null, {}),
+  pinProduct: (productId: string) =>
+    ApiHandler.put(`/products/${productId}/pin`, null, {}),
   addProduct: (data: Partial<Product>) =>
-    ApiHandler.post('/api/create_business_product', data, {
-      'Content-type': 'multipart/form-data',
-    }),
+    ApiHandler.post('/products', data, {}),
 };

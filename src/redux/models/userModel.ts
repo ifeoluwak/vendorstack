@@ -1,5 +1,5 @@
 import {Alert} from 'react-native';
-import {Profile, UserFollows} from './../../types/user';
+import {Profile, User, UserFollows} from './../../types/user';
 import {
   Address,
   AgeRange,
@@ -17,6 +17,7 @@ type UserProp = {
   userOrders: Order[] | [];
   defaultAddress: Address | null;
   profile: Profile | null;
+  user: User | null;
   userBizReview: Review | null;
   userBizSubscription: Subscription | null;
 };
@@ -40,17 +41,19 @@ const userModel = createModel<RootModel>()({
     },
   },
   effects: dispatch => ({
-    async createAddress(payload: Partial<Address>) {
+    async createAddress(payload: Partial<Address>, state) {
+      const {user} = state.userModel;
       try {
-        await UserApi.createAddress(payload);
-        dispatch.userModel.getUserAddresses();
+        await UserApi.createAddress(payload, user?._id!);
+        dispatch.userModel.getUserProfile();
         return true;
       } catch ({response}) {}
     },
-    async deleteAddress(payload: Partial<Address>) {
+    async deleteAddress(addressId: string, state) {
+      const {user} = state.userModel;
       try {
-        await UserApi.deleteAddress(payload);
-        dispatch.userModel.getUserAddresses();
+        await UserApi.deleteAddress(addressId, user?._id!);
+        // dispatch.userModel.getUserAddresses();
         return true;
       } catch ({response}) {}
     },
@@ -67,17 +70,23 @@ const userModel = createModel<RootModel>()({
     async getUserProfile() {
       try {
         const {data} = await UserApi.getUserProfile();
-        dispatch.userModel.setState({profile: data});
+        console.log('getUserProfile', data);
+        dispatch.userModel.setState({user: data});
       } catch ({response}) {}
     },
-    async updateUserProfile(payload: {
-      first_name: string;
-      last_name: string;
-      age_range: AgeRange;
-      phone: string;
-    }) {
+    async updateUserProfile(
+      payload: {
+        firstName: string;
+        lastName: string;
+        // age_range: AgeRange;
+        // phone: string;
+        // photo: string;
+      },
+      state,
+    ) {
+      const {user} = state.userModel;
       try {
-        await UserApi.updateUserProfile(payload);
+        await UserApi.updateUserProfile(payload, user?._id!);
         return true;
       } catch ({response}) {
         Alert.alert('Error', 'Something went wrong. Please try again');

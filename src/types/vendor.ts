@@ -2,26 +2,30 @@ import {Review} from './general';
 import {Product} from './product';
 
 export type Vendor = {
-  id: string;
-  slug: string;
+  _id: string;
+  active: boolean;
+  takingOrder: boolean;
+  verified: boolean;
   name: string;
   email: string;
   address: string;
   phone: string;
-  biography: string;
-  category: string;
-  url: string;
+  description: string;
+  categories: string;
+  logo: string;
   state: string;
-  pre_order_notice: string;
-  post_order_notice: string;
+  postalCode: string;
+  country: string;
+  socialAccountId: string;
+  socialAccountUserId: string;
+  socialType: string;
+  socialUsername: string;
   website: string;
-  ig_username: string;
   created_at: string;
-  products?: Product[];
-  follower_count: number;
-  review_count: number;
-  rating: number;
-  reviews: Review[];
+  sale: [];
+  customerFollowers: [];
+  customers: [];
+  orderNoticeInfo: string;
 };
 
 export type TrendingVendor = {

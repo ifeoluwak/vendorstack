@@ -1,13 +1,15 @@
-import {AgeRange, Order} from './general';
+import { AgeRange, Order, Address } from './general';
 import {Vendor} from './vendor';
 
 export type User = {
-  id: string;
+  _id: string;
   username: string;
-  email: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   business?: Vendor;
+  businesses?: Vendor[];
+  addresses: Address[];
+  businessFollowings: any[];
 };
 
 export type Profile = {
