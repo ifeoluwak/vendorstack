@@ -54,7 +54,7 @@ function UserOrdersScreen({navigation}) {
               activeScale={0.95}
               onPress={() =>
                 navigation.navigate('OrderDetail', {
-                  id: item.id,
+                  id: item._id,
                 })
               }
               containerStyle={{
@@ -65,7 +65,7 @@ function UserOrdersScreen({navigation}) {
               <ListItem.Content>
                 <ListItem.Title
                   style={{color: themeColors.white, fontWeight: 'bold'}}>
-                  Order #{item.id} - {item?.business?.name}
+                  From - {item?.business?.name}
                 </ListItem.Title>
                 <ListItem.Subtitle
                   numberOfLines={1}
@@ -73,9 +73,9 @@ function UserOrdersScreen({navigation}) {
                     color: themeColors.white,
                     textTransform: 'capitalize',
                   }}>
-                  {item.order_items?.map(i => i?.product?.name).join(', ')}
+                  {item.products.length} Items
                 </ListItem.Subtitle>
-                <View style={{paddingTop: 5}}>
+                {/* <View style={{paddingTop: 5}}>
                   <FlatList
                     data={item.order_items}
                     renderItem={({item: order}) => {
@@ -91,7 +91,7 @@ function UserOrdersScreen({navigation}) {
                     ItemSeparatorComponent={() => <View style={{width: 5}} />}
                     style={{flexGrow: 0}}
                   />
-                </View>
+                </View> */}
               </ListItem.Content>
               <ListItem.Chevron color={themeColors.white} />
             </ListItem>

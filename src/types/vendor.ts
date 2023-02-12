@@ -1,5 +1,6 @@
 import {Review} from './general';
 import {Product} from './product';
+import { User } from './user';
 
 export type Vendor = {
   _id: string;
@@ -26,6 +27,7 @@ export type Vendor = {
   customerFollowers: [];
   customers: [];
   orderNoticeInfo: string;
+  vendor?: User;
 };
 
 export type TrendingVendor = {

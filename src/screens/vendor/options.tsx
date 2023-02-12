@@ -5,9 +5,9 @@ import TouchableScale from 'react-native-touchable-scale';
 import {ListItem, Icon} from '@rneui/themed';
 
 import {styles} from './style';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {themeColors} from '../../constants/color';
-import {Dispatch, RootState} from '../../redux/store';
+import {RootState} from '../../redux/store';
 
 function VendorOptionsScreen({navigation, route}) {
   const vendorId = route?.params?.id;
@@ -17,11 +17,6 @@ function VendorOptionsScreen({navigation, route}) {
   });
   const {vendors} = useSelector((root: RootState) => root.vendorModel);
   const {token} = useSelector((root: RootState) => root.authModel);
-  const {userBizSubscription} = useSelector(
-    (root: RootState) => root.userModel,
-  );
-
-  const dispatch = useDispatch<Dispatch>();
 
   const vendor = vendors?.[vendorId];
 
@@ -31,7 +26,9 @@ function VendorOptionsScreen({navigation, route}) {
         label: 'Visit Instagram page',
         icon: 'instagram',
         nav: () =>
-          Linking.openURL(`https://www.instagram.com/${vendor?.ig_username}`),
+          Linking.openURL(
+            `https://www.instagram.com/${vendor?.socialUsername}`,
+          ),
       },
       {
         label: 'Visit Website',
@@ -41,23 +38,13 @@ function VendorOptionsScreen({navigation, route}) {
       ...(token
         ? [
             {
-              label: userBizSubscription
-                ? 'Unsubscribe to newsletter'
-                : 'Subscribe to newsletter',
-              icon: 'mail',
-              nav: () => {
-                userBizSubscription
-                  ? dispatch.userModel.unSubscribeToVendor({
-                      vendor_id: vendorId,
-                      subscriber_id: userBizSubscription.id,
-                    })
-                  : dispatch.userModel.subscribeToVendor(vendorId);
-              },
-            },
-            {
               label: 'Rate Vendor',
               icon: 'thumbs-up',
-              nav: () => navigation.navigate('AddReview', {id: vendorId}),
+              nav: () =>
+                navigation.navigate('AddReview', {
+                  businessId: vendorId,
+                  businessOwnerId: vendor?.vendor?._id,
+                }),
             },
           ]
         : []),
@@ -72,14 +59,7 @@ function VendorOptionsScreen({navigation, route}) {
         nav: () => navigation.navigate('Orders'),
       },
     ],
-    [
-      dispatch.userModel,
-      navigation,
-      userBizSubscription,
-      vendor,
-      vendorId,
-      token,
-    ],
+    [navigation, token, vendor, vendorId],
   );
 
   React.useEffect(() => {
@@ -93,9 +73,9 @@ function VendorOptionsScreen({navigation, route}) {
     });
   }, [navigation]);
 
-  React.useEffect(() => {
-    dispatch.userModel.getUserSubscriptionToVendor(vendorId);
-  }, [dispatch.userModel, vendorId]);
+  // React.useEffect(() => {
+  //   dispatch.userModel.getUserSubscriptionToVendor(vendorId);
+  // }, [dispatch.userModel, vendorId]);
 
   return (
     <View style={styles.container}>

@@ -13,6 +13,7 @@ function VendorReviews({reviews}: {reviews: Review[]}) {
       contentContainerStyle={{paddingHorizontal: 5, paddingTop: 5}}
       renderItem={({item}) => (
         <ListItem
+          key={item._id}
           bottomDivider
           Component={TouchableScale}
           friction={90}
@@ -38,7 +39,7 @@ function VendorReviews({reviews}: {reviews: Review[]}) {
               ))}
             </View>
             <ListItem.Subtitle style={styles.name}>
-              - {item.user.first_name} {item.user.last_name}
+              - {item.customer.firstName} {item.customer.lastName}
             </ListItem.Subtitle>
             <ListItem.Subtitle
               style={{
@@ -46,7 +47,7 @@ function VendorReviews({reviews}: {reviews: Review[]}) {
                 textTransform: 'capitalize',
                 fontSize: 14,
               }}>
-              {item.review}
+              {item.comment}
             </ListItem.Subtitle>
           </ListItem.Content>
         </ListItem>

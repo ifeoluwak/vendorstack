@@ -9,8 +9,8 @@ export default {
     ApiHandler.get('/users/categories', null, {}),
   getAgeRange: (): Promise<AxiosResponse<AgeRange[], any>> =>
     ApiHandler.get('/api/get_age_range', null, {}),
-  getOrder: (id: string): Promise<AxiosResponse<Order, any>> =>
-    ApiHandler.get(`/api/get_order?order=${id}`, null, {}),
+  getOrder: (id: string): Promise<AxiosResponse<Order>> =>
+    ApiHandler.get(`/orders/${id}`, null, {}),
   getOrderStatuses: (): Promise<AxiosResponse<OrderStatus[], any>> =>
     ApiHandler.get('/api/get_order_status', null, {}),
   getTrendingProducts: (): Promise<AxiosResponse<ProductLean[], any>> =>
@@ -19,4 +19,6 @@ export default {
     ApiHandler.get('/api/trending_vendors_api?limit=5', null, {}),
   getTopratedVendors: (): Promise<AxiosResponse<TopRatedVendor[], any>> =>
     ApiHandler.get('/api/toprated_vendors_api?limit=5', null, {}),
+  updateOrderStatus: (id: string): Promise<AxiosResponse<any>> =>
+    ApiHandler.get(`/orders/${id}/status`, null, {}),
 };

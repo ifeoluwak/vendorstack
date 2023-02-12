@@ -15,6 +15,7 @@ import HomeTopRatedVendor from '../../components/HomeTopRatedVendor';
 import Logo from '../../assets/images/vendorstack2.svg';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import HomeHeaderRight from '../../components/HomeHeaderRight';
+import HomeVendors from '../../components/HomeVendors';
 
 function HomeScreen({navigation}) {
   const dispatch = useDispatch<Dispatch>();
@@ -32,6 +33,7 @@ function HomeScreen({navigation}) {
       // dispatch.userModel.getUserOrders();
     }
     Promise.all([
+      dispatch.vendorModel.getHomeVendors(),
       // dispatch.generalModel.getTrendingProducts(),
       // dispatch.generalModel.getTrendingVendors(),
       // dispatch.generalModel.getTopratedVendors(),
@@ -60,21 +62,16 @@ function HomeScreen({navigation}) {
 
   const home_data = React.useMemo(
     () => [
+      <HomeVendors />,
       <HomeUserVendors onRefresh={onRefresh} />,
-      <PromotedProductList />,
-      <HomeTrendingProduct />,
-      <HomeTrendingVendor />,
-      <PromotedProductList />,
-      <HomeTopRatedVendor />,
+      // <PromotedProductList />,
+      // <HomeTrendingProduct />,
+      // <HomeTrendingVendor />,
+      // <PromotedProductList />,
+      // <HomeTopRatedVendor />,
     ],
     [token],
   );
-
-  // const home_data = [
-  //   <HomeUserVendors onRefresh={onRefresh} />,
-  //   <HomeTrendingProduct />,
-  //   <HomeSectionCategory />,
-  // ]
 
   return (
     <Animated.View entering={FadeIn} style={styles.container}>

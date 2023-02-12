@@ -1,7 +1,7 @@
 import {Product} from './../../types/product';
-import {Profile, Customer} from './../../types/user';
+import {Customer} from './../../types/user';
 import {Vendor} from './../../types/vendor';
-import {Address, Order, Wallet} from './../../types/general';
+import {Order} from './../../types/general';
 import {AxiosResponse} from 'axios';
 import ApiHandler from '../ApiHandler';
 
@@ -10,22 +10,29 @@ export default {
     ApiHandler.post('/businesses', data, {}),
   updateBusiness: (data: Partial<Vendor>, businessId: string) =>
     ApiHandler.patch(`/businesses/${businessId}`, data, {}),
-  getBusinessCustomers: (): Promise<AxiosResponse<Customer[], any>> =>
-    ApiHandler.get('/api/get_business_customers', null, {}),
-  getBusinessOrders: (): Promise<AxiosResponse<Order[], any>> =>
-    ApiHandler.get('/api/get_business_orders', null, {}),
-  getUBusinessProfile: (): Promise<AxiosResponse<Profile, any>> =>
-    ApiHandler.get('/api/get_user_profile', null, {}),
-  getBusinessOrder: (id: string): Promise<AxiosResponse<Order, any>> =>
-    ApiHandler.get(`/api/get_order?order=${id}`, null, {}),
-  getBusinessFollowers: (id: string): Promise<AxiosResponse<Order, any>> =>
-    ApiHandler.get(`/api/get_order?order=${id}`, null, {}),
-  getBusinessSubscribers: (id: string): Promise<AxiosResponse<Order, any>> =>
-    ApiHandler.get(`/api/get_order?order=${id}`, null, {}),
-  getBusinessWallet: (): Promise<AxiosResponse<Wallet, any>> =>
-    ApiHandler.get('/api/get_user_wallet', null, {}),
-  updateOrderStatus: (data: {id: string; status: string}) =>
-    ApiHandler.post('/api/update_business_order_status', data, {}),
+  setBusinessActive: (businessId: string) =>
+    ApiHandler.put(`/businesses/${businessId}/active`, null, {}),
+  setBusinessTakingOrders: (businessId: string) =>
+    ApiHandler.put(`/businesses/${businessId}/taking-order`, null, {}),
+  acceptOrder: (data: {
+    orderId: string;
+    customerId: string;
+    status: 'PENDING';
+    userId: string;
+  }) => ApiHandler.put(`/orders/${data.orderId}/status`, null, {}),
+  getBusinessCustomers: (
+    businessId: string,
+  ): Promise<AxiosResponse<{results: Customer[]}>> =>
+    ApiHandler.get(`/businesses/${businessId}/customers`, null, {}),
+  getBusinessOrders: (
+    businessId: string,
+    limit = 30,
+  ): Promise<AxiosResponse<{results: Order[]}>> =>
+    ApiHandler.get(
+      `/orders?orderByBusinessId=${businessId}&limit=${limit}`,
+      null,
+      {},
+    ),
   getBusinessProducts: (
     businessId: string,
     limit = 20,

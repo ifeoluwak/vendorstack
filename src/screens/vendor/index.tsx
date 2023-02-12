@@ -43,7 +43,7 @@ function VendorScreen({navigation, route}) {
       root.loading.effects.vendorModel.getVendorProducts,
   );
 
-  // const {token} = useSelector((root: RootState) => root.authModel);
+  const {token} = useSelector((root: RootState) => root.authModel);
 
   // const followLoading = useSelector(
   //   (root: RootState) =>
@@ -51,7 +51,7 @@ function VendorScreen({navigation, route}) {
   //     root.loading.effects.userModel.unfollowVendor,
   // );
   const {cart} = useSelector((root: RootState) => root.cartModel);
-  const {products, vendors} = useSelector(
+  const {products, vendors, reviews} = useSelector(
     (root: RootState) => root.vendorModel,
   );
 
@@ -60,16 +60,25 @@ function VendorScreen({navigation, route}) {
   const vendorProducts = useMemo(() => {
     return products ? products[vendorId] : [];
   }, [products, vendorId]);
+  const vendorReviews = useMemo(() => {
+    return reviews ? reviews[vendorId] : [];
+  }, [reviews, vendorId]);
 
   // const followed = getVendorInFollows(vendorId);
   // const orders = getOrdersFromVendor(vendorId);
 
   useEffect(() => {
     if (vendorId) {
-      dispatch.vendorModel.getVendor(vendorId);
-      dispatch.vendorModel.getVendorProducts(vendorId);
+      Promise.all([
+        dispatch.vendorModel.getVendor(vendorId),
+        dispatch.vendorModel.getVendorProducts(vendorId),
+        dispatch.vendorModel.getVendorReviews(vendorId),
+      ]);
+      if (token) {
+        dispatch.userModel.getUserVendorOrders(vendorId);
+      }
     }
-  }, [dispatch.vendorModel, vendorId]);
+  }, [dispatch.vendorModel, vendorId, token, dispatch.userModel]);
 
   useEffect(() => {
     if (product) {
@@ -79,7 +88,7 @@ function VendorScreen({navigation, route}) {
 
   useEffect(() => {
     if (product_id && vendorProducts?.length) {
-      const prod = vendorProducts.find(p => p.id === product_id);
+      const prod = vendorProducts.find(p => p._id === product_id);
       if (prod) {
         setProduct(prod);
       }
@@ -112,6 +121,8 @@ function VendorScreen({navigation, route}) {
     }
   };
 
+  // console.log('VendorScreen', vendor);
+
   return (
     <View style={styles.wrapper}>
       {loading ? (
@@ -119,48 +130,51 @@ function VendorScreen({navigation, route}) {
       ) : (
         <></>
       )}
-      <View style={styles.vendorContainer}>
-        <VendorHeader vendor={vendor} />
 
-        <ToggleButtonBordered
-          activeBtn={activeBtn}
-          setActiveBtn={setActiveBtn}
-          btns={[
-            'Products',
-            `Reviews(${vendor?.review_count | 0})`,
-            'Your Orders',
-          ]}
-          style={{height: mvs(40), marginBottom: 5}}
-          textStyle={{fontWeight: 'normal'}}
-          stickBorderRadius={10}
-        />
-
-        {activeBtn === Section.ORDERS && <VendorOrders orders={orders} />}
-        {activeBtn === Section.REVIEWS && (
-          <VendorReviews reviews={vendor?.reviews} />
-        )}
-        {activeBtn === Section.PRODUCTS && (
-          <MasonryFlashList
-            ListHeaderComponent={
-              <VendorActionButtons
-                id={vendor?.id}
-                followLoading={followLoading}
-                followed={followed}
-              />
-            }
-            data={vendorProducts}
-            numColumns={3}
-            renderItem={({item}) => (
-              <View key={item.id}>
-                <TouchableOpacity onPress={() => setProduct(item)}>
-                  <Image source={{uri: item.url}} style={styles.item} />
-                </TouchableOpacity>
-              </View>
-            )}
-            estimatedItemSize={200}
+      {vendor ? (
+        <View style={styles.vendorContainer}>
+          <VendorHeader
+            rating={1}
+            vendor={vendor!}
+            productCount={vendorProducts?.length}
           />
-        )}
-      </View>
+
+          <ToggleButtonBordered
+            activeBtn={activeBtn}
+            setActiveBtn={setActiveBtn}
+            btns={[
+              'Products',
+              `Reviews(${vendorReviews?.length | 0})`,
+              'Your Orders',
+            ]}
+            style={{height: mvs(40), marginBottom: 5}}
+            textStyle={{fontWeight: 'normal'}}
+            stickBorderRadius={10}
+          />
+
+          {activeBtn === Section.ORDERS && <VendorOrders orders={[]} />}
+          {activeBtn === Section.REVIEWS && (
+            <VendorReviews reviews={vendorReviews} />
+          )}
+          {activeBtn === Section.PRODUCTS && (
+            <MasonryFlashList
+              ListHeaderComponent={<VendorActionButtons id={vendor?._id} />}
+              data={vendorProducts}
+              numColumns={3}
+              renderItem={({item}) => (
+                <View key={item._id}>
+                  <TouchableOpacity onPress={() => setProduct(item)}>
+                    <Image source={{uri: item.photo}} style={styles.item} />
+                  </TouchableOpacity>
+                </View>
+              )}
+              estimatedItemSize={200}
+            />
+          )}
+        </View>
+      ) : (
+        <></>
+      )}
 
       <CartCountButton vendorId={vendorId} />
 
@@ -172,7 +186,7 @@ function VendorScreen({navigation, route}) {
           childrenStyle={{marginBottom: 20}}>
           <VendorProductView
             onBuy={handleBuyNow}
-            cartItem={vendorCart?.[product?.id!]}
+            cartItem={vendorCart?.[product?._id!]}
             product={product}
             vendorId={vendorId}
           />

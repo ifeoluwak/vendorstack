@@ -1,4 +1,4 @@
-import { AgeRange, Order, Address } from './general';
+import {AgeRange, Order, Address} from './general';
 import {Vendor} from './vendor';
 
 export type User = {
@@ -9,7 +9,7 @@ export type User = {
   business?: Vendor;
   businesses?: Vendor[];
   addresses: Address[];
-  businessFollowings: any[];
+  businessFollowings: string[];
 };
 
 export type Profile = {

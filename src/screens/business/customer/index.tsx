@@ -9,7 +9,9 @@ import {styles} from './style';
 import TouchableScale from 'react-native-touchable-scale';
 
 function BusinessCustomersScreen({navigation, route}) {
-  const loading = useSelector((root: RootState) => root.loading.models.businessModel);
+  const loading = useSelector(
+    (root: RootState) => root.loading.models.businessModel,
+  );
   const {customers} = useSelector((root: RootState) => root.businessModel);
 
   const dispatch = useDispatch<Dispatch>();
@@ -38,7 +40,7 @@ function BusinessCustomersScreen({navigation, route}) {
       )}
       <View style={styles.itemWrapper}>
         <FlatList
-          data={customers}
+          data={[]}
           renderItem={({item}) => (
             <ListItem
               Component={TouchableScale}

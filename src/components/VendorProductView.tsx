@@ -20,11 +20,12 @@ function VendorProductView({
   onBuy: () => void;
 }) {
   const dispatch = useDispatch<Dispatch>();
+  console.log('product?.photo', product?.photo);
   return (
     <>
       <Image
         source={{
-          uri: product?.url,
+          uri: product?.photo,
         }}
         style={styles.item}
       />
@@ -43,12 +44,12 @@ function VendorProductView({
                 fontWeight: 'bold',
                 fontSize: 16,
               }}>
-              N {product?.final_price}
+              N {product?.sellingPrice}
             </Text>
           </View>
         </View>
         <Divider style={{marginTop: 10, marginBottom: 20}} />
-        <Text>{product?.desc}</Text>
+        <Text>{product?.description}</Text>
       </View>
       <View style={{paddingHorizontal: 10, paddingTop: 30, width: '50%'}}>
         <View style={styles.cartBtnView}>
@@ -71,7 +72,7 @@ function VendorProductView({
             size={30}
             color={themeColors.mazarine}
             onPress={() => {
-              if ((cartItem?.count || 0) < product?.qty) {
+              if ((cartItem?.count || 0) < product?.quantity) {
                 dispatch.cartModel.addToCart({vendorId, product});
               }
             }}
@@ -79,9 +80,9 @@ function VendorProductView({
           />
         </View>
         <View style={{alignItems: 'center', marginVertical: 15}}>
-          {product?.qty < 11 ? (
+          {product?.quantity < 11 ? (
             <Text style={{color: themeColors.nasturcian, fontStyle: 'italic'}}>
-              {product?.qty} left in stock
+              {product?.quantity} left in stock
             </Text>
           ) : (
             <></>

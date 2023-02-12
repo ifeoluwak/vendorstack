@@ -1,9 +1,9 @@
 import {Product} from './../../types/product';
 import {Customer} from './../../types/user';
-import {Address, Order, WithdrawRequest} from './../../types/general';
+import {Order, WithdrawRequest} from './../../types/general';
 import {createModel} from '@rematch/core';
 import {RootModel} from '.';
-import {BusinessApi, UserApi} from '../../services/apis';
+import {BusinessApi} from '../../services/apis';
 import {Vendor} from '../../types/vendor';
 
 type BusinessProp = {
@@ -52,16 +52,62 @@ const businessModel = createModel<RootModel>()({
         return true;
       } catch ({response}) {}
     },
-    async getBusinessOrders() {
+    async setBusinessTakingOrders(_, state) {
       try {
-        const {data} = await BusinessApi.getBusinessOrders();
-        dispatch.businessModel.setState({orders: data});
+        const {
+          user: {businesses},
+        } = state.userModel;
+        const businessId = businesses[0]._id;
+        await BusinessApi.setBusinessTakingOrders(businessId);
+        dispatch.userModel.getUserProfile();
+        return true;
       } catch ({response}) {}
     },
-    async getBusinessCustomers() {
+    async setBusinessActive(_, state) {
       try {
-        const {data} = await BusinessApi.getBusinessCustomers();
-        dispatch.businessModel.setState({customers: data});
+        const {
+          user: {businesses},
+        } = state.userModel;
+        const businessId = businesses[0]._id;
+        await BusinessApi.setBusinessActive(businessId);
+        dispatch.userModel.getUserProfile();
+        return true;
+      } catch ({response}) {}
+    },
+    async acceptOrder(
+      payload: {
+        orderId: string;
+        customerId: string;
+      },
+      state,
+    ) {
+      try {
+        const {user} = state.userModel;
+        await BusinessApi.acceptOrder({
+          ...payload,
+          status: 'PENDING',
+          userId: user?._id!,
+        });
+        // dispatch.userModel.getOrder(orderId);
+        return true;
+      } catch ({response}) {}
+    },
+    async getBusinessOrders(_, state) {
+      try {
+        const {
+          user: {businesses},
+        } = state.userModel;
+        const businessId = businesses[0]._id;
+        const {data} = await BusinessApi.getBusinessOrders(businessId);
+        console.log('getBusinessOrders', JSON.stringify(data.results[0]));
+        dispatch.businessModel.setState({orders: data.results});
+      } catch ({response}) {}
+    },
+    async getBusinessCustomers(businessId: string) {
+      try {
+        const {data} = await BusinessApi.getBusinessCustomers(businessId);
+        console.log('getBusinessCustomers', data);
+        // dispatch.businessModel.setState({customers: data});
       } catch ({response}) {}
     },
     async getBusinessWallet() {

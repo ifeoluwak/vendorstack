@@ -5,6 +5,7 @@ import generalModel from './generalModel';
 import vendorModel from './vendorModel';
 import userModel from './userModel';
 import businessModel from './businessModel';
+import walletModel from './wallet';
 
 export interface RootModel extends Models<RootModel> {
   cartModel: typeof cartModel;
@@ -13,6 +14,7 @@ export interface RootModel extends Models<RootModel> {
   authModel: typeof authModel;
   userModel: typeof userModel;
   businessModel: typeof businessModel;
+  walletModel: typeof walletModel;
 }
 
 export const models: RootModel = {
@@ -22,4 +24,5 @@ export const models: RootModel = {
   authModel,
   userModel,
   businessModel,
+  walletModel,
 };

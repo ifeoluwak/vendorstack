@@ -10,7 +10,7 @@ import {Button, Icon, Input} from '@rneui/themed';
 import {styles} from './style';
 
 const ReviewSchema = Yup.object().shape({
-  review: Yup.string()
+  comment: Yup.string()
     .min(2, 'Too Short!')
     .max(400, 'Too Long!')
     .required('Required'),
@@ -18,11 +18,14 @@ const ReviewSchema = Yup.object().shape({
 });
 
 const AddReviewScreen = ({navigation, route}) => {
-  const vendorId = route?.params?.id;
+  const businessId = route?.params?.businessId;
+  const vendorId = route?.params?.businessOwnerId;
   const dispatch = useDispatch<Dispatch>();
 
   const loading = useSelector(
-    (root: RootState) => root.loading.effects.userModel.reviewVendor,
+    (root: RootState) =>
+      root.loading.effects.userModel.reviewVendor ||
+      root.loading.effects.userModel.updateReview,
   );
 
   const review = useSelector((root: RootState) => root.userModel.userBizReview);
@@ -39,22 +42,27 @@ const AddReviewScreen = ({navigation, route}) => {
   }, [navigation, dispatch]);
 
   useEffect(() => {
-    dispatch.userModel.getUserVendorReview(vendorId);
-  }, [dispatch.userModel, vendorId]);
+    dispatch.userModel.getUserVendorReview(businessId);
+  }, [dispatch.userModel, businessId]);
 
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <Formik
         enableReinitialize
         initialValues={{
-          review: review?.review || '',
+          comment: review?.comment || '',
           rating: review?.rating || 1,
         }}
         validationSchema={ReviewSchema}
         onSubmit={async values => {
-          const success = await dispatch.userModel.reviewVendor({
+          const actionType = review
+            ? dispatch.userModel.updateReview
+            : dispatch.userModel.reviewVendor;
+          const success = await actionType({
             ...values,
-            business: vendorId,
+            businessId,
+            vendorId,
+            id: review?._id || '',
           });
           if (success) {
             navigation.goBack();
@@ -101,12 +109,12 @@ const AddReviewScreen = ({navigation, route}) => {
               <Input
                 placeholder="Add a review"
                 placeholderTextColor={themeColors.white}
-                onChangeText={handleChange('review')}
-                onBlur={handleBlur('review')}
-                value={values.review}
+                onChangeText={handleChange('comment')}
+                onBlur={handleBlur('comment')}
+                value={values.comment}
                 multiline
-                errorMessage={errors.review}
-                renderErrorMessage={touched.review}
+                errorMessage={errors.comment}
+                renderErrorMessage={touched.comment}
                 inputStyle={{color: themeColors.white, height: 90}}
                 inputContainerStyle={{borderColor: themeColors.white}}
                 autoCapitalize="none"

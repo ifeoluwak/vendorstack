@@ -4,5 +4,14 @@ import AuthApi from './auth';
 import CartApi from './cart';
 import UserApi from './user';
 import BusinessApi from './business';
+import WalletApi from './wallet';
 
-export {VendorApi, GeneralApi, AuthApi, CartApi, UserApi, BusinessApi};
+export {
+  VendorApi,
+  GeneralApi,
+  AuthApi,
+  CartApi,
+  UserApi,
+  BusinessApi,
+  WalletApi,
+};

@@ -7,6 +7,7 @@ import {themeColors} from '../../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
 import {Dispatch, RootState} from '../../../redux/store';
 import {OrderStatus} from '../../../types/general';
+import moment from 'moment';
 
 function BusinessOrderDetailScreen({navigation, route}) {
   const orderId = route?.params?.id;
@@ -17,15 +18,13 @@ function BusinessOrderDetailScreen({navigation, route}) {
       root.loading.effects.generalModel.getOrder ||
       root.loading.effects.businessModel.updateOrderStatus,
   );
-  const {orders, order_status} = useSelector(
-    (root: RootState) => root.generalModel,
-  );
+  const {orders} = useSelector((root: RootState) => root.generalModel);
 
   const order = orders?.[orderId];
 
   React.useEffect(() => {
     navigation.setOptions({
-      headerTitle: `Order #${orderId}`,
+      headerTitle: `#${orderId}`,
       headerTintColor: themeColors.white,
       headerStyle: {
         backgroundColor: themeColors.mazarine,
@@ -37,13 +36,13 @@ function BusinessOrderDetailScreen({navigation, route}) {
   React.useEffect(() => {
     if (orderId) {
       dispatch.generalModel.getOrder(orderId);
-      dispatch.generalModel.getOrderStatuses();
+      // dispatch.generalModel.getOrderStatuses();
     }
   }, [dispatch, orderId]);
 
-  const handleStatusUpdate = (status: OrderStatus) => {
-    dispatch.businessModel.updateOrderStatus({status: status.id, id: order.id});
-  };
+  // const handleStatusUpdate = (status: OrderStatus) => {
+  //   dispatch.businessModel.updateOrderStatus({status: status.id, id: order.id});
+  // };
 
   return (
     <View
@@ -61,7 +60,9 @@ function BusinessOrderDetailScreen({navigation, route}) {
       {!order ? (
         <></>
       ) : (
-        <ScrollView>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{paddingBottom: 100}}>
           <View style={{paddingTop: 15, width: '100%'}}>
             <Text h4 style={{color: themeColors.white, paddingBottom: 10}}>
               Delivery
@@ -80,7 +81,7 @@ function BusinessOrderDetailScreen({navigation, route}) {
               <ListItem.Content>
                 <ListItem.Title
                   style={{color: themeColors.white, fontWeight: 'bold'}}>
-                  {order.delivery_address.address}
+                  {order.status}
                 </ListItem.Title>
                 <ListItem.Subtitle
                   numberOfLines={1}
@@ -89,8 +90,7 @@ function BusinessOrderDetailScreen({navigation, route}) {
                     textTransform: 'capitalize',
                     paddingTop: 10,
                   }}>
-                  {order.delivery_address?.name} |{' '}
-                  {order.delivery_address?.phone}
+                  {moment(order.created_at).format('DD MMM, YYYY')}
                 </ListItem.Subtitle>
                 <ListItem.Subtitle
                   numberOfLines={1}
@@ -99,7 +99,7 @@ function BusinessOrderDetailScreen({navigation, route}) {
                     textTransform: 'capitalize',
                     paddingTop: 10,
                   }}>
-                  Status: {order.delivery_status?.name}
+                  {/* Status: {order.delivery_status?.name} */}
                 </ListItem.Subtitle>
               </ListItem.Content>
             </ListItem>
@@ -109,10 +109,10 @@ function BusinessOrderDetailScreen({navigation, route}) {
             <Text h4 style={{color: themeColors.white, paddingBottom: 10}}>
               Products
             </Text>
-            {order?.order_items?.map(item => {
+            {order?.products?.map(item => {
               return (
                 <ListItem
-                  key={item.id}
+                  key={item._id}
                   Component={TouchableScale}
                   friction={90}
                   tension={100}
@@ -126,7 +126,7 @@ function BusinessOrderDetailScreen({navigation, route}) {
                   }}>
                   <Avatar
                     source={{
-                      uri: item?.product?.url,
+                      uri: item?.product.photo,
                     }}
                   />
                   <ListItem.Content>
@@ -140,7 +140,7 @@ function BusinessOrderDetailScreen({navigation, route}) {
                         color: themeColors.white,
                         textTransform: 'capitalize',
                       }}>
-                      {item.product.final_price} - Qty ({item?.qty})
+                      {item.totalPrice} - Qty ({item?.quantity})
                     </ListItem.Subtitle>
                   </ListItem.Content>
                 </ListItem>
@@ -166,7 +166,7 @@ function BusinessOrderDetailScreen({navigation, route}) {
               <ListItem.Content>
                 <ListItem.Title
                   style={{color: themeColors.white, fontWeight: 'bold'}}>
-                  {order?.customer?.user.email}
+                  {order?.customer?.firstName} {order?.customer?.lastName}
                 </ListItem.Title>
               </ListItem.Content>
             </ListItem>
@@ -190,13 +190,13 @@ function BusinessOrderDetailScreen({navigation, route}) {
               <ListItem.Content>
                 <ListItem.Title
                   style={{color: themeColors.white, fontWeight: 'bold'}}>
-                  Total Cost - {order.value}
+                  Total Cost - {order.totalAmount}
                 </ListItem.Title>
               </ListItem.Content>
             </ListItem>
           </View>
 
-          <Divider style={{marginVertical: 20}} />
+          {/* <Divider style={{marginVertical: 20}} />
           <Text h4 style={{color: themeColors.white}}>
             Delivery Status
           </Text>
@@ -213,7 +213,7 @@ function BusinessOrderDetailScreen({navigation, route}) {
                 checkedColor={themeColors.white}
               />
             ))}
-          </View>
+          </View> */}
         </ScrollView>
       )}
     </View>

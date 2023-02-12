@@ -1,11 +1,12 @@
+import {Review} from './../../types/general';
 import {Vendor} from './../../types/vendor';
 import {Product} from './../../types/product';
 import {AxiosResponse} from 'axios';
 import ApiHandler from '../ApiHandler';
 
 export default {
-  getVendors: (): Promise<AxiosResponse<{vendors: Vendor[]}, any>> =>
-    ApiHandler.get('/api/search_business_api', null, {}),
+  getVendors: (limit = 10): Promise<AxiosResponse<{results: Vendor[]}, any>> =>
+    ApiHandler.get(`/businesses?limit=${limit}`, null, {}),
   searchVendors: (
     query: string,
     category: string,
@@ -16,12 +17,22 @@ export default {
       {},
     ),
   getVendor: (vendorId: string): Promise<AxiosResponse<Vendor, any>> =>
-    ApiHandler.get(`/api/get_vendor?vendor=${vendorId}`, null, {}),
+    ApiHandler.get(`/businesses/${vendorId}`, null, {}),
   getVendorProducts: (
     vendorId: string,
-  ): Promise<AxiosResponse<{products: Product[]}, any>> =>
+    limit = 20,
+  ): Promise<AxiosResponse<{results: Product[]}, any>> =>
     ApiHandler.get(
-      `/ecommerce/api/vendor/products?vendorId=${vendorId}`,
+      `/products?productBusinessId=${vendorId}&limit=${limit}`,
+      null,
+      {},
+    ),
+  getVendorReviews: (
+    businessId: string,
+    limit = 30,
+  ): Promise<AxiosResponse<{results: Review[]}>> =>
+    ApiHandler.get(
+      `/reviews?reviewBusinessId=${businessId}&limit=${limit}`,
       null,
       {},
     ),

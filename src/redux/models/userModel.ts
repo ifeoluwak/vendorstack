@@ -5,6 +5,7 @@ import {
   AgeRange,
   Order,
   Review,
+  ReviewPayload,
   Subscription,
 } from './../../types/general';
 import {createModel} from '@rematch/core';
@@ -53,7 +54,6 @@ const userModel = createModel<RootModel>()({
       const {user} = state.userModel;
       try {
         await UserApi.deleteAddress(addressId, user?._id!);
-        // dispatch.userModel.getUserAddresses();
         return true;
       } catch ({response}) {}
     },
@@ -61,6 +61,7 @@ const userModel = createModel<RootModel>()({
       const {defaultAddress} = state.userModel;
       try {
         const {data} = await UserApi.getUserAddresses();
+        console.log('getUserAddresses', data);
         dispatch.userModel.setState({
           addresses: data,
           defaultAddress: defaultAddress ? defaultAddress : data[0],
@@ -78,9 +79,6 @@ const userModel = createModel<RootModel>()({
       payload: {
         firstName: string;
         lastName: string;
-        // age_range: AgeRange;
-        // phone: string;
-        // photo: string;
       },
       state,
     ) {
@@ -104,35 +102,58 @@ const userModel = createModel<RootModel>()({
         dispatch.userModel.setState({userVendors: data});
       } catch ({response}) {}
     },
-    async getUserOrders() {
+    async getUserOrders(_, state) {
+      const {user} = state.userModel;
       try {
-        const {data} = await UserApi.getUserOrders();
-        dispatch.userModel.setState({userOrders: data});
+        const {data} = await UserApi.getUserOrders(user?._id!);
+        console.log('getUserOrders', data);
+        dispatch.userModel.setState({userOrders: data.results});
       } catch ({response}) {}
     },
-    async followVendor(payload: {vendorId: string}) {
+    async getUserVendorOrders(businessId: string, state) {
+      const {user} = state.userModel;
       try {
-        await UserApi.followVendor(payload);
-        await dispatch.userModel.getUserVendors();
+        const {data} = await UserApi.getUserVendorOrders(
+          businessId,
+          user?._id!,
+        );
+        console.log('getUserVendorOrders', data);
+        // dispatch.userModel.setState({userOrders: data});
       } catch ({response}) {}
     },
-    async unfollowVendor(followId: string) {
+    async followVendor(vendorId: string, state) {
+      const {user} = state.userModel;
       try {
-        await UserApi.unfollowVendor(followId);
-        await dispatch.userModel.getUserVendors();
+        await UserApi.followVendor(vendorId, user?._id);
+        Promise.all([
+          await dispatch.vendorModel.getVendor(vendorId),
+          await dispatch.userModel.getUserProfile(),
+        ]);
       } catch ({response}) {}
     },
-    async reviewVendor(payload: {
-      business: string;
-      review: string;
-      rating: number;
-    }) {
+    async unfollowVendor(vendorId: string, state) {
+      const {user} = state.userModel;
+      try {
+        await UserApi.unfollowVendor(vendorId, user?._id);
+        Promise.all([
+          await dispatch.vendorModel.getVendor(vendorId),
+          await dispatch.userModel.getUserProfile(),
+        ]);
+      } catch ({response}) {}
+    },
+    async reviewVendor(payload: ReviewPayload, state) {
+      const {user} = state.userModel;
+      payload.customerId = user?._id;
+      payload.userId = user?._id;
       try {
         await UserApi.reviewVendor(payload);
         return true;
       } catch ({response}) {}
     },
-    async updateReview(payload: {id: string; review: string; rating: number}) {
+    async updateReview(payload: ReviewPayload, state) {
+      const {user} = state.userModel;
+      payload.customerId = user?._id;
+      payload.userId = user?._id;
       try {
         await UserApi.updateReview(payload);
         return true;
@@ -144,39 +165,43 @@ const userModel = createModel<RootModel>()({
         return true;
       } catch ({response}) {}
     },
-    async getUserVendorReview(id: string) {
+    async getUserVendorReview(id: string, state) {
+      const {user} = state.userModel;
       try {
-        const {data} = await UserApi.getUserVendorReview(id);
-        console.log('getUserVendorReview', data);
-        dispatch.userModel.setState({userBizReview: data});
+        const {data} = await UserApi.getUserVendorReview(id, user?._id!);
+        if (data.results.length) {
+          dispatch.userModel.setState({userBizReview: data.results[0]});
+        } else {
+          dispatch.userModel.setState({userBizReview: null});
+        }
       } catch ({response}) {}
     },
-    async subscribeToVendor(vendor_id: string) {
-      try {
-        const {data} = await UserApi.subscribe_to_newsletter(vendor_id);
-        console.log('getUserSubscription', data);
-        dispatch.userModel.getUserSubscriptionToVendor(vendor_id);
-      } catch ({response}) {}
-    },
-    async unSubscribeToVendor(payload: {
-      subscriber_id: number;
-      vendor_id: string;
-    }) {
-      try {
-        const {data} = await UserApi.unsubscribe_to_newsletter(
-          payload.subscriber_id,
-        );
-        console.log('getUserSubscription', data);
-        dispatch.userModel.setState({userBizSubscription: null});
-      } catch ({response}) {}
-    },
-    async getUserSubscriptionToVendor(vendor_id: string) {
-      try {
-        const {data} = await UserApi.getUserSubscription(vendor_id);
-        console.log('getUserSubscription', data);
-        dispatch.userModel.setState({userBizSubscription: data});
-      } catch ({response}) {}
-    },
+    // async subscribeToVendor(vendor_id: string) {
+    //   try {
+    //     const {data} = await UserApi.subscribe_to_newsletter(vendor_id);
+    //     console.log('getUserSubscription', data);
+    //     dispatch.userModel.getUserSubscriptionToVendor(vendor_id);
+    //   } catch ({response}) {}
+    // },
+    // async unSubscribeToVendor(payload: {
+    //   subscriber_id: number;
+    //   vendor_id: string;
+    // }) {
+    //   try {
+    //     const {data} = await UserApi.unsubscribe_to_newsletter(
+    //       payload.subscriber_id,
+    //     );
+    //     console.log('getUserSubscription', data);
+    //     dispatch.userModel.setState({userBizSubscription: null});
+    //   } catch ({response}) {}
+    // },
+    // async getUserSubscriptionToVendor(vendor_id: string) {
+    //   try {
+    //     const {data} = await UserApi.getUserSubscription(vendor_id);
+    //     console.log('getUserSubscription', data);
+    //     dispatch.userModel.setState({userBizSubscription: data});
+    //   } catch ({response}) {}
+    // },
   }),
 });
 

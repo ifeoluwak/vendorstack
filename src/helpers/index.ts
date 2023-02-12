@@ -39,6 +39,7 @@ export const logout = () => {
   //   vendors: {},
   // });
   store.dispatch.userModel.setState({
+    user: null,
     profile: null,
     userVendors: [],
     addresses: [],
@@ -48,6 +49,16 @@ export const logout = () => {
     userBizSubscription: null,
   });
   store.dispatch.generalModel.setState({
+    // order_status: [],
+    // orders: {},
+    // trending_products: [],
+  });
+  store.dispatch.vendorModel.setState({
+    searchResult: [],
+    products: null,
+    vendors: {},
+    reviews: {},
+    homeVendors: [],
     // order_status: [],
     // orders: {},
     // trending_products: [],

@@ -4,14 +4,22 @@ import {Vendor} from '../types/vendor';
 import {themeColors} from '../constants/color';
 import {View} from 'react-native';
 
-function VendorHeader({vendor}: {vendor: Vendor}) {
+function VendorHeader({
+  vendor,
+  productCount,
+  rating,
+}: {
+  vendor: Vendor;
+  productCount: number;
+  rating: number;
+}) {
   return (
     <ListItem
       // bottomDivider
       containerStyle={{backgroundColor: themeColors.mazarine}}>
       <Avatar
         source={{
-          uri: vendor?.url,
+          uri: vendor?.logo,
         }}
         size="large"
         rounded
@@ -26,7 +34,7 @@ function VendorHeader({vendor}: {vendor: Vendor}) {
                 color: themeColors.white,
                 textTransform: 'capitalize',
               }}>
-              {vendor?.rating || 0}/5
+              {rating || 0}/5
             </Text>
             <Text style={{color: themeColors.white, fontWeight: 'bold'}}>
               Rating
@@ -34,23 +42,21 @@ function VendorHeader({vendor}: {vendor: Vendor}) {
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
             <Text style={{color: themeColors.white}}>
-              {vendor?.follower_count}
+              {vendor?.customerFollowers.length}
             </Text>
             <Text style={{color: themeColors.white, fontWeight: 'bold'}}>
               Followers
             </Text>
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
-            <Text style={{color: themeColors.white}}>
-              {vendor?.products?.length}
-            </Text>
+            <Text style={{color: themeColors.white}}>{productCount}</Text>
             <Text style={{color: themeColors.white, fontWeight: 'bold'}}>
               Products
             </Text>
           </View>
         </View>
         <ListItem.Subtitle style={{color: themeColors.white, fontSize: 13}}>
-          {vendor?.biography.slice(0, 150)}
+          {vendor?.description.slice(0, 150)}
         </ListItem.Subtitle>
       </ListItem.Content>
     </ListItem>

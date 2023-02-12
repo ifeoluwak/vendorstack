@@ -6,6 +6,7 @@ import {ListItem, Avatar} from '@rneui/themed';
 import {themeColors} from '../../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
 import {Dispatch, RootState} from '../../../redux/store';
+import moment from 'moment';
 
 function BusinessOrdersScreen({navigation}) {
   const dispatch = useDispatch<Dispatch>();
@@ -54,7 +55,7 @@ function BusinessOrdersScreen({navigation}) {
               activeScale={0.95}
               onPress={() =>
                 navigation.navigate('BusinessOrderDetail', {
-                  id: item.id,
+                  id: item._id,
                 })
               }
               containerStyle={{
@@ -65,7 +66,7 @@ function BusinessOrdersScreen({navigation}) {
               <ListItem.Content>
                 <ListItem.Title
                   style={{color: themeColors.white, fontWeight: 'bold'}}>
-                  Order #{item.id} - {item?.value}
+                  {item?.totalAmount} (#{item.products.length} Items)
                 </ListItem.Title>
                 <ListItem.Subtitle
                   numberOfLines={1}
@@ -73,11 +74,11 @@ function BusinessOrdersScreen({navigation}) {
                     color: themeColors.white,
                     textTransform: 'capitalize',
                   }}>
-                  {item.order_items?.map(i => i?.product?.name).join(', ')}
+                  {moment(item.created_at).format('DD MMM, YYYY')}
                 </ListItem.Subtitle>
-                <View style={{paddingTop: 5}}>
+                {/* <View style={{paddingTop: 5}}>
                   <FlatList
-                    data={item.order_items}
+                    data={item.products}
                     renderItem={({item: order}) => {
                       return (
                         <Avatar
@@ -91,13 +92,19 @@ function BusinessOrdersScreen({navigation}) {
                     ItemSeparatorComponent={() => <View style={{width: 5}} />}
                     style={{flexGrow: 0}}
                   />
-                </View>
+                </View> */}
               </ListItem.Content>
               <ListItem.Chevron color={themeColors.white} />
             </ListItem>
           )}
           ItemSeparatorComponent={() => <View style={{height: 10}} />}
-          contentContainerStyle={{paddingTop: 10, flexGrow: 1, width: '100%'}}
+          contentContainerStyle={{
+            paddingTop: 10,
+            flexGrow: 1,
+            width: '100%',
+            paddingBottom: 100,
+          }}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </View>

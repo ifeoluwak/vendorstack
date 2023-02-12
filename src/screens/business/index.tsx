@@ -12,7 +12,7 @@ import {logout} from '../../helpers';
 
 function BusinessScreen({navigation}) {
   const {token} = useSelector((root: RootState) => root.authModel);
-  const {profile} = useSelector((root: RootState) => root.userModel);
+  const {user} = useSelector((root: RootState) => root.userModel);
 
   const menus = [
     {
@@ -20,8 +20,8 @@ function BusinessScreen({navigation}) {
       icon: 'shopping-bag',
       nav: () =>
         navigation.navigate('Vendor', {
-          id: profile?.user?.business?.id,
-          title: profile?.user?.business?.name,
+          id: user?.businesses?.[0]?._id,
+          title: user?.businesses?.[0]?.name,
         }),
     },
     {
@@ -53,14 +53,14 @@ function BusinessScreen({navigation}) {
 
   React.useEffect(() => {
     navigation.setOptions({
-      headerTitle: profile?.user?.business?.name,
+      headerTitle: user?.businesses?.[0]?.name,
       headerTintColor: themeColors.white,
       headerStyle: {
         backgroundColor: themeColors.mazarine,
       },
       headerShadowVisible: false,
     });
-  }, [navigation, profile]);
+  }, [navigation, user]);
 
   return (
     <View style={styles.container}>

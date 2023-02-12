@@ -27,32 +27,44 @@ export type Address = {
 };
 
 export type Order = {
-  id: string;
+  _id: string;
   business: Vendor;
-  order_items: OrderItem[];
-  value: string;
-  is_paid: boolean;
-  delivery_agent: string;
-  delivery_date: string;
-  delivery_cost: string;
-  delivery_address: Address;
-  delivery_status: OrderStatus;
+  // transaction: OrderItem[];
+  status: OrderStatus;
   created_at: String;
+  totalAmount: String;
+  products: OrderItem[];
+  vendor: User;
+  customer: User;
+  transaction: Transaction;
 };
 
-export type OrderStatus = {
-  id: string;
-  name: string;
-};
+export enum OrderStatus {
+  PENDING,
+  RECEIVED,
+  REJECTED,
+}
 
 export type OrderItem = {
-  business: Vendor | string;
-  created_at: string;
-  id: string;
-  order: string;
-  price: string;
-  product: Product | number;
-  qty: number;
+  _id: string;
+  unitPrice: number;
+  totalPrice: number;
+  quantity: number;
+  product: Product;
+};
+
+export type Transaction = {
+  _id: string;
+  totalAmount: number;
+  convenienceFee: number;
+  totalPayableAmount: number;
+  referenceId: string;
+  status: 'PENDING';
+  type: 'ORDER_PAYMENT';
+  level: 'FREE_LEVEL';
+  orders: string[];
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type WithdrawRequest = {
@@ -70,11 +82,33 @@ export type Wallet = {
   withdraws: WithdrawRequest[];
 };
 
+export type BankAccount = {
+  _id: string;
+  bankName: string;
+  bankCode: string;
+  bankAddress: string;
+  beneficiaryName: string;
+  beneficiaryAccountNo: string;
+  swiftCodeOrBic: string;
+  routingOrSortNo: string;
+  userId?: string;
+};
+
 export type Review = {
-  id: number;
-  review: string;
+  _id: number;
+  comment: string;
   rating: number;
-  user: User;
+  customer: User;
+};
+
+export type ReviewPayload = {
+  businessId: string;
+  vendorId: string;
+  comment: string;
+  rating: number;
+  customerId?: string;
+  userId?: string;
+  id?: string;
 };
 
 export type Newsletter = {
@@ -91,5 +125,3 @@ export type Subscription = {
   newsletter: Newsletter;
   created_at: string;
 };
-
-
