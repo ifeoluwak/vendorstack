@@ -1,4 +1,6 @@
+import moment from 'moment';
 import {Platform} from 'react-native';
+
 import {store} from '../redux/store';
 import {Cart} from './../types/cart';
 
@@ -73,3 +75,6 @@ export const logout = () => {
     total_withdrawn: 0,
   });
 };
+
+export const today = moment();
+export const yesterday = today.subtract(1, 'day');

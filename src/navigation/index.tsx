@@ -33,6 +33,8 @@ import BusinessWalletScreen from '../screens/business/wallet';
 import AddReviewScreen from '../screens/vendor/addReview';
 import VendorContactScreen from '../screens/vendor/contact';
 import BusinessCreateScreen from '../screens/business/create';
+import BankAccountScreen from '../screens/business/bank';
+import AddBankAccountScreen from '../screens/business/bank/addBank';
 
 type RootStackParamList = {
   Home: undefined;
@@ -53,6 +55,8 @@ type RootStackParamList = {
   BusinessOrders: undefined;
   BusinessProducts: undefined;
   BusinessAddProduct: undefined;
+  BusinessBankAccount: undefined;
+  BusinessAddBankAccount: undefined;
   BusinessOrderDetail: {order: Order};
   BusinessProductDetail: {product: Product};
   BusinessCustomerDetail: {customer: Customer};
@@ -143,6 +147,16 @@ export default function RootNavigation() {
       <RootStack.Screen
         name="BusinessCustomerDetail"
         component={CustomerDetailScreen}
+      />
+      <RootStack.Screen
+        name="BusinessBankAccount"
+        options={{title: 'Bank Account'}}
+        component={BankAccountScreen}
+      />
+      <RootStack.Screen
+        name="BusinessAddBankAccount"
+        options={{title: 'Add Bank Account'}}
+        component={AddBankAccountScreen}
       />
       <RootStack.Screen name="Address" component={AddressScreen} />
       <RootStack.Screen name="AddAddress" component={AddAddressScreen} />

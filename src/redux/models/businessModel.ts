@@ -59,6 +59,7 @@ const businessModel = createModel<RootModel>()({
         } = state.userModel;
         const businessId = businesses[0]._id;
         await BusinessApi.setBusinessTakingOrders(businessId);
+        // console.log('setBusinessTakingOrders', data);
         dispatch.userModel.getUserProfile();
         return true;
       } catch ({response}) {}
@@ -92,19 +93,30 @@ const businessModel = createModel<RootModel>()({
         return true;
       } catch ({response}) {}
     },
-    async getBusinessOrders(_, state) {
+    async getBusinessOrders(
+      payload: {dateRange: string; selectedStatus: string},
+      state,
+    ) {
       try {
         const {
           user: {businesses},
         } = state.userModel;
         const businessId = businesses[0]._id;
-        const {data} = await BusinessApi.getBusinessOrders(businessId);
-        console.log('getBusinessOrders', JSON.stringify(data.results[0]));
+        const {dateRange, selectedStatus} = payload;
+        const {data} = await BusinessApi.getBusinessOrders(
+          businessId,
+          dateRange,
+          selectedStatus,
+        );
         dispatch.businessModel.setState({orders: data.results});
       } catch ({response}) {}
     },
-    async getBusinessCustomers(businessId: string) {
+    async getBusinessCustomers(_, state) {
       try {
+        const {
+          user: {businesses},
+        } = state.userModel;
+        const businessId = businesses[0]._id;
         const {data} = await BusinessApi.getBusinessCustomers(businessId);
         console.log('getBusinessCustomers', data);
         // dispatch.businessModel.setState({customers: data});

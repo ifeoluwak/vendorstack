@@ -13,7 +13,7 @@ export default {
   setBusinessActive: (businessId: string) =>
     ApiHandler.put(`/businesses/${businessId}/active`, null, {}),
   setBusinessTakingOrders: (businessId: string) =>
-    ApiHandler.put(`/businesses/${businessId}/taking-order`, null, {}),
+    ApiHandler.put(`/businesses/${businessId}/taking-order`, {}, {}),
   acceptOrder: (data: {
     orderId: string;
     customerId: string;
@@ -26,10 +26,12 @@ export default {
     ApiHandler.get(`/businesses/${businessId}/customers`, null, {}),
   getBusinessOrders: (
     businessId: string,
+    dateRange: string,
+    selectedStatus: string,
     limit = 30,
   ): Promise<AxiosResponse<{results: Order[]}>> =>
     ApiHandler.get(
-      `/orders?orderByBusinessId=${businessId}&limit=${limit}`,
+      `/orders?orderByBusinessId=${businessId}&limit=${limit}&orderDateRange=${dateRange}&OrderStatus=${selectedStatus}`,
       null,
       {},
     ),

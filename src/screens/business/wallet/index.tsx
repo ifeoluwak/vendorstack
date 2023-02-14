@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import {ListItem, Button, Icon, CheckBox, Avatar, Divider} from '@rneui/themed';
+import {ListItem, Icon, Divider} from '@rneui/themed';
 
 import {themeColors} from '../../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,19 +16,21 @@ import TouchableScale from 'react-native-touchable-scale';
 import moment from 'moment';
 import {Naira} from '../../../constants/general';
 import HomeSectionHeader from '../../../components/HomeSectionHeader';
+import {WithdrawStatus} from '../../../types/general';
 
 function BusinessWalletScreen({navigation, route}) {
   const loading = useSelector(
-    (root: RootState) => root.loading.effects.businessModel.getBusinessWallet,
+    (root: RootState) => root.loading.effects.walletModel.getWithdrawHistory,
   );
-  const {total_revenue, total_withdrawn, curr_balance, withdraws} = useSelector(
-    (root: RootState) => root.businessModel,
-  );
+  const {user} = useSelector((root: RootState) => root.userModel);
+  const {history} = useSelector((root: RootState) => root.walletModel);
+
+  const wallet = user?.wallet;
 
   const dispatch = useDispatch<Dispatch>();
 
   const onRefresh = () => {
-    dispatch.businessModel.getBusinessWallet();
+    dispatch.walletModel.getWithdrawHistory();
   };
 
   React.useEffect(() => {
@@ -59,7 +61,7 @@ function BusinessWalletScreen({navigation, route}) {
             <RefreshControl refreshing={false} onRefresh={onRefresh} />
           }
           showsVerticalScrollIndicator={false}
-          data={withdraws}
+          data={history}
           renderItem={({item}) => (
             <ListItem
               Component={TouchableScale}
@@ -68,10 +70,14 @@ function BusinessWalletScreen({navigation, route}) {
               activeScale={0.95}
               containerStyle={styles.listContainer}>
               <Icon
-                name={item.fulfilled ? 'check-circle' : 'alert-octagon'}
+                name={
+                  item.status === WithdrawStatus.SUCCESS
+                    ? 'check-circle'
+                    : 'alert-octagon'
+                }
                 type="feather"
                 color={
-                  item.fulfilled
+                  item.status === WithdrawStatus.SUCCESS
                     ? themeColors.white
                     : themeColors.harley_davidson
                 }
@@ -81,20 +87,24 @@ function BusinessWalletScreen({navigation, route}) {
                   {Naira} {item.amount}
                 </ListItem.Title>
                 <ListItem.Subtitle style={styles.listSubTitle}>
-                  {moment(item.created_at).format('DD, MMM YY')}
+                  {moment(item.createdAt).format('DD, MMM YY')}
                 </ListItem.Subtitle>
                 <ListItem.Subtitle style={styles.listSubTitle}>
-                  {item.status_message}
+                  {item.description}
                 </ListItem.Subtitle>
               </ListItem.Content>
             </ListItem>
           )}
-          contentContainerStyle={{paddingTop: 10, flexGrow: 1}}
+          contentContainerStyle={{
+            paddingTop: 10,
+            flexGrow: 1,
+            paddingBottom: 100,
+          }}
           ListHeaderComponent={
             <View>
               <View style={styles.currBalanceView}>
                 <Text style={styles.currBalanceTitle}>
-                  {Naira} {curr_balance}
+                  {Naira} {wallet?.currentBalance}
                 </Text>
                 <Divider />
                 <Text style={{fontSize: 14, color: themeColors.pico}}>
@@ -104,16 +114,16 @@ function BusinessWalletScreen({navigation, route}) {
               <View style={styles.balanceRow}>
                 <View style={styles.subBalanceView}>
                   <Text style={styles.subBalanceTitle}>
-                    {Naira} {total_withdrawn}
+                    {Naira} {wallet?.pendingBalance}
                   </Text>
                   <Divider />
                   <Text style={{color: themeColors.white}}>
-                    Total Withdrawn
+                    Pending Balance
                   </Text>
                 </View>
                 <View style={styles.subBalanceView}>
                   <Text style={styles.subBalanceTitle}>
-                    {Naira} {total_revenue}
+                    {Naira} {wallet?.allTimeBalance}
                   </Text>
                   <Divider />
                   <Text style={{color: themeColors.white}}>Total Revenue</Text>

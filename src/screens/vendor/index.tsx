@@ -10,7 +10,6 @@ import CartCountButton from '../../components/CartCountButton';
 import {Product} from '../../types/product';
 import {useDispatch, useSelector} from 'react-redux';
 import {Dispatch, RootState} from '../../redux/store';
-import {getOrdersFromVendor, getVendorInFollows} from '../../helpers';
 import {styles} from './style';
 import ToggleButtonBordered from '../../components/ToggleButton/ToggleButtonBordered';
 import {mvs} from 'react-native-size-matters';
@@ -45,11 +44,6 @@ function VendorScreen({navigation, route}) {
 
   const {token} = useSelector((root: RootState) => root.authModel);
 
-  // const followLoading = useSelector(
-  //   (root: RootState) =>
-  //     root.loading.effects.userModel.followVendor ||
-  //     root.loading.effects.userModel.unfollowVendor,
-  // );
   const {cart} = useSelector((root: RootState) => root.cartModel);
   const {products, vendors, reviews} = useSelector(
     (root: RootState) => root.vendorModel,
@@ -64,8 +58,6 @@ function VendorScreen({navigation, route}) {
     return reviews ? reviews[vendorId] : [];
   }, [reviews, vendorId]);
 
-  // const followed = getVendorInFollows(vendorId);
-  // const orders = getOrdersFromVendor(vendorId);
 
   useEffect(() => {
     if (vendorId) {

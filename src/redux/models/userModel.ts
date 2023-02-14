@@ -11,6 +11,7 @@ import {
 import {createModel} from '@rematch/core';
 import {RootModel} from '.';
 import {UserApi} from '../../services/apis';
+import {logout} from '../../helpers';
 
 type UserProp = {
   userVendors: UserFollows[] | [];
@@ -72,7 +73,11 @@ const userModel = createModel<RootModel>()({
       try {
         const {data} = await UserApi.getUserProfile();
         console.log('getUserProfile', data);
-        dispatch.userModel.setState({user: data});
+        if (data) {
+          dispatch.userModel.setState({user: data});
+        } else {
+          logout();
+        }
       } catch ({response}) {}
     },
     async updateUserProfile(

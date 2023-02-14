@@ -1,11 +1,11 @@
-import {BankAccount, Order} from './../../types/general';
+import {BankAccount, WithdrawHistory} from '../../types/general';
 import {createModel} from '@rematch/core';
 import {RootModel} from '.';
 import {WalletApi} from '../../services/apis';
 
 type WalletProp = {
   bankAccount: BankAccount | null;
-  history: Order[];
+  history: WithdrawHistory[];
 };
 
 const walletModel = createModel<RootModel>()({
@@ -26,9 +26,8 @@ const walletModel = createModel<RootModel>()({
       const {user} = state.userModel;
       try {
         payload.userId = user?._id;
-        const {data} = await WalletApi.createBankAccount(payload);
-        // await dispatch.userModel.getUserProfile();
-        console.log('createBankAccount', data);
+        await WalletApi.createBankAccount(payload);
+        dispatch.walletModel.getBankAccount();
         return true;
       } catch ({response}) {}
     },
@@ -36,14 +35,14 @@ const walletModel = createModel<RootModel>()({
       const {user} = state.userModel;
       try {
         await WalletApi.updateBankAccount(payload, user?._id!);
-        // dispatch.userModel.getUserProfile();
+        dispatch.walletModel.getBankAccount();
         return true;
       } catch ({response}) {}
     },
     async deleteBankAccount(paymentAcctId: string) {
       try {
         await WalletApi.deleteBankAccount(paymentAcctId);
-        // dispatch.userModel.getUserProfile();
+        dispatch.walletModel.getBankAccount();
         return true;
       } catch ({response}) {}
     },
@@ -51,8 +50,7 @@ const walletModel = createModel<RootModel>()({
       const {user} = state.userModel;
       try {
         const {data} = await WalletApi.getBankAccount(user?._id!);
-        // dispatch.userModel.getUserProfile();
-        console.log('getBankAccount', data);
+        dispatch.walletModel.setState({bankAccount: data});
       } catch ({response}) {}
     },
     async withdrawMoney(
@@ -74,8 +72,7 @@ const walletModel = createModel<RootModel>()({
       const {user} = state.userModel;
       try {
         const {data} = await WalletApi.getWithdrawHistory(user?._id!);
-        // dispatch.userModel.getUserProfile();
-        console.log('getWithdrawHistory', data);
+        dispatch.walletModel.setState({history: data.results});
       } catch ({response}) {}
     },
   }),

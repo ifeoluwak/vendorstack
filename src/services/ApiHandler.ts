@@ -20,7 +20,7 @@ async function handleRequest(req: any) {
   if (token) {
     // req.headers['Authorization'] = `Token ${token}`;
     req.headers['Authorization'] = `Bearer ${token}`;
-    // console.log(req);
+    console.log(req.url);
     return req;
   }
   return req;

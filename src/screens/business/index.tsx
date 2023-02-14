@@ -1,66 +1,99 @@
 /* eslint-disable react-native/no-inline-styles */
-import * as React from 'react';
-import {View} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {ActivityIndicator, View} from 'react-native';
 import TouchableScale from 'react-native-touchable-scale';
-import {ListItem, Icon} from '@rneui/themed';
+import {ListItem, Icon, Switch} from '@rneui/themed';
 
 import {themeColors} from '../../constants/color';
 import {styles} from './style';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/store';
+import {useDispatch, useSelector} from 'react-redux';
+import {Dispatch, RootState} from '../../redux/store';
 import {logout} from '../../helpers';
 
 function BusinessScreen({navigation}) {
-  const {token} = useSelector((root: RootState) => root.authModel);
+  const [takingOrders, setTakingOrders] = useState(true);
+
+  const handleTakingOrder = () => {
+    setTakingOrders(!takingOrders);
+    dispatch.businessModel.setBusinessTakingOrders();
+  };
+
+  const loading = useSelector(
+    (root: RootState) =>
+      root.loading.effects.businessModel.setBusinessTakingOrders,
+  );
   const {user} = useSelector((root: RootState) => root.userModel);
 
-  const menus = [
-    {
-      label: 'Storefront',
-      icon: 'shopping-bag',
-      nav: () =>
-        navigation.navigate('Vendor', {
-          id: user?.businesses?.[0]?._id,
-          title: user?.businesses?.[0]?.name,
-        }),
-    },
-    {
-      label: 'Profile',
-      icon: 'user',
-      nav: () => navigation.navigate('BusinessProfile'),
-    },
-    {
-      label: 'Wallet',
-      icon: 'credit-card',
-      nav: () => navigation.navigate('BusinessWallet'),
-    },
-    {
-      label: 'Orders',
-      icon: 'shopping-cart',
-      nav: () => navigation.navigate('BusinessOrders'),
-    },
-    {
-      label: 'Products',
-      icon: 'layers',
-      nav: () => navigation.navigate('BusinessProducts'),
-    },
-    {
-      label: 'Customers',
-      icon: 'users',
-      nav: () => navigation.navigate('BusinessCustomers'),
-    },
-  ];
+  const business = user?.businesses?.[0];
+
+  useEffect(() => {
+    if (business) {
+      setTakingOrders(business.takingOrder);
+    }
+  }, [business]);
+
+  const dispatch = useDispatch<Dispatch>();
+
+  const menus = useMemo(
+    () => [
+      {
+        label: 'Storefront',
+        icon: 'shopping-bag',
+        nav: () =>
+          navigation.navigate('Vendor', {
+            id: business?._id,
+            title: business?.name,
+          }),
+      },
+      {
+        label: 'Business Profile',
+        icon: 'book-open',
+        nav: () => navigation.navigate('BusinessProfile'),
+      },
+      {
+        label: 'Wallet',
+        icon: 'credit-card',
+        nav: () => navigation.navigate('BusinessWallet'),
+      },
+      {
+        label: 'Bank account',
+        icon: 'key',
+        nav: () => navigation.navigate('BusinessBankAccount'),
+      },
+      {
+        label: 'Orders',
+        icon: 'shopping-cart',
+        nav: () => navigation.navigate('BusinessOrders'),
+      },
+      {
+        label: 'Products',
+        icon: 'layers',
+        nav: () => navigation.navigate('BusinessProducts'),
+      },
+      {
+        label: 'Customers',
+        icon: 'users',
+        nav: () => navigation.navigate('BusinessCustomers'),
+      },
+      // {
+      //   label: 'Turn off taking orders',
+      //   icon: 'toggle-left',
+      //   nav: () => dispatch.businessModel.setBusinessTakingOrders(),
+      // },
+    ],
+    [navigation, business],
+  );
 
   React.useEffect(() => {
     navigation.setOptions({
-      headerTitle: user?.businesses?.[0]?.name,
+      headerTitle: business?.name,
       headerTintColor: themeColors.white,
       headerStyle: {
         backgroundColor: themeColors.mazarine,
       },
       headerShadowVisible: false,
     });
-  }, [navigation, user]);
+  }, [navigation, business]);
 
   return (
     <View style={styles.container}>
@@ -92,15 +125,22 @@ function BusinessScreen({navigation}) {
         activeScale={0.95}
         onPress={logout}
         containerStyle={styles.listContainer}>
-        <Icon
-          name="power"
-          type="feather"
-          color={themeColors.nasturcian}
-          size={18}
-        />
+        {loading ? (
+          <ActivityIndicator color={themeColors.white} />
+        ) : (
+          <Icon
+            name="toggle-left"
+            type="feather"
+            color={themeColors.white}
+            size={18}
+          />
+        )}
         <ListItem.Content>
-          <ListItem.Title style={styles.logout}>Log Out</ListItem.Title>
+          <ListItem.Title style={styles.listTitle}>
+            Taking orders
+          </ListItem.Title>
         </ListItem.Content>
+        <Switch value={takingOrders} onValueChange={handleTakingOrder} />
       </ListItem>
     </View>
   );

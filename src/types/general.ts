@@ -92,6 +92,9 @@ export type BankAccount = {
   swiftCodeOrBic: string;
   routingOrSortNo: string;
   userId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  user?: User;
 };
 
 export type Review = {
@@ -125,3 +128,45 @@ export type Subscription = {
   newsletter: Newsletter;
   created_at: string;
 };
+
+export type Bank = {
+  active: boolean;
+  code: string;
+  country: string;
+  createdAt: string;
+  currency: string;
+  gateway: '';
+  id: number;
+  is_deleted: boolean;
+  longcode: string;
+  name: string;
+  pay_with_bank: boolean;
+  slug: string;
+  type: string;
+  updatedAt: string;
+};
+
+export type WithdrawHistory = {
+  _id: string;
+  amount: number;
+  createdAt: string;
+  description: string;
+  reason: WithdrawReason;
+  referenceId: string;
+  status: WithdrawStatus;
+  transferCode: string;
+  updatedAt: string;
+};
+
+export enum WithdrawStatus {
+  SUCCESS = 'SUCCESS',
+  PENDING = 'PENDING',
+  REVERSED = 'REVERSED',
+  FAILED = 'FAILED',
+}
+
+export enum WithdrawReason {
+  FUND_WITHDRAWAL = 'FUND_WITHDRAWAL',
+  FUND_TRANSFER = 'FUND_TRANSFER',
+  FUND_REFUND = 'FUND_REFUND',
+}

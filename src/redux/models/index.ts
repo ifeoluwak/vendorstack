@@ -5,7 +5,7 @@ import generalModel from './generalModel';
 import vendorModel from './vendorModel';
 import userModel from './userModel';
 import businessModel from './businessModel';
-import walletModel from './wallet';
+import walletModel from './walletModel';
 
 export interface RootModel extends Models<RootModel> {
   cartModel: typeof cartModel;

@@ -10,6 +10,7 @@ export type User = {
   businesses?: Vendor[];
   addresses: Address[];
   businessFollowings: string[];
+  wallet: UserWallet;
 };
 
 export type Profile = {
@@ -29,4 +30,14 @@ export type Customer = {
 export type UserFollows = {
   id: string;
   business: Vendor;
+};
+
+export type UserWallet = {
+  allPayment: number;
+  allTimeBalance: number;
+  bookBalance: number;
+  currentBalance: number;
+  otherPayment: number;
+  pendingBalance: number;
+  withdrawalPayment: number;
 };
