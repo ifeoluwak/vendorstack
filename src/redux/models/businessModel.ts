@@ -75,21 +75,18 @@ const businessModel = createModel<RootModel>()({
         return true;
       } catch ({response}) {}
     },
-    async acceptOrder(
+    async updateOrderStatus(
       payload: {
         orderId: string;
         customerId: string;
+        status: 'ACCEPTED' | 'SHIPPED' | 'REJECTED' | 'RETURN_CONFIRMED';
       },
       state,
     ) {
       try {
         const {user} = state.userModel;
-        await BusinessApi.acceptOrder({
-          ...payload,
-          status: 'PENDING',
-          userId: user?._id!,
-        });
-        // dispatch.userModel.getOrder(orderId);
+        await BusinessApi.updateOrderStatus({...payload, userId: user?._id!});
+        dispatch.generalModel.getOrder(payload.orderId);
         return true;
       } catch ({response}) {}
     },
@@ -131,12 +128,6 @@ const businessModel = createModel<RootModel>()({
           curr_balance: data.curr_balance,
           total_withdrawn: data.total_withdrawn,
         });
-      } catch ({response}) {}
-    },
-    async updateOrderStatus(payload: {id: string; status: string}) {
-      try {
-        await BusinessApi.updateOrderStatus(payload);
-        dispatch.generalModel.getOrder(payload.id);
       } catch ({response}) {}
     },
     async getBusinessProducts(_, state) {

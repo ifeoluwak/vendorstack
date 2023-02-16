@@ -58,7 +58,6 @@ function VendorScreen({navigation, route}) {
     return reviews ? reviews[vendorId] : [];
   }, [reviews, vendorId]);
 
-
   useEffect(() => {
     if (vendorId) {
       Promise.all([
@@ -105,7 +104,7 @@ function VendorScreen({navigation, route}) {
 
   const handleBuyNow = () => {
     modalizeRef.current?.close();
-    if (vendorCart?.[product?.id!]?.count || 0) {
+    if (vendorCart?.[product?._id!]?.count || 0) {
       navigation.navigate('Basket', {id: vendorId});
     } else {
       dispatch.cartModel.addToCart({vendorId, product});

@@ -14,12 +14,12 @@ export default {
     ApiHandler.put(`/businesses/${businessId}/active`, null, {}),
   setBusinessTakingOrders: (businessId: string) =>
     ApiHandler.put(`/businesses/${businessId}/taking-order`, {}, {}),
-  acceptOrder: (data: {
+  updateOrderStatus: (data: {
     orderId: string;
     customerId: string;
-    status: 'PENDING';
+    status: 'ACCEPTED' | 'SHIPPED' | 'REJECTED' | 'RETURN_CONFIRMED';
     userId: string;
-  }) => ApiHandler.put(`/orders/${data.orderId}/status`, null, {}),
+  }) => ApiHandler.put(`/orders/${data.orderId}/status`, data, {}),
   getBusinessCustomers: (
     businessId: string,
   ): Promise<AxiosResponse<{results: Customer[]}>> =>

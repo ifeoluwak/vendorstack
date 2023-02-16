@@ -80,6 +80,21 @@ const userModel = createModel<RootModel>()({
         }
       } catch ({response}) {}
     },
+    async updateOrderStatus(
+      payload: {
+        orderId: string;
+        customerId: string;
+        status: 'RECEIVED' | 'RETURNED';
+      },
+      state,
+    ) {
+      try {
+        const {user} = state.userModel;
+        await UserApi.userUpdateOrderStatus({...payload, userId: user?._id!});
+        dispatch.generalModel.getOrder(payload.orderId);
+        return true;
+      } catch ({response}) {}
+    },
     async updateUserProfile(
       payload: {
         firstName: string;
@@ -107,11 +122,26 @@ const userModel = createModel<RootModel>()({
         dispatch.userModel.setState({userVendors: data});
       } catch ({response}) {}
     },
-    async getUserOrders(_, state) {
-      const {user} = state.userModel;
+    // async getUserOrders(_, state) {
+    //   const {user} = state.userModel;
+    //   try {
+    //     const {data} = await UserApi.getUserOrders(user?._id!);
+    //     console.log('getUserOrders', data);
+    //     dispatch.userModel.setState({userOrders: data.results});
+    //   } catch ({response}) {}
+    // },
+    async getUserOrders(
+      payload: {dateRange: string; selectedStatus: string},
+      state,
+    ) {
       try {
-        const {data} = await UserApi.getUserOrders(user?._id!);
-        console.log('getUserOrders', data);
+        const {user} = state.userModel;
+        const {dateRange, selectedStatus} = payload;
+        const {data} = await UserApi.getUserOrders(
+          user?._id!,
+          dateRange,
+          selectedStatus,
+        );
         dispatch.userModel.setState({userOrders: data.results});
       } catch ({response}) {}
     },

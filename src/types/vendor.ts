@@ -1,6 +1,5 @@
-import {Review} from './general';
-import {Product} from './product';
-import { User } from './user';
+import {Category} from './general';
+import {User} from './user';
 
 export type Vendor = {
   _id: string;
@@ -12,7 +11,7 @@ export type Vendor = {
   address: string;
   phone: string;
   description: string;
-  categories: string;
+  categories: Category[];
   logo: string;
   state: string;
   postalCode: string;
@@ -28,6 +27,11 @@ export type Vendor = {
   customers: [];
   orderNoticeInfo: string;
   vendor?: User;
+  rating: {
+    reviewCount: number;
+    reviewRating: number;
+    reviewRatingAvg: number;
+  };
 };
 
 export type TrendingVendor = {

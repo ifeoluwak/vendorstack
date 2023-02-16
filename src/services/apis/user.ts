@@ -1,5 +1,11 @@
 import {Profile, User, UserFollows} from './../../types/user';
-import {Address, AgeRange, Order, Review, ReviewPayload} from './../../types/general';
+import {
+  Address,
+  AgeRange,
+  Order,
+  Review,
+  ReviewPayload,
+} from './../../types/general';
 import {AxiosResponse} from 'axios';
 import ApiHandler from '../ApiHandler';
 
@@ -14,10 +20,12 @@ export default {
     ApiHandler.get('/api/get_user_vendors', null, {}),
   getUserOrders: (
     customerId: string,
+    dateRange: string,
+    selectedStatus: string,
     limit = 30,
   ): Promise<AxiosResponse<{results: Order[]}>> =>
     ApiHandler.get(
-      `/orders?orderByCustomerId=${customerId}&limit=${limit}`,
+      `/orders?orderByCustomerId=${customerId}&limit=${limit}&orderDateRange=${dateRange}&OrderStatus=${selectedStatus}`,
       null,
       {},
     ),
@@ -51,6 +59,12 @@ export default {
       {},
       {},
     ),
+  userUpdateOrderStatus: (data: {
+    orderId: string;
+    customerId: string;
+    status: 'RECEIVED' | 'RETURNED';
+    userId: string;
+  }) => ApiHandler.put(`/orders/${data.orderId}/status`, data, {}),
   subscribe_to_newsletter: (vendor_id: string) =>
     ApiHandler.post('/api/subscribe_to_newsletter', {vendor_id}, {}),
   unsubscribe_to_newsletter: (subscriber_id: number) =>

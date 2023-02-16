@@ -40,9 +40,13 @@ export type Order = {
 };
 
 export enum OrderStatus {
-  PENDING,
-  RECEIVED,
-  REJECTED,
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  SHIPPED = 'SHIPPED',
+  RECEIVED = 'RECEIVED',
+  REJECTED = 'REJECTED',
+  RETURNED = 'RETURNED',
+  RETURN_CONFIRMED = 'RETURN_CONFIRMED',
 }
 
 export type OrderItem = {

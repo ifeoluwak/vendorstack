@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, ListItem, Avatar, Text, Divider, Icon} from '@rneui/themed';
+import {ListItem, Avatar, Text} from '@rneui/themed';
 import {Vendor} from '../types/vendor';
 import {themeColors} from '../constants/color';
 import {View} from 'react-native';
@@ -34,7 +34,7 @@ function VendorHeader({
                 color: themeColors.white,
                 textTransform: 'capitalize',
               }}>
-              {rating || 0}/5
+              {vendor?.rating?.reviewRatingAvg || 0}/5
             </Text>
             <Text style={{color: themeColors.white, fontWeight: 'bold'}}>
               Rating

@@ -84,6 +84,8 @@ function BusinessScreen({navigation}) {
     [navigation, business],
   );
 
+  console.log('business', business);
+
   React.useEffect(() => {
     navigation.setOptions({
       headerTitle: business?.name,
