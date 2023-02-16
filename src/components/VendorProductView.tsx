@@ -33,7 +33,7 @@ function VendorProductView({
         <View style={styles.header}>
           <View style={{width: '70%'}}>
             <Text style={{fontWeight: 'bold', fontSize: 18}}>
-              {product?.name}
+              {product?.name.substring(0, 50)}
             </Text>
           </View>
           <View style={styles.amountView}>
@@ -49,7 +49,7 @@ function VendorProductView({
           </View>
         </View>
         <Divider style={{marginTop: 10, marginBottom: 20}} />
-        <Text>{product?.description}</Text>
+        <Text>{product?.description.substring(0, 150)}</Text>
       </View>
       <View style={{paddingHorizontal: 10, paddingTop: 30, width: '50%'}}>
         <View style={styles.cartBtnView}>

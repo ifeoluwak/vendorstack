@@ -75,7 +75,7 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   btnStyle: {
-    backgroundColor: themeColors.pico,
+    backgroundColor: themeColors.white,
     paddingVertical: 13,
   },
 });

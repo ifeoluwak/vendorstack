@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import {ListItem, Icon, Divider} from '@rneui/themed';
+import {ListItem, Icon, Divider, Button} from '@rneui/themed';
 
 import {themeColors} from '../../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
@@ -135,6 +135,16 @@ function BusinessWalletScreen({navigation, route}) {
             </View>
           }
         />
+
+        <View style={styles.btnView}>
+          <Button
+            title="Make a Withdrawal"
+            titleStyle={{fontWeight: 'bold', color: themeColors.mazarine}}
+            buttonStyle={styles.btnStyle}
+            radius={30}
+            onPress={() => navigation.navigate('BusinessWalletWithdrawals')}
+          />
+        </View>
       </View>
     </View>
   );
