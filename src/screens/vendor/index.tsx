@@ -49,7 +49,7 @@ function VendorScreen({navigation, route}) {
     (root: RootState) => root.vendorModel,
   );
 
-  const vendorCart = cart?.[vendorId] || {};
+  const vendorCart = cart || {};
   const vendor = vendors?.[vendorId];
   const vendorProducts = useMemo(() => {
     return products ? products[vendorId] : [];
@@ -167,7 +167,7 @@ function VendorScreen({navigation, route}) {
         <></>
       )}
 
-      <CartCountButton vendorId={vendorId} />
+      <CartCountButton />
 
       <Portal>
         <Modalize

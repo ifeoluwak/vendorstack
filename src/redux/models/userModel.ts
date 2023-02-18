@@ -2,8 +2,6 @@ import {Alert} from 'react-native';
 import {Profile, User, UserFollows} from './../../types/user';
 import {
   Address,
-  AgeRange,
-  Order,
   Review,
   ReviewPayload,
   Subscription,
@@ -12,11 +10,12 @@ import {createModel} from '@rematch/core';
 import {RootModel} from '.';
 import {UserApi} from '../../services/apis';
 import {logout} from '../../helpers';
+import {OrderTransaction} from '../../types/cart';
 
 type UserProp = {
   userVendors: UserFollows[] | [];
   addresses: Address[] | [];
-  userOrders: Order[] | [];
+  userOrders: OrderTransaction[] | [];
   defaultAddress: Address | null;
   profile: Profile | null;
   user: User | null;
@@ -87,7 +86,7 @@ const userModel = createModel<RootModel>()({
       payload: {
         orderId: string;
         customerId: string;
-        status: 'RECEIVED' | 'RETURNED';
+        status: 'RECEIVED' | 'RETURNED' | 'CANCELED';
       },
       state,
     ) {
@@ -125,22 +124,23 @@ const userModel = createModel<RootModel>()({
         dispatch.userModel.setState({userVendors: data});
       } catch ({response}) {}
     },
-    // async getUserOrders(_, state) {
-    //   const {user} = state.userModel;
-    //   try {
-    //     const {data} = await UserApi.getUserOrders(user?._id!);
-    //     console.log('getUserOrders', data);
-    //     dispatch.userModel.setState({userOrders: data.results});
-    //   } catch ({response}) {}
-    // },
-    async getUserOrders(
+    async getUserOrders(payload: {dateRange: string}, state) {
+      try {
+        const {user} = state.userModel;
+        const {dateRange} = payload;
+        const {data} = await UserApi.getUserOrders(user?._id!, dateRange);
+        // console.log('getUserOrders', data);
+        dispatch.userModel.setState({userOrders: data.results});
+      } catch ({response}) {}
+    },
+    async getUserOrdersOld(
       payload: {dateRange: string; selectedStatus: string},
       state,
     ) {
       try {
         const {user} = state.userModel;
         const {dateRange, selectedStatus} = payload;
-        const {data} = await UserApi.getUserOrders(
+        const {data} = await UserApi.getUserOrdersOld(
           user?._id!,
           dateRange,
           selectedStatus,

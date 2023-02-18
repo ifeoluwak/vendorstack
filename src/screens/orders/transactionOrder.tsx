@@ -1,60 +1,75 @@
 import * as React from 'react';
-import {View, ScrollView, ActivityIndicator} from 'react-native';
+import {View, ScrollView, ActivityIndicator, Alert} from 'react-native';
 import TouchableScale from 'react-native-touchable-scale';
 import {ListItem, Avatar, Text, Button} from '@rneui/themed';
+import {Paystack, paystackProps} from 'react-native-paystack-webview';
 
-import {themeColors} from '../../../constants/color';
+import {themeColors} from '../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
-import {Dispatch, RootState} from '../../../redux/store';
+import {Dispatch, RootState} from '../../redux/store';
 import moment from 'moment';
+import {s} from 'react-native-size-matters';
+import {TransactionStatus} from '../../types/general';
 import {styles} from './style';
-import {OrderStatus} from '../../../types/general';
+import {OrderTransaction} from '../../types/cart';
+import {Naira, paystack_key} from '../../constants/general';
 
-function BusinessOrderDetailScreen({navigation, route}) {
-  const orderId = route?.params?.id;
+function TransactionOrderDetailScreen({navigation, route}) {
+  const transactionId = route?.params?.id;
   const dispatch = useDispatch<Dispatch>();
 
+  const [transaction, setTransaction] =
+    React.useState<OrderTransaction | null>();
+
   const loading = useSelector(
-    (root: RootState) => root.loading.effects.generalModel.getOrder,
+    (root: RootState) => root.loading.effects.generalModel.getOrderTransaction,
   );
   const statusLoading = useSelector(
-    (root: RootState) => root.loading.effects.businessModel.updateOrderStatus,
+    (root: RootState) =>
+      root.loading.effects.generalModel.deleteOrderTransaction,
   );
-  const {orders} = useSelector((root: RootState) => root.generalModel);
 
-  const order = orders?.[orderId];
+  const {user} = useSelector((root: RootState) => root.userModel);
+
+  const paystackWebViewRef = React.useRef<paystackProps.PayStackRef>();
 
   React.useEffect(() => {
     navigation.setOptions({
-      headerTitle: `#${orderId}`,
+      headerTitle: 'Details',
       headerTintColor: themeColors.white,
       headerStyle: {
         backgroundColor: themeColors.mazarine,
       },
       headerShadowVisible: false,
     });
-  }, [navigation, orderId]);
+  }, [navigation, transactionId]);
 
   React.useEffect(() => {
-    if (orderId) {
-      dispatch.generalModel.getOrder(orderId);
+    if (transactionId) {
+      dispatch.generalModel
+        .getOrderTransaction(transactionId)
+        .then(t => setTransaction(t));
     }
-  }, [dispatch, orderId]);
+  }, [dispatch, transactionId]);
 
-  const handleOrderStatus = (
-    status: 'ACCEPTED' | 'SHIPPED' | 'REJECTED' | 'RETURN_CONFIRMED',
-  ) => {
-    dispatch.businessModel.updateOrderStatus({
-      orderId,
-      customerId: order.customer._id,
-      status,
-    });
+  const handlePayment = () => paystackWebViewRef.current.startTransaction();
+
+  const handlePaymentComplete = () => {
+    dispatch.generalModel.getOrderTransaction(transactionId);
+    Alert.alert(
+      'Payment Completed',
+      'Thank you. Your order has been sent to the vendor.',
+    );
   };
 
-  const acceptOrder = () => handleOrderStatus('ACCEPTED');
-  const rejectOrder = () => handleOrderStatus('REJECTED');
-  const confirmOrderReturn = () => handleOrderStatus('RETURN_CONFIRMED');
-  const shipOrder = () => handleOrderStatus('SHIPPED');
+  const handleDelete = async () => {
+    const success = await dispatch.generalModel.deleteOrderTransaction(
+      transactionId,
+    );
+    if (success) {
+      navigation.goBack();
+    }
+  };
 
   return (
     <View
@@ -69,17 +84,12 @@ function BusinessOrderDetailScreen({navigation, route}) {
       ) : (
         <></>
       )}
-      {!order ? (
+      {!transaction ? (
         <></>
       ) : (
         <>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{paddingBottom: 100}}>
+          <ScrollView>
             <View style={{paddingTop: 15, width: '100%'}}>
-              <Text h4 style={{color: themeColors.white, paddingBottom: 10}}>
-                Delivery
-              </Text>
               <ListItem
                 Component={TouchableScale}
                 friction={90}
@@ -88,13 +98,12 @@ function BusinessOrderDetailScreen({navigation, route}) {
                 containerStyle={{
                   borderRadius: 10,
                   backgroundColor: themeColors.pico,
-                  maxHeight: 100,
                   width: '100%',
                 }}>
                 <ListItem.Content>
                   <ListItem.Title
                     style={{color: themeColors.white, fontWeight: 'bold'}}>
-                    {order?.status}
+                    {transaction.status}
                   </ListItem.Title>
                   <ListItem.Subtitle
                     numberOfLines={1}
@@ -103,7 +112,8 @@ function BusinessOrderDetailScreen({navigation, route}) {
                       textTransform: 'capitalize',
                       paddingTop: 10,
                     }}>
-                    {moment(order?.created_at).format('DD MMM, YYYY')}
+                    Date:{' '}
+                    {moment(transaction?.createdAt).format('DD, MMM YYYY')}
                   </ListItem.Subtitle>
                   <ListItem.Subtitle
                     numberOfLines={1}
@@ -112,7 +122,8 @@ function BusinessOrderDetailScreen({navigation, route}) {
                       textTransform: 'capitalize',
                       paddingTop: 10,
                     }}>
-                    {/* Status: {order.delivery_status?.name} */}
+                    Address:{' '}
+                    {transaction?.orders?.[0]?.deliveryAddress?.streetName}
                   </ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
@@ -120,12 +131,12 @@ function BusinessOrderDetailScreen({navigation, route}) {
 
             <View style={{paddingTop: 25, width: '100%'}}>
               <Text h4 style={{color: themeColors.white, paddingBottom: 10}}>
-                Products
+                Orders
               </Text>
-              {order?.products?.map(item => {
-                return (
+              {transaction.orders.map(item => {
+                return item.products.map(prod => (
                   <ListItem
-                    key={item._id}
+                    key={prod._id}
                     Component={TouchableScale}
                     friction={90}
                     tension={100}
@@ -136,53 +147,48 @@ function BusinessOrderDetailScreen({navigation, route}) {
                       maxHeight: 100,
                       width: '100%',
                       marginVertical: 5,
-                    }}>
+                    }}
+                    onPress={() =>
+                      navigation.navigate('OrderDetail', {
+                        id: item._id,
+                      })
+                    }>
                     <Avatar
                       source={{
-                        uri: item?.product.photo,
+                        uri: prod.product.photo,
                       }}
                     />
                     <ListItem.Content>
                       <ListItem.Title
-                        style={{color: themeColors.white, fontWeight: 'bold'}}>
-                        {item.product.name}
+                        style={{
+                          color: themeColors.white,
+                          fontWeight: 'bold',
+                          textTransform: 'capitalize',
+                        }}>
+                        {prod.product.name}
                       </ListItem.Title>
                       <ListItem.Subtitle
                         numberOfLines={1}
                         style={{
                           color: themeColors.white,
                           textTransform: 'capitalize',
+                          fontWeight: 'bold',
+                          paddingVertical: s(5),
                         }}>
-                        {item.totalPrice} - Qty ({item?.quantity})
+                        {Naira} {prod.totalPrice} - Qty ({prod.quantity})
+                      </ListItem.Subtitle>
+                      <ListItem.Subtitle
+                        style={{
+                          color: themeColors.white,
+                          textTransform: 'capitalize',
+                        }}>
+                        Vendor - {item.business.name}
                       </ListItem.Subtitle>
                     </ListItem.Content>
+                    <ListItem.Chevron color={themeColors.white} />
                   </ListItem>
-                );
+                ));
               })}
-            </View>
-
-            <View style={{paddingTop: 15, width: '100%'}}>
-              <Text h4 style={{color: themeColors.white, paddingBottom: 10}}>
-                Customer
-              </Text>
-              <ListItem
-                Component={TouchableScale}
-                friction={90}
-                tension={100}
-                activeScale={0.95}
-                containerStyle={{
-                  borderRadius: 10,
-                  backgroundColor: themeColors.pico,
-                  maxHeight: 100,
-                  width: '100%',
-                }}>
-                <ListItem.Content>
-                  <ListItem.Title
-                    style={{color: themeColors.white, fontWeight: 'bold'}}>
-                    {order?.customer?.firstName} {order?.customer?.lastName}
-                  </ListItem.Title>
-                </ListItem.Content>
-              </ListItem>
             </View>
 
             <View style={{paddingTop: 25, width: '100%'}}>
@@ -203,26 +209,24 @@ function BusinessOrderDetailScreen({navigation, route}) {
                 <ListItem.Content>
                   <ListItem.Title
                     style={{color: themeColors.white, fontWeight: 'bold'}}>
-                    Total Cost - {order.totalAmount}
+                    Total Cost - {Naira} {transaction.totalPayableAmount}
                   </ListItem.Title>
                 </ListItem.Content>
               </ListItem>
             </View>
           </ScrollView>
-
-          {order.status === OrderStatus.PENDING ? (
+          {transaction.status === TransactionStatus.PENDING ? (
             <View style={styles.btnView}>
               <Button
-                title="Accept Order"
+                title="Complete Payment"
                 titleStyle={{fontWeight: 'bold', color: themeColors.mazarine}}
                 buttonStyle={styles.btnStyle}
                 radius={30}
-                loading={statusLoading}
-                onPress={acceptOrder}
+                onPress={handlePayment}
               />
               <View style={{marginVertical: 7}} />
               <Button
-                title="Reject Order"
+                title="Cancel Order"
                 titleStyle={{fontWeight: 'bold'}}
                 buttonStyle={[
                   styles.btnStyle,
@@ -230,46 +234,26 @@ function BusinessOrderDetailScreen({navigation, route}) {
                 ]}
                 radius={30}
                 loading={statusLoading}
-                onPress={rejectOrder}
+                onPress={handleDelete}
               />
             </View>
           ) : (
             <></>
           )}
-
-          {order.status === OrderStatus.ACCEPTED ? (
-            <View style={styles.btnView}>
-              <Button
-                title="Ship Order"
-                titleStyle={{fontWeight: 'bold', color: themeColors.mazarine}}
-                buttonStyle={styles.btnStyle}
-                radius={30}
-                loading={statusLoading}
-                onPress={shipOrder}
-              />
-            </View>
-          ) : (
-            <></>
-          )}
-
-          {order.status === OrderStatus.REJECTED ? (
-            <View style={styles.btnView}>
-              <Button
-                title="Confirm Order Returned"
-                titleStyle={{fontWeight: 'bold', color: themeColors.mazarine}}
-                buttonStyle={styles.btnStyle}
-                radius={30}
-                loading={statusLoading}
-                onPress={confirmOrderReturn}
-              />
-            </View>
-          ) : (
-            <></>
-          )}
+          <Paystack
+            paystackKey={paystack_key}
+            billingEmail={user?.username}
+            billingName={`${user?.firstName} ${user?.lastName}`}
+            amount={`${transaction?.totalPayableAmount}`}
+            refNumber={transaction?.referenceId}
+            onCancel={() => {}}
+            onSuccess={handlePaymentComplete}
+            ref={paystackWebViewRef}
+          />
         </>
       )}
     </View>
   );
 }
 
-export default BusinessOrderDetailScreen;
+export default TransactionOrderDetailScreen;

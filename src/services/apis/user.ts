@@ -8,6 +8,7 @@ import {
 } from './../../types/general';
 import {AxiosResponse} from 'axios';
 import ApiHandler from '../ApiHandler';
+import { OrderTransaction } from '../../types/cart';
 
 export default {
   createAddress: (data: Partial<Address>, userID: string) =>
@@ -19,6 +20,16 @@ export default {
   getUserVendors: (): Promise<AxiosResponse<UserFollows[], any>> =>
     ApiHandler.get('/api/get_user_vendors', null, {}),
   getUserOrders: (
+    customerId: string,
+    dateRange: string,
+    limit = 30,
+  ): Promise<AxiosResponse<{results: OrderTransaction[]}>> =>
+    ApiHandler.get(
+      `/transactions?transactionByUserId=${customerId}&limit=${limit}&transactionDateRange=${dateRange}&transactionType=ORDER_PAYMENT`,
+      null,
+      {},
+    ),
+  getUserOrdersOld: (
     customerId: string,
     dateRange: string,
     selectedStatus: string,
@@ -62,7 +73,7 @@ export default {
   userUpdateOrderStatus: (data: {
     orderId: string;
     customerId: string;
-    status: 'RECEIVED' | 'RETURNED';
+    status: 'RECEIVED' | 'RETURNED' | 'CANCELED';
     userId: string;
   }) => ApiHandler.put(`/orders/${data.orderId}/status`, data, {}),
   subscribe_to_newsletter: (vendor_id: string) =>

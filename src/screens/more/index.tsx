@@ -35,6 +35,11 @@ function MoreScreen({navigation}) {
       icon: 'map-pin',
       nav: () => navigation.navigate('Address'),
     },
+    {
+      label: 'Cart',
+      icon: 'shopping-bag',
+      nav: () => navigation.navigate('Basket'),
+    },
     ...(!user?.businesses?.length
       ? [
           {

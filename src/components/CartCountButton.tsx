@@ -7,17 +7,11 @@ import {themeColors} from '../constants/color';
 import {getCartTotalQty} from '../helpers';
 import {RootState} from '../redux/store';
 
-type CartCountButtonProps = {
-  vendorId: string;
-};
-
-const CartCountButton = (props: CartCountButtonProps) => {
+const CartCountButton = () => {
   const navigation = useNavigation();
   const {cart} = useSelector((root: RootState) => root.cartModel);
 
-  const vendorCart = cart?.[props.vendorId];
-
-  const total = getCartTotalQty(vendorCart || {});
+  const total = getCartTotalQty(cart || {});
 
   if (!total) {
     return <></>;
@@ -33,7 +27,7 @@ const CartCountButton = (props: CartCountButtonProps) => {
       }}
       color={themeColors.pico}
       placement="right"
-      onPress={() => navigation.navigate('Basket', {id: props.vendorId})}
+      onPress={() => navigation.navigate('Basket')}
       title={`${total}`}
     />
   );

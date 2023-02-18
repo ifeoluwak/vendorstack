@@ -82,7 +82,7 @@ const walletModel = createModel<RootModel>()({
           dateRange,
           selectedStatus,
         );
-        console.log('getWithdrawHistory', data);
+        console.log('getWithdrawHistory', data.results.length);
         dispatch.walletModel.setState({history: data.results});
       } catch ({response}) {
         console.log('error', response);

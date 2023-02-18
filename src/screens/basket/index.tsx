@@ -11,9 +11,12 @@ import {getCartItems, getCartTotalPrice} from '../../helpers';
 import {styles} from './style';
 import TouchableScale from 'react-native-touchable-scale';
 import {s} from 'react-native-size-matters';
+import {OrderTransaction} from '../../types/cart';
+import {Naira, paystack_key} from '../../constants/general';
 
 function BasketScreen({navigation, route}) {
-  const vendorId = route?.params.id;
+  const [orderCreated, setOrderCreated] =
+    React.useState<OrderTransaction | null>();
 
   const loading = useSelector(
     (root: RootState) => root.loading.models.cartModel,
@@ -21,10 +24,11 @@ function BasketScreen({navigation, route}) {
   const {token} = useSelector((root: RootState) => root.authModel);
   const {cart} = useSelector((root: RootState) => root.cartModel);
   const {vendors} = useSelector((root: RootState) => root.vendorModel);
-  const {user, defaultAddress} = useSelector((root: RootState) => root.userModel);
+  const {user, defaultAddress} = useSelector(
+    (root: RootState) => root.userModel,
+  );
 
-  const vendorCart = cart?.[vendorId] || {};
-  const vendor = vendors?.[vendorId];
+  const vendorCart = cart || {};
 
   const dispatch = useDispatch<Dispatch>();
 
@@ -65,82 +69,86 @@ function BasketScreen({navigation, route}) {
 
   const items = getCartItems(vendorCart);
 
-  const handlePaymentSuccess = async res => {
-    const status = await dispatch.cartModel.verifyPayment(
-      res.data.transactionRef.reference,
-    );
-    if (status) {
-      const products = {};
-      items.forEach(prod => {
-        products[prod.product.id] = prod.count;
-      });
-      const order = await dispatch.cartModel.createOrder({
-        vendor: vendorId,
-        address: defaultAddress?.id!,
-        ref: res.data.transactionRef.reference,
-        products,
-      });
+  const handleOrder = async res => {
+    const orderDetails = items.map(prod => ({
+      productId: prod.product._id,
+      quantity: prod.count,
+    }));
+    const order = await dispatch.cartModel.createOrder({
+      orderDetails,
+      addressId: defaultAddress?.addressId!,
+    });
 
-      if (order) {
-        dispatch.cartModel.clearCart();
-        navigation.dispatch(
-          StackActions.replace('OrderDetail', {
-            id: order.order,
-          }),
-        );
-      }
+    if (order) {
+      dispatch.cartModel.clearCart();
+      setOrderCreated(order);
+      handlePayment();
     }
   };
 
-  const handlePaymentFailed = err => {
+  React.useEffect(() => {
+    if (orderCreated) {
+      handlePayment();
+    }
+  }, [orderCreated]);
+
+  const handlePayment = () => paystackWebViewRef.current.startTransaction();
+
+  const handlePaymentComplete = err => {
     console.log('handlePaymentFailed', err);
+    navigation.dispatch(
+      StackActions.replace('TransactionOrderDetail', {
+        id: orderCreated?._id,
+      }),
+    );
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.itemWrapper}>
-        <FlatList
-          data={items}
-          renderItem={({item}) => (
-            <ListItem bottomDivider containerStyle={styles.listEndView}>
-              <Avatar
-                source={{
-                  uri: 'https://storage.googleapis.com/safemonk/business/2/product/Peekabo/thumbnail.png',
-                }}
-              />
-              <ListItem.Content>
-                <ListItem.Title style={styles.itemTitle}>
-                  {item.product.name} (x{item.count})
-                </ListItem.Title>
-                <Badge
-                  badgeStyle={{
-                    backgroundColor: themeColors.pico,
-                    borderWidth: 0,
-                  }}
-                  value={`N ${item.product.final_price}`}
-                  textStyle={{color: themeColors.white}}
-                />
-              </ListItem.Content>
-              <ListItem.Content right>
-                <Icon
-                  name="trash"
-                  type="feather"
-                  size={20}
-                  color={themeColors.nasturcian}
-                  onPress={() =>
-                    dispatch.cartModel.deleteItemFromCart({
-                      vendorId,
-                      product: item.product,
-                    })
-                  }
-                />
-              </ListItem.Content>
-            </ListItem>
-          )}
-          contentContainerStyle={{paddingTop: 10, flexGrow: 1}}
-          ListFooterComponent={
-            <>
-              <ListItem bottomDivider containerStyle={styles.listEndView}>
+      {items.length ? (
+        <>
+          <View style={styles.itemWrapper}>
+            <FlatList
+              data={items}
+              renderItem={({item}) => (
+                <ListItem bottomDivider containerStyle={styles.listEndView}>
+                  <Avatar
+                    source={{
+                      uri: item.product.photo,
+                    }}
+                  />
+                  <ListItem.Content>
+                    <ListItem.Title style={styles.itemTitle}>
+                      {item.product.name} (x{item.count})
+                    </ListItem.Title>
+                    <Badge
+                      badgeStyle={{
+                        backgroundColor: themeColors.pico,
+                        borderWidth: 0,
+                      }}
+                      value={`${Naira} ${item.product.sellingPrice}`}
+                      textStyle={{color: themeColors.white}}
+                    />
+                  </ListItem.Content>
+                  <ListItem.Content right>
+                    <Icon
+                      name="trash"
+                      type="feather"
+                      size={20}
+                      color={themeColors.nasturcian}
+                      onPress={() =>
+                        dispatch.cartModel.deleteItemFromCart({
+                          product: item.product,
+                        })
+                      }
+                    />
+                  </ListItem.Content>
+                </ListItem>
+              )}
+              contentContainerStyle={{paddingTop: 10, flexGrow: 1}}
+              ListFooterComponent={
+                <>
+                  {/* <ListItem bottomDivider containerStyle={styles.listEndView}>
                 <ListItem.Content>
                   <ListItem.Title style={styles.totalTitle}>
                     Delivery cost
@@ -152,142 +160,107 @@ function BasketScreen({navigation, route}) {
                     value="N 2,300"
                   />
                 </ListItem.Content>
-              </ListItem>
-              <ListItem containerStyle={styles.listEndView}>
-                <ListItem.Content>
-                  <ListItem.Title style={styles.totalTitle}>
-                    Total cost
-                  </ListItem.Title>
-                </ListItem.Content>
-                <ListItem.Content right>
-                  <Badge
-                    badgeStyle={{backgroundColor: themeColors.mazarine}}
-                    value={`N ${getCartTotalPrice(vendorCart)}`}
-                  />
-                </ListItem.Content>
-              </ListItem>
+              </ListItem> */}
+                  <ListItem containerStyle={styles.listEndView}>
+                    <ListItem.Content>
+                      <ListItem.Title style={styles.totalTitle}>
+                        Total cost
+                      </ListItem.Title>
+                    </ListItem.Content>
+                    <ListItem.Content right>
+                      <Badge
+                        badgeStyle={{backgroundColor: themeColors.mazarine}}
+                        value={`${Naira} ${getCartTotalPrice(vendorCart)}`}
+                      />
+                    </ListItem.Content>
+                  </ListItem>
 
-              <ListItem
-                Component={TouchableScale}
-                friction={90}
-                tension={100}
-                activeScale={0.95}
-                onPress={() => navigation.navigate('Address')}
-                containerStyle={{
-                  borderRadius: 7,
-                  backgroundColor: themeColors.pico,
-                  height: 90,
-                  width: '100%',
-                  marginTop: s(65),
-                }}>
-                <ListItem.Content>
-                  <ListItem.Title
-                    style={{
-                      color: themeColors.white,
-                      fontWeight: 'bold',
-                      paddingBottom: 8,
+                  <ListItem
+                    Component={TouchableScale}
+                    friction={90}
+                    tension={100}
+                    activeScale={0.95}
+                    onPress={() => navigation.navigate('Address')}
+                    containerStyle={{
+                      borderRadius: 7,
+                      backgroundColor: themeColors.pico,
+                      height: 90,
+                      width: '100%',
+                      marginTop: s(65),
                     }}>
-                    {defaultAddress?.streetName || 'No Delivery Address'}
-                  </ListItem.Title>
-                  <ListItem.Subtitle
-                    style={{
-                      color: themeColors.white,
-                    }}>
-                    {defaultAddress
-                      ? `${defaultAddress?.lga} | ${defaultAddress?.state}`
-                      : 'Choose an address'}
-                  </ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron color={themeColors.white} />
-              </ListItem>
+                    <ListItem.Content>
+                      <ListItem.Title
+                        style={{
+                          color: themeColors.white,
+                          fontWeight: 'bold',
+                          paddingBottom: 8,
+                        }}>
+                        {defaultAddress?.streetName || 'No Delivery Address'}
+                      </ListItem.Title>
+                      <ListItem.Subtitle
+                        style={{
+                          color: themeColors.white,
+                        }}>
+                        {defaultAddress
+                          ? `${defaultAddress?.lga} | ${defaultAddress?.state}`
+                          : 'Choose an address'}
+                      </ListItem.Subtitle>
+                    </ListItem.Content>
+                    <ListItem.Chevron color={themeColors.white} />
+                  </ListItem>
+                </>
+              }
+            />
+          </View>
 
-              {vendor?.pre_order_notice ? (
-                <ListItem
-                  Component={TouchableScale}
-                  friction={90}
-                  tension={100}
-                  activeScale={0.95}
-                  containerStyle={{
-                    borderRadius: 7,
-                    backgroundColor: themeColors.pico,
-                    // height: 90,
-                    width: '100%',
-                    marginTop: s(20),
-                    paddingVertical: s(20),
-                  }}>
-                  <Icon
-                    name="alert-circle"
-                    type="feather"
-                    color={themeColors.harley_davidson}
-                    size={s(20)}
-                  />
-                  <ListItem.Content>
-                    <ListItem.Title
-                      style={{
-                        color: themeColors.white,
-                        fontWeight: 'bold',
-                        paddingBottom: 8,
-                      }}>
-                      Notice
-                    </ListItem.Title>
-                    <ListItem.Subtitle
-                      style={{
-                        color: themeColors.white,
-                      }}>
-                      {vendor?.pre_order_notice}
-                    </ListItem.Subtitle>
-                  </ListItem.Content>
-                </ListItem>
+          {token ? (
+            <View style={styles.btnView}>
+              {defaultAddress ? (
+                <Button
+                  title={`Pay ${Naira}${getCartTotalPrice(vendorCart)}`}
+                  titleStyle={{fontWeight: 'bold'}}
+                  buttonStyle={styles.btnStyle}
+                  radius={30}
+                  onPress={handleOrder}
+                  disabled={loading}
+                  disabledStyle={{backgroundColor: themeColors.pico}}
+                  loading={loading}
+                  // onPress={handlePay}
+                />
               ) : (
-                <></>
+                <Button
+                  title="Add Address"
+                  titleStyle={{fontWeight: 'bold'}}
+                  buttonStyle={styles.btnStyle}
+                  radius={30}
+                  onPress={() => navigation.navigate('Address')}
+                />
               )}
-            </>
-          }
-        />
-      </View>
-
-      {token ? (
-        <View style={styles.btnView}>
-          {defaultAddress ? (
-            <Button
-              title={`Pay ₦${getCartTotalPrice(vendorCart)}`}
-              titleStyle={{fontWeight: 'bold'}}
-              buttonStyle={styles.btnStyle}
-              radius={30}
-              onPress={() => paystackWebViewRef.current.startTransaction()}
-              disabled={loading}
-              disabledStyle={{backgroundColor: themeColors.pico}}
-              loading={loading}
-              // onPress={handlePay}
-            />
+            </View>
           ) : (
-            <Button
-              title="Add Address"
-              titleStyle={{fontWeight: 'bold'}}
-              buttonStyle={styles.btnStyle}
-              radius={30}
-              onPress={() => navigation.navigate('Address')}
-            />
+            <View style={styles.btnView}>
+              <Button
+                title="Login"
+                titleStyle={{fontWeight: 'bold'}}
+                buttonStyle={styles.btnStyle}
+                radius={30}
+                onPress={() => navigation.navigate('Login')}
+              />
+            </View>
           )}
-        </View>
+        </>
       ) : (
-        <View style={styles.btnView}>
-          <Button
-            title="Login"
-            titleStyle={{fontWeight: 'bold'}}
-            buttonStyle={styles.btnStyle}
-            radius={30}
-            onPress={() => navigation.navigate('Login')}
-          />
-        </View>
+        <></>
       )}
 
       <Paystack
-        paystackKey="pk_test_2babf474a1fa34f8deef8c247210032f5c693e22"
-        billingEmail={user.username}
-        amount={`${getCartTotalPrice(vendorCart)}`}
-        onCancel={handlePaymentFailed}
-        onSuccess={handlePaymentSuccess}
+        paystackKey={paystack_key}
+        billingEmail={user?.username!}
+        billingName={`${user?.firstName} ${user?.lastName}`}
+        amount={`${orderCreated?.totalPayableAmount}`}
+        refNumber={orderCreated?.referenceId}
+        onCancel={handlePaymentComplete}
+        onSuccess={handlePaymentComplete}
         ref={paystackWebViewRef}
       />
     </View>

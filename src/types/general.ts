@@ -37,6 +37,7 @@ export type Order = {
   vendor: User;
   customer: User;
   transaction: Transaction;
+  deliveryAddress: Address;
 };
 
 export enum OrderStatus {
@@ -63,13 +64,17 @@ export type Transaction = {
   convenienceFee: number;
   totalPayableAmount: number;
   referenceId: string;
-  status: 'PENDING';
+  status: TransactionStatus;
   type: 'ORDER_PAYMENT';
   level: 'FREE_LEVEL';
   orders: string[];
   createdAt: string;
   updatedAt: string;
 };
+
+export enum TransactionStatus {
+  PENDING = 'PENDING',
+}
 
 export type WithdrawRequest = {
   id: string;

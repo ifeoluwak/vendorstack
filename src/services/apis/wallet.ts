@@ -27,7 +27,7 @@ export default {
     limit = 30,
   ): Promise<AxiosResponse<{results: WithdrawHistory[]}>> =>
     ApiHandler.get(
-      `/payments/histories/${userId}&limit=${limit}&paymentDateRange=${dateRange}&paymentStatus=${selectedStatus}`,
+      `/payments/histories/${userId}?limit=${limit}&paymentDateRange=${dateRange}&paymentStatus=${selectedStatus}`,
       null,
       {},
     ),

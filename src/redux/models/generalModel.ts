@@ -5,6 +5,7 @@ import {RootModel} from '.';
 import {GeneralApi} from '../../services/apis';
 import {Category} from '../../types/general';
 import {TopRatedVendor, TrendingVendor} from '../../types/vendor';
+import { Alert } from 'react-native';
 
 type GeneralProp = {
   categories: Category[] | [];
@@ -41,6 +42,23 @@ const generalModel = createModel<RootModel>()({
         console.log('getCategories', data);
         dispatch.generalModel.setState({categories: data});
       } catch ({response}) {}
+    },
+    async getOrderTransaction(id: string) {
+      try {
+        const {data} = await GeneralApi.getOrderTransaction(id);
+        console.log('getOrderTransaction', data);
+        // dispatch.generalModel.setState({orders: {...orders, [id]: data}});
+        return data;
+      } catch ({response}) {}
+    },
+    async deleteOrderTransaction(id: string) {
+      try {
+        const {data} = await GeneralApi.deleteOrderTransaction(id);
+        console.log('deleteOrderTransaction', data);
+        return true;
+      } catch ({response}) {
+        Alert.alert('Error', 'Could not delete. Please try again.');
+      }
     },
     async getOrder(id: string, state) {
       const {orders} = state.generalModel;

@@ -16,7 +16,7 @@ async function handleRequest(req: any) {
   const reduxStore = store.getState();
   const token = reduxStore.authModel.token;
 
-  // console.log({ token });
+  console.log({ token });
   if (token) {
     // req.headers['Authorization'] = `Token ${token}`;
     req.headers['Authorization'] = `Bearer ${token}`;

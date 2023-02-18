@@ -57,7 +57,7 @@ function BusinessWithdrawalHistoryScreen({navigation}) {
     });
   }, [dispatch, dateOne, dateTwo, selectedStatus]);
 
-  console.log(history);
+  // console.log(history);
 
   return (
     <View
@@ -191,7 +191,7 @@ function BusinessWithdrawalHistoryScreen({navigation}) {
               />
               <ListItem.Content>
                 <ListItem.Title right style={styles.listTitle}>
-                  {Naira} {item.amount}
+                  {Naira} {item.amount} - ({item.status})
                 </ListItem.Title>
                 <ListItem.Subtitle style={styles.listSubTitle}>
                   {moment(item.createdAt).format('DD, MMM YY')}

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, FlatList, ActivityIndicator} from 'react-native';
 import TouchableScale from 'react-native-touchable-scale';
-import {ListItem, Button, Chip} from '@rneui/themed';
+import {ListItem, Button, Chip, Avatar} from '@rneui/themed';
 import DatePicker from 'react-native-date-picker';
 
 import {themeColors} from '../../constants/color';
@@ -9,6 +9,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Dispatch, RootState} from '../../redux/store';
 import moment from 'moment';
 import {yesterday} from '../../helpers';
+import {Naira} from '../../constants/general';
+import {s} from 'react-native-size-matters';
+import {useFocusEffect} from '@react-navigation/native';
 
 function UserOrdersScreen({navigation}) {
   const dispatch = useDispatch<Dispatch>();
@@ -19,22 +22,10 @@ function UserOrdersScreen({navigation}) {
   const [dateTwo, setDateTwo] = useState(new Date());
   const [openDateTwo, setOpenDateTwo] = useState(false);
 
-  const [selectedStatus, setSelectedStatus] = React.useState('');
-
   const loading = useSelector(
-    (root: RootState) => root.loading.effects.businessModel.getBusinessOrders,
+    (root: RootState) => root.loading.effects.userModel.getUserOrders,
   );
-  const {orders} = useSelector((root: RootState) => root.businessModel);
-
-  const orderStatuses = [
-    'PENDING',
-    'ACCEPTED',
-    'SHIPPED',
-    'RECEIVED',
-    'REJECTED',
-    'RETURNED',
-    'RETURN_CONFIRMED',
-  ];
+  const {userOrders} = useSelector((root: RootState) => root.userModel);
 
   useEffect(() => {
     navigation.setOptions({
@@ -47,14 +38,15 @@ function UserOrdersScreen({navigation}) {
     });
   }, [navigation]);
 
-  useEffect(() => {
-    dispatch.userModel.getUserOrders({
-      dateRange: `${moment(dateOne).format('YYYY-MM-DD')},${moment(
-        dateTwo,
-      ).format('YYYY-MM-DD')}`,
-      selectedStatus,
-    });
-  }, [dispatch, dateOne, dateTwo, selectedStatus]);
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch.userModel.getUserOrders({
+        dateRange: `${moment(dateOne).format('YYYY-MM-DD')},${moment(
+          dateTwo,
+        ).format('YYYY-MM-DD')}`,
+      });
+    }, [dispatch, dateOne, dateTwo]),
+  );
 
   return (
     <View
@@ -126,45 +118,9 @@ function UserOrdersScreen({navigation}) {
           />
         </View>
       </View>
-      <View
-        style={{
-          width: '100%',
-          paddingHorizontal: 10,
-          // paddingTop: 12,
-          marginBottom: 20,
-        }}>
-        <FlatList
-          showsHorizontalScrollIndicator={false}
-          horizontal
-          data={orderStatuses}
-          renderItem={({item}) => {
-            const isSelected = item === selectedStatus;
-            return (
-              <Chip
-                key={item}
-                title={item}
-                type={isSelected ? 'solid' : 'outline'}
-                color={themeColors.white}
-                buttonStyle={{
-                  borderColor: themeColors.pico,
-                  borderWidth: 1,
-                  backgroundColor: isSelected
-                    ? themeColors.white
-                    : themeColors.pico,
-                }}
-                onPress={() => setSelectedStatus(isSelected ? '' : item)}
-                titleStyle={{
-                  color: isSelected ? themeColors.pico : themeColors.white,
-                }}
-              />
-            );
-          }}
-          ItemSeparatorComponent={() => <View style={{width: 6}} />}
-        />
-      </View>
       <View style={{flex: 1, width: '100%', paddingHorizontal: 10}}>
         <FlatList
-          data={orders}
+          data={userOrders}
           renderItem={({item}) => (
             <ListItem
               Component={TouchableScale}
@@ -172,45 +128,38 @@ function UserOrdersScreen({navigation}) {
               tension={100}
               activeScale={0.95}
               onPress={() =>
-                navigation.navigate('OrderDetail', {
+                navigation.navigate('TransactionOrderDetail', {
                   id: item._id,
                 })
               }
               containerStyle={{
                 borderRadius: 10,
                 backgroundColor: themeColors.pico,
-                maxHeight: 100,
+                // maxHeight: 100,
               }}>
               <ListItem.Content>
                 <ListItem.Title
                   style={{color: themeColors.white, fontWeight: 'bold'}}>
-                  From - {item?.business?.name}
+                  {Naira} {item?.totalPayableAmount} - {item.status}
                 </ListItem.Title>
                 <ListItem.Subtitle
                   numberOfLines={1}
                   style={{
                     color: themeColors.white,
-                    textTransform: 'capitalize',
+                    paddingVertical: s(5),
                   }}>
-                  {item?.totalAmount} (#{item.products.length} Items)
+                  {moment(item?.createdAt).format('DD MMM, YYYY')}
                 </ListItem.Subtitle>
-                <ListItem.Subtitle
-                  numberOfLines={1}
-                  style={{
-                    color: themeColors.white,
-                    textTransform: 'capitalize',
-                  }}>
-                  {moment(item?.created_at).format('DD MMM, YYYY')}
-                </ListItem.Subtitle>
-                {/* <View style={{paddingTop: 5}}>
+                <View style={{paddingTop: 5}}>
                   <FlatList
-                    data={item.products}
-                    renderItem={({item: order}) => {
+                    data={item?.orders?.[0]?.products}
+                    renderItem={({item: prod}) => {
                       return (
                         <Avatar
                           source={{
-                            uri: order?.product?.url,
+                            uri: prod.product.photo,
                           }}
+                          size="medium"
                         />
                       );
                     }}
@@ -218,7 +167,7 @@ function UserOrdersScreen({navigation}) {
                     ItemSeparatorComponent={() => <View style={{width: 5}} />}
                     style={{flexGrow: 0}}
                   />
-                </View> */}
+                </View>
               </ListItem.Content>
               <ListItem.Chevron color={themeColors.white} />
             </ListItem>

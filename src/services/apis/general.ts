@@ -3,12 +3,21 @@ import {AgeRange, Category, Order, OrderStatus} from './../../types/general';
 import {AxiosResponse} from 'axios';
 import ApiHandler from '../ApiHandler';
 import {TopRatedVendor, TrendingVendor} from '../../types/vendor';
+import {OrderTransaction} from '../../types/cart';
 
 export default {
   getCategories: (): Promise<AxiosResponse<Category[], any>> =>
     ApiHandler.get('/users/categories', null, {}),
   getAgeRange: (): Promise<AxiosResponse<AgeRange[], any>> =>
     ApiHandler.get('/api/get_age_range', null, {}),
+  getOrderTransaction: (
+    transactionId: string,
+  ): Promise<AxiosResponse<OrderTransaction>> =>
+    ApiHandler.get(`/transactions/${transactionId}`, null, {}),
+  deleteOrderTransaction: (
+    transactionId: string,
+  ): Promise<AxiosResponse<OrderTransaction>> =>
+    ApiHandler.delete(`/transactions/${transactionId}`, null, {}),
   getOrder: (id: string): Promise<AxiosResponse<Order>> =>
     ApiHandler.get(`/orders/${id}`, null, {}),
   getOrderStatuses: (): Promise<AxiosResponse<OrderStatus[], any>> =>

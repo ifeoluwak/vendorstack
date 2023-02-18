@@ -57,7 +57,7 @@ function BusinessScreen({navigation}) {
       },
       {
         label: 'Withdrawals',
-        icon: 'credit-card',
+        icon: 'list',
         nav: () => navigation.navigate('BusinessWithdrawalHistory'),
       },
       {

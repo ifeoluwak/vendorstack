@@ -37,6 +37,7 @@ import BankAccountScreen from '../screens/business/bank';
 import AddBankAccountScreen from '../screens/business/bank/addBank';
 import BusinessWalletWithdrawScreen from '../screens/business/withdrawals/withdraw';
 import BusinessWithdrawalHistoryScreen from '../screens/business/withdrawals';
+import TransactionOrderDetailScreen from '../screens/orders/transactionOrder';
 
 type RootStackParamList = {
   Home: undefined;
@@ -65,6 +66,7 @@ type RootStackParamList = {
   BusinessProductDetail: {product: Product};
   BusinessCustomerDetail: {customer: Customer};
   OrderDetail: {id: string};
+  TransactionOrderDetail: {id: string};
   AddAddress: undefined;
   Vendor: {id: string; title: string};
   VendorOptions: {id: string};
@@ -104,6 +106,10 @@ export default function RootNavigation() {
       <RootStack.Screen name="Profile" component={ProfileScreen} />
       <RootStack.Screen name="Orders" component={UserOrdersScreen} />
       <RootStack.Screen name="OrderDetail" component={OrderDetailScreen} />
+      <RootStack.Screen
+        name="TransactionOrderDetail"
+        component={TransactionOrderDetailScreen}
+      />
       <RootStack.Screen name="AddReview" component={AddReviewScreen} />
       <RootStack.Screen name="VendorContact" component={VendorContactScreen} />
       <RootStack.Screen
