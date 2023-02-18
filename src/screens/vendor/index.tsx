@@ -178,8 +178,9 @@ function VendorScreen({navigation, route}) {
           <VendorProductView
             onBuy={handleBuyNow}
             cartItem={vendorCart?.[product?._id!]}
-            product={product}
+            product={product!}
             vendorId={vendorId}
+            takingOrder={vendor?.takingOrder!}
           />
         </Modalize>
       </Portal>

@@ -55,25 +55,38 @@ const walletModel = createModel<RootModel>()({
     },
     async withdrawMoney(
       payload: {
-        userId: string;
         amount: number;
-        reason: 'FUND_WITHDRAWAL';
       },
       state,
     ) {
       const {user} = state.userModel;
       try {
-        await WalletApi.withdrawMoney(payload, user?._id!);
-        // dispatch.userModel.getUserProfile();
+        await WalletApi.withdrawMoney(
+          {...payload, reason: 'FUND_WITHDRAWAL', userId: user?._id!},
+          user?._id!,
+        );
+        dispatch.userModel.getUserProfile();
         return true;
       } catch ({response}) {}
     },
-    async getWithdrawHistory(_, state) {
+    async getWithdrawHistory(
+      payload: {dateRange: string; selectedStatus: string},
+      state,
+    ) {
+      console.log('lllloo p p p p ');
       const {user} = state.userModel;
       try {
-        const {data} = await WalletApi.getWithdrawHistory(user?._id!);
+        const {dateRange, selectedStatus} = payload;
+        const {data} = await WalletApi.getWithdrawHistory(
+          user?._id!,
+          dateRange,
+          selectedStatus,
+        );
+        console.log('getWithdrawHistory', data);
         dispatch.walletModel.setState({history: data.results});
-      } catch ({response}) {}
+      } catch ({response}) {
+        console.log('error', response);
+      }
     },
   }),
 });

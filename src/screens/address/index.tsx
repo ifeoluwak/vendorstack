@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {View, FlatList, Alert, ActivityIndicator} from 'react-native';
-import {ListItem, Button, Icon, CheckBox} from '@rneui/themed';
+import {View, FlatList, ActivityIndicator} from 'react-native';
+import {ListItem, Button, Icon} from '@rneui/themed';
 
 import {themeColors} from '../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
@@ -10,7 +10,7 @@ import TouchableScale from 'react-native-touchable-scale';
 
 function AddressScreen({navigation, route}) {
   const loading = useSelector(
-    (root: RootState) => root.loading.effects.userModel.getUserAddresses,
+    (root: RootState) => root.loading.effects.userModel.getUserProfile,
   );
   const {user, defaultAddress} = useSelector(
     (root: RootState) => root.userModel,

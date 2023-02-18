@@ -13,11 +13,13 @@ function VendorProductView({
   product,
   vendorId,
   onBuy,
+  takingOrder,
 }: {
   vendorId: string;
   cartItem: CartItem;
   product: Product;
   onBuy: () => void;
+  takingOrder: boolean;
 }) {
   const dispatch = useDispatch<Dispatch>();
   console.log('product?.photo', product?.photo);
@@ -89,10 +91,11 @@ function VendorProductView({
           )}
         </View>
         <Button
-          title="Buy now"
+          title={!takingOrder ? 'Temporarily Closed' : 'Buy now'}
           buttonStyle={{backgroundColor: themeColors.mazarine}}
           containerStyle={{paddingBottom: 30}}
           onPress={onBuy}
+          disabled={!takingOrder}
         />
       </View>
     </>

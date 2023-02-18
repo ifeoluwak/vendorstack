@@ -90,7 +90,7 @@ function UserOrdersScreen({navigation}) {
             modal
             open={openDateOne}
             date={dateOne}
-            maximumDate={dateOne}
+            maximumDate={yesterday.toDate()}
             mode="date"
             onConfirm={date => {
               setOpenDateOne(false);
@@ -114,7 +114,7 @@ function UserOrdersScreen({navigation}) {
             modal
             open={openDateTwo}
             date={dateTwo}
-            maximumDate={dateTwo}
+            maximumDate={new Date()}
             mode="date"
             onConfirm={date => {
               setOpenDateTwo(false);

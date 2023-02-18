@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {View, FlatList, ActivityIndicator} from 'react-native';
+import {View, FlatList, ActivityIndicator, RefreshControl} from 'react-native';
 import TouchableScale from 'react-native-touchable-scale';
-import {ListItem, Button, Chip} from '@rneui/themed';
+import {ListItem, Button, Chip, Icon} from '@rneui/themed';
 import DatePicker from 'react-native-date-picker';
 
 import {themeColors} from '../../../constants/color';
@@ -9,8 +9,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Dispatch, RootState} from '../../../redux/store';
 import moment from 'moment';
 import {yesterday} from '../../../helpers';
+import {styles} from '../wallet/style';
+import {WithdrawStatus} from '../../../types/general';
+import {Naira} from '../../../constants/general';
 
-function BusinessOrdersScreen({navigation}) {
+function BusinessWithdrawalHistoryScreen({navigation}) {
   const dispatch = useDispatch<Dispatch>();
 
   const [dateOne, setDateOne] = useState(yesterday.toDate());
@@ -22,23 +25,21 @@ function BusinessOrdersScreen({navigation}) {
   const [selectedStatus, setSelectedStatus] = React.useState('');
 
   const loading = useSelector(
-    (root: RootState) => root.loading.effects.businessModel.getBusinessOrders,
+    (root: RootState) => root.loading.effects.walletModel.getWithdrawHistory,
   );
-  const {orders} = useSelector((root: RootState) => root.businessModel);
+  const {history} = useSelector((root: RootState) => root.walletModel);
 
-  const orderStatuses = [
+  const paymentStatuses = [
     'PENDING',
-    'ACCEPTED',
-    'SHIPPED',
+    'FAILED',
+    'SUCCESS',
     'RECEIVED',
-    'REJECTED',
-    'RETURNED',
-    'RETURN_CONFIRMED',
+    'REVERSED',
   ];
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Orders',
+      headerTitle: 'Withdrawal History',
       headerTintColor: themeColors.white,
       headerStyle: {
         backgroundColor: themeColors.mazarine,
@@ -48,13 +49,15 @@ function BusinessOrdersScreen({navigation}) {
   }, [navigation]);
 
   useEffect(() => {
-    dispatch.businessModel.getBusinessOrders({
+    dispatch.walletModel.getWithdrawHistory({
       dateRange: `${moment(dateOne).format('YYYY-MM-DD')},${moment(
         dateTwo,
       ).format('YYYY-MM-DD')}`,
       selectedStatus,
     });
   }, [dispatch, dateOne, dateTwo, selectedStatus]);
+
+  console.log(history);
 
   return (
     <View
@@ -136,7 +139,7 @@ function BusinessOrdersScreen({navigation}) {
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
-          data={orderStatuses}
+          data={paymentStatuses}
           renderItem={({item}) => {
             const isSelected = item === selectedStatus;
             return (
@@ -164,69 +167,50 @@ function BusinessOrdersScreen({navigation}) {
       </View>
       <View style={{flex: 1, width: '100%', paddingHorizontal: 10}}>
         <FlatList
-          data={orders}
+          showsVerticalScrollIndicator={false}
+          data={history}
           renderItem={({item}) => (
             <ListItem
               Component={TouchableScale}
               friction={90}
               tension={100}
               activeScale={0.95}
-              onPress={() =>
-                navigation.navigate('BusinessOrderDetail', {
-                  id: item._id,
-                })
-              }
-              containerStyle={{
-                borderRadius: 10,
-                backgroundColor: themeColors.pico,
-                maxHeight: 100,
-              }}>
+              containerStyle={styles.listContainer}>
+              <Icon
+                name={
+                  item.status === WithdrawStatus.SUCCESS
+                    ? 'check-circle'
+                    : 'alert-octagon'
+                }
+                type="feather"
+                color={
+                  item.status === WithdrawStatus.SUCCESS
+                    ? themeColors.white
+                    : themeColors.harley_davidson
+                }
+              />
               <ListItem.Content>
-                <ListItem.Title
-                  style={{color: themeColors.white, fontWeight: 'bold'}}>
-                  {item?.totalAmount} (#{item.products.length} Items)
+                <ListItem.Title right style={styles.listTitle}>
+                  {Naira} {item.amount}
                 </ListItem.Title>
-                <ListItem.Subtitle
-                  numberOfLines={1}
-                  style={{
-                    color: themeColors.white,
-                    textTransform: 'capitalize',
-                  }}>
-                  {moment(item.created_at).format('DD MMM, YYYY')}
+                <ListItem.Subtitle style={styles.listSubTitle}>
+                  {moment(item.createdAt).format('DD, MMM YY')}
                 </ListItem.Subtitle>
-                {/* <View style={{paddingTop: 5}}>
-                  <FlatList
-                    data={item.products}
-                    renderItem={({item: order}) => {
-                      return (
-                        <Avatar
-                          source={{
-                            uri: order?.product?.url,
-                          }}
-                        />
-                      );
-                    }}
-                    horizontal
-                    ItemSeparatorComponent={() => <View style={{width: 5}} />}
-                    style={{flexGrow: 0}}
-                  />
-                </View> */}
+                <ListItem.Subtitle style={styles.listSubTitle}>
+                  {item.description}
+                </ListItem.Subtitle>
               </ListItem.Content>
-              <ListItem.Chevron color={themeColors.white} />
             </ListItem>
           )}
-          ItemSeparatorComponent={() => <View style={{height: 10}} />}
           contentContainerStyle={{
             paddingTop: 10,
             flexGrow: 1,
-            width: '100%',
             paddingBottom: 100,
           }}
-          showsVerticalScrollIndicator={false}
         />
       </View>
     </View>
   );
 }
 
-export default BusinessOrdersScreen;
+export default BusinessWithdrawalHistoryScreen;

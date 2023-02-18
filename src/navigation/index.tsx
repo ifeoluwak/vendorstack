@@ -35,7 +35,8 @@ import VendorContactScreen from '../screens/vendor/contact';
 import BusinessCreateScreen from '../screens/business/create';
 import BankAccountScreen from '../screens/business/bank';
 import AddBankAccountScreen from '../screens/business/bank/addBank';
-import BusinessWalletWithdrawalsScreen from '../screens/business/wallet/withdraw';
+import BusinessWalletWithdrawScreen from '../screens/business/withdrawals/withdraw';
+import BusinessWithdrawalHistoryScreen from '../screens/business/withdrawals';
 
 type RootStackParamList = {
   Home: undefined;
@@ -53,7 +54,8 @@ type RootStackParamList = {
   BusinessMore: undefined;
   BusinessProfile: undefined;
   BusinessWallet: undefined;
-  BusinessWalletWithdrawals: undefined;
+  BusinessWalletWithdraw: undefined;
+  BusinessWithdrawalHistory: undefined;
   BusinessOrders: undefined;
   BusinessProducts: undefined;
   BusinessAddProduct: undefined;
@@ -117,9 +119,13 @@ export default function RootNavigation() {
         component={BusinessWalletScreen}
       />
       <RootStack.Screen
-        name="BusinessWalletWithdrawals"
+        name="BusinessWithdrawalHistory"
+        component={BusinessWithdrawalHistoryScreen}
+      />
+      <RootStack.Screen
+        name="BusinessWalletWithdraw"
         options={{title: 'Make a Withdrawal'}}
-        component={BusinessWalletWithdrawalsScreen}
+        component={BusinessWalletWithdrawScreen}
       />
       <RootStack.Screen
         name="BusinessCustomers"

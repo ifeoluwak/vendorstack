@@ -30,6 +30,7 @@ function BusinessWalletScreen({navigation, route}) {
   const dispatch = useDispatch<Dispatch>();
 
   const onRefresh = () => {
+    console.log('got here ----xx-x-x-x-x-x');
     dispatch.walletModel.getWithdrawHistory();
   };
 
@@ -48,6 +49,8 @@ function BusinessWalletScreen({navigation, route}) {
     onRefresh();
   }, []);
 
+  console.log('history', history);
+
   return (
     <View style={styles.container}>
       {loading ? (
@@ -56,7 +59,37 @@ function BusinessWalletScreen({navigation, route}) {
         <></>
       )}
       <View style={styles.itemWrapper}>
-        <FlatList
+        <View>
+          <View style={styles.currBalanceView}>
+            <Text style={styles.currBalanceTitle}>
+              {Naira} {wallet?.currentBalance}
+            </Text>
+            <Divider />
+            <Text style={{fontSize: 14, color: themeColors.pico}}>
+              Current Balance
+            </Text>
+          </View>
+          <View style={styles.balanceRow}>
+            <View style={styles.subBalanceView}>
+              <Text style={styles.subBalanceTitle}>
+                {Naira} {wallet?.pendingBalance}
+              </Text>
+              <Divider />
+              <Text style={{color: themeColors.white}}>Pending Balance</Text>
+            </View>
+            <View style={styles.subBalanceView}>
+              <Text style={styles.subBalanceTitle}>
+                {Naira} {wallet?.allTimeBalance}
+              </Text>
+              <Divider />
+              <Text style={{color: themeColors.white}}>Total Revenue</Text>
+            </View>
+          </View>
+          <View style={{marginTop: 30}}>
+            <HomeSectionHeader title="Your withdrawals" />
+          </View>
+        </View>
+        {/* <FlatList
           refreshControl={
             <RefreshControl refreshing={false} onRefresh={onRefresh} />
           }
@@ -100,51 +133,21 @@ function BusinessWalletScreen({navigation, route}) {
             flexGrow: 1,
             paddingBottom: 100,
           }}
-          ListHeaderComponent={
-            <View>
-              <View style={styles.currBalanceView}>
-                <Text style={styles.currBalanceTitle}>
-                  {Naira} {wallet?.currentBalance}
-                </Text>
-                <Divider />
-                <Text style={{fontSize: 14, color: themeColors.pico}}>
-                  Current Balance
-                </Text>
-              </View>
-              <View style={styles.balanceRow}>
-                <View style={styles.subBalanceView}>
-                  <Text style={styles.subBalanceTitle}>
-                    {Naira} {wallet?.pendingBalance}
-                  </Text>
-                  <Divider />
-                  <Text style={{color: themeColors.white}}>
-                    Pending Balance
-                  </Text>
-                </View>
-                <View style={styles.subBalanceView}>
-                  <Text style={styles.subBalanceTitle}>
-                    {Naira} {wallet?.allTimeBalance}
-                  </Text>
-                  <Divider />
-                  <Text style={{color: themeColors.white}}>Total Revenue</Text>
-                </View>
-              </View>
-              <View style={{marginTop: 30}}>
-                <HomeSectionHeader title="Your withdrawals" />
-              </View>
-            </View>
-          }
-        />
+        /> */}
 
-        <View style={styles.btnView}>
-          <Button
-            title="Make a Withdrawal"
-            titleStyle={{fontWeight: 'bold', color: themeColors.mazarine}}
-            buttonStyle={styles.btnStyle}
-            radius={30}
-            onPress={() => navigation.navigate('BusinessWalletWithdrawals')}
-          />
-        </View>
+        {wallet?.currentBalance > 0 ? (
+          <View style={styles.btnView}>
+            <Button
+              title="Make a Withdrawal"
+              titleStyle={{fontWeight: 'bold', color: themeColors.mazarine}}
+              buttonStyle={styles.btnStyle}
+              radius={30}
+              onPress={() => navigation.navigate('BusinessWalletWithdrawals')}
+            />
+          </View>
+        ) : (
+          <></>
+        )}
       </View>
     </View>
   );

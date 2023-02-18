@@ -6,16 +6,19 @@ import CurrencyInput from 'react-native-currency-input';
 import {themeColors} from '../../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
 import {Dispatch, RootState} from '../../../redux/store';
-import {styles} from './style';
+import {styles} from '../wallet/style';
 import TouchableScale from 'react-native-touchable-scale';
 
-function BusinessWalletWithdrawalsScreen({navigation}) {
+function BusinessWalletWithdrawScreen({navigation}) {
   const [value, setValue] = React.useState('0.00');
 
   const loading = useSelector(
     (root: RootState) => root.loading.models.walletModel,
   );
   const {bankAccount} = useSelector((root: RootState) => root.walletModel);
+  const {user} = useSelector((root: RootState) => root.userModel);
+
+  const wallet = user?.wallet;
 
   const dispatch = useDispatch<Dispatch>();
 
@@ -32,6 +35,13 @@ function BusinessWalletWithdrawalsScreen({navigation}) {
       headerShadowVisible: false,
     });
   }, [navigation, dispatch]);
+
+  const amount = parseFloat(value);
+  const exceedBalance = amount > wallet?.currentBalance;
+
+  const handleWithdraw = () => {
+    dispatch.walletModel.withdrawMoney({amount});
+  };
 
   return (
     <View style={styles.container}>
@@ -75,7 +85,9 @@ function BusinessWalletWithdrawalsScreen({navigation}) {
                   label="Enter Amount"
                   labelStyle={{color: themeColors.white}}
                   placeholderTextColor={themeColors.white}
-                  errorMessage={''}
+                  errorMessage={
+                    exceedBalance ? `Maximum of ${wallet?.currentBalance}` : ''
+                  }
                   inputStyle={{color: themeColors.white}}
                   inputContainerStyle={{borderColor: themeColors.white}}
                 />
@@ -91,8 +103,9 @@ function BusinessWalletWithdrawalsScreen({navigation}) {
               titleStyle={{fontWeight: 'bold', color: themeColors.mazarine}}
               buttonStyle={styles.btnStyle}
               radius={30}
-              disabled={!value}
-              onPress={() => {}}
+              disabled={!amount || exceedBalance}
+              onPress={handleWithdraw}
+              loading={loading}
             />
           </View>
         </>
@@ -103,4 +116,4 @@ function BusinessWalletWithdrawalsScreen({navigation}) {
   );
 }
 
-export default BusinessWalletWithdrawalsScreen;
+export default BusinessWalletWithdrawScreen;

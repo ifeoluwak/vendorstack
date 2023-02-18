@@ -74,7 +74,10 @@ const userModel = createModel<RootModel>()({
         const {data} = await UserApi.getUserProfile();
         console.log('getUserProfile', data);
         if (data) {
-          dispatch.userModel.setState({user: data});
+          dispatch.userModel.setState({
+            user: data,
+            defaultAddress: data?.addresses?.[0],
+          });
         } else {
           logout();
         }

@@ -12,7 +12,7 @@ export function getCartItems(cart: Cart) {
 export function getCartTotalPrice(cart: Cart) {
   const items = getCartItems(cart);
   return items.reduce(
-    (prev, curr) => prev + parseFloat(curr?.product.final_price) * curr.count,
+    (prev, curr) => prev + parseFloat(curr?.product?.sellingPrice) * curr.count,
     0,
   );
 }
@@ -24,12 +24,12 @@ export function getCartTotalQty(cart: Cart) {
 
 export function getVendorInFollows(vendorId: string) {
   const {userVendors} = store.getState().userModel;
-  return userVendors.find(follow => follow.business.id === vendorId);
+  return userVendors.find(follow => follow.business._id === vendorId);
 }
 
 export function getOrdersFromVendor(vendorId: string) {
   const {userOrders} = store.getState().userModel;
-  return userOrders.filter(order => order.business.id === vendorId);
+  return userOrders.filter(order => order.business._id === vendorId);
 }
 
 export const logout = () => {

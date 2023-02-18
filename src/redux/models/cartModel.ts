@@ -35,10 +35,10 @@ const cartModel = createModel<RootModel>()({
           ...state.cart,
           [payload.vendorId]: {
             ...state?.cart?.[payload.vendorId],
-            [payload?.product.id]: {
+            [payload?.product?._id]: {
               product: payload.product,
               count:
-                (state?.cart?.[payload.vendorId]?.[payload?.product.id]
+                (state?.cart?.[payload.vendorId]?.[payload?.product?._id]
                   ?.count || 0) + 1,
             },
           },
@@ -47,23 +47,23 @@ const cartModel = createModel<RootModel>()({
     },
     removeFromCart: (state, payload) => {
       const newState = {...state};
-      if (state.cart?.[payload.vendorId]?.[payload.product.id]) {
+      if (state.cart?.[payload.vendorId]?.[payload.product?._id]) {
         const count =
-          newState.cart?.[payload.vendorId]?.[payload.product.id]?.count;
+          newState.cart?.[payload.vendorId]?.[payload.product?._id]?.count;
         if (count === 1) {
-          delete newState.cart?.[payload.vendorId]?.[payload.product.id];
+          delete newState.cart?.[payload.vendorId]?.[payload.product?._id];
           return newState;
         }
-        const cartItem = newState.cart![payload.vendorId][payload.product.id];
+        const cartItem = newState.cart![payload.vendorId][payload.product?._id];
         cartItem!.count = cartItem!.count - 1;
-        newState.cart![payload.vendorId][payload.product.id] = cartItem;
+        newState.cart![payload.vendorId][payload.product?._id] = cartItem;
         return newState;
       }
       return state;
     },
     deleteItemFromCart: (state, payload) => {
       const newState = {...state};
-      delete newState.cart?.[payload.vendorId]?.[payload.product.id];
+      delete newState.cart?.[payload.vendorId]?.[payload.product?._id];
       return newState;
     },
     clearCart: () => {

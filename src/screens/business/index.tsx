@@ -56,6 +56,11 @@ function BusinessScreen({navigation}) {
         nav: () => navigation.navigate('BusinessWallet'),
       },
       {
+        label: 'Withdrawals',
+        icon: 'credit-card',
+        nav: () => navigation.navigate('BusinessWithdrawalHistory'),
+      },
+      {
         label: 'Bank account',
         icon: 'key',
         nav: () => navigation.navigate('BusinessBankAccount'),

@@ -21,9 +21,7 @@ function BasketScreen({navigation, route}) {
   const {token} = useSelector((root: RootState) => root.authModel);
   const {cart} = useSelector((root: RootState) => root.cartModel);
   const {vendors} = useSelector((root: RootState) => root.vendorModel);
-  const {defaultAddress, profile} = useSelector(
-    (root: RootState) => root.userModel,
-  );
+  const {user, defaultAddress} = useSelector((root: RootState) => root.userModel);
 
   const vendorCart = cart?.[vendorId] || {};
   const vendor = vendors?.[vendorId];
@@ -189,14 +187,14 @@ function BasketScreen({navigation, route}) {
                       fontWeight: 'bold',
                       paddingBottom: 8,
                     }}>
-                    {defaultAddress?.address || 'No Delivery Address'}
+                    {defaultAddress?.streetName || 'No Delivery Address'}
                   </ListItem.Title>
                   <ListItem.Subtitle
                     style={{
                       color: themeColors.white,
                     }}>
                     {defaultAddress
-                      ? `${defaultAddress?.name} | ${defaultAddress?.phone}`
+                      ? `${defaultAddress?.lga} | ${defaultAddress?.state}`
                       : 'Choose an address'}
                   </ListItem.Subtitle>
                 </ListItem.Content>
@@ -286,7 +284,7 @@ function BasketScreen({navigation, route}) {
 
       <Paystack
         paystackKey="pk_test_2babf474a1fa34f8deef8c247210032f5c693e22"
-        billingEmail={profile?.user.email}
+        billingEmail={user.username}
         amount={`${getCartTotalPrice(vendorCart)}`}
         onCancel={handlePaymentFailed}
         onSuccess={handlePaymentSuccess}
