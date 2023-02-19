@@ -7,7 +7,6 @@ import {
   launchImageLibrary,
   ImagePickerResponse,
 } from 'react-native-image-picker';
-import {StackActions} from '@react-navigation/native';
 
 import {Dispatch, RootState} from '../../../redux/store';
 import {themeColors} from '../../../constants/color';
@@ -73,7 +72,7 @@ const BusinessProfileScreen = ({navigation}) => {
   const handleImage = async () => {
     const result = await launchImageLibrary({
       mediaType: 'photo',
-      quality: 0.5,
+      quality: 0.8,
       maxHeight: 100,
       maxWidth: 200,
       includeBase64: true,

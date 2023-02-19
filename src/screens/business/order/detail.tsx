@@ -252,7 +252,7 @@ function BusinessOrderDetailScreen({navigation, route}) {
             <></>
           )}
 
-          {order.status === OrderStatus.REJECTED ? (
+          {order.status === OrderStatus.RETURNED ? (
             <View style={styles.btnView}>
               <Button
                 title="Confirm Order Returned"

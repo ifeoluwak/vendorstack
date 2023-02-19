@@ -1,5 +1,5 @@
 import {ScrollView, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
@@ -10,7 +10,7 @@ import {
 
 import {Dispatch, RootState} from '../../../redux/store';
 import {themeColors} from '../../../constants/color';
-import {Avatar, Button, CheckBox, Input} from '@rneui/themed';
+import {Avatar, Button, Input} from '@rneui/themed';
 import {styles} from './style';
 import {Product} from '../../../types/product';
 
@@ -61,7 +61,7 @@ const ProductDetailScreen = ({navigation, route}) => {
   const handleImage = async () => {
     const result = await launchImageLibrary({
       mediaType: 'photo',
-      quality: 0.5,
+      quality: 0.8,
       maxHeight: 400,
       maxWidth: 650,
       includeBase64: true,

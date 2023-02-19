@@ -108,9 +108,6 @@ function VendorScreen({navigation, route}) {
       navigation.navigate('Basket', {id: vendorId});
     }
   };
-
-  // console.log('VendorScreen', vendor?.socialUsername);
-
   return (
     <View style={styles.wrapper}>
       {loading ? (

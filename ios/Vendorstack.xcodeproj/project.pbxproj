@@ -14,7 +14,7 @@
 		4B3A72EAD87020ADFC46B09C /* Pods_Vendorstack_VendorstackTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ECAD9AE809E0798B57D8F42 /* Pods_Vendorstack_VendorstackTests.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9E1A47632986BE0D007B27F0 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9E1A47622986BE0C007B27F0 /* BootSplash.storyboard */; };
-		9E21981229865BCA005D32A9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9E21981129865BCA005D32A9 /* GoogleService-Info.plist */; };
+		9EB9824A29A25478009368CB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9EB9824929A25478009368CB /* GoogleService-Info.plist */; };
 		FB0D73B957BD800EA892DEF6 /* Pods_Vendorstack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F7D81F58C9938E68D77716E /* Pods_Vendorstack.framework */; };
 /* End PBXBuildFile section */
 
@@ -45,11 +45,12 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Vendorstack/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-Vendorstack-VendorstackTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Vendorstack-VendorstackTests.release.xcconfig"; path = "Target Support Files/Pods-Vendorstack-VendorstackTests/Pods-Vendorstack-VendorstackTests.release.xcconfig"; sourceTree = "<group>"; };
 		9E1A47622986BE0C007B27F0 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = Vendorstack/BootSplash.storyboard; sourceTree = "<group>"; };
-		9E21981129865BCA005D32A9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9E219813298661D0005D32A9 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		9E219814298661D1005D32A9 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		9E219815298661D1005D32A9 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		9E219816298661D1005D32A9 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
+		9EB9824829A24C9B009368CB /* Vendorstack.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Vendorstack.entitlements; path = Vendorstack/Vendorstack.entitlements; sourceTree = "<group>"; };
+		9EB9824929A25478009368CB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9ECAD9AE809E0798B57D8F42 /* Pods_Vendorstack_VendorstackTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Vendorstack_VendorstackTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -94,6 +95,7 @@
 		13B07FAE1A68108700A75B9A /* Vendorstack */ = {
 			isa = PBXGroup;
 			children = (
+				9EB9824829A24C9B009368CB /* Vendorstack.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -124,12 +126,12 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				9EB9824929A25478009368CB /* GoogleService-Info.plist */,
 				9E1A47622986BE0C007B27F0 /* BootSplash.storyboard */,
 				9E219816298661D1005D32A9 /* Feather.ttf */,
 				9E219813298661D0005D32A9 /* FontAwesome.ttf */,
 				9E219815298661D1005D32A9 /* Ionicons.ttf */,
 				9E219814298661D1005D32A9 /* MaterialIcons.ttf */,
-				9E21981129865BCA005D32A9 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* Vendorstack */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* VendorstackTests */,
@@ -258,8 +260,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				9EB9824A29A25478009368CB /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				9E21981229865BCA005D32A9 /* GoogleService-Info.plist in Resources */,
 				9E1A47632986BE0D007B27F0 /* BootSplash.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -515,9 +517,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Vendorstack/Vendorstack.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = TLKPUR6X95;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Vendorstack/Info.plist;
@@ -535,8 +538,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vendorstackapp;
 				PRODUCT_NAME = Vendorstack;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -547,9 +554,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Vendorstack/Vendorstack.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = TLKPUR6X95;
 				INFOPLIST_FILE = Vendorstack/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Vendorstack;
@@ -566,7 +574,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vendorstackapp;
 				PRODUCT_NAME = Vendorstack;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

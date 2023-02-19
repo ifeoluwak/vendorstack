@@ -110,7 +110,7 @@ function VendorContactScreen({navigation, route}) {
               color: themeColors.white,
               fontSize: s(16),
             }}>
-            {vendor.email}
+            {vendor?.vendor?.username}
           </ListItem.Title>
         </ListItem.Content>
         {/* <Icon
