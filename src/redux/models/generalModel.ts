@@ -1,4 +1,4 @@
-import {ProductLean} from './../../types/product';
+import {Product, ProductLean} from './../../types/product';
 import {AgeRange, Order, OrderStatus} from './../../types/general';
 import {createModel} from '@rematch/core';
 import {RootModel} from '.';
@@ -15,6 +15,7 @@ type GeneralProp = {
   trending_products: ProductLean[];
   trending_vendors: TrendingVendor[];
   toprated_vendors: TopRatedVendor[];
+  productSearch: Product[];
 };
 
 const generalModel = createModel<RootModel>()({
@@ -26,6 +27,7 @@ const generalModel = createModel<RootModel>()({
     trending_vendors: [],
     toprated_vendors: [],
     age_ranges: [],
+    productSearch: [],
   } as GeneralProp,
   reducers: {
     setState(state, payload: Partial<GeneralProp>) {
@@ -64,7 +66,7 @@ const generalModel = createModel<RootModel>()({
       const {orders} = state.generalModel;
       try {
         const {data} = await GeneralApi.getOrder(id);
-        console.log('getOrder', data);
+        console.log('getOrder', data.business);
         dispatch.generalModel.setState({orders: {...orders, [id]: data}});
       } catch ({response}) {}
     },
@@ -73,6 +75,15 @@ const generalModel = createModel<RootModel>()({
         const {data} = await GeneralApi.getOrderStatuses();
         dispatch.generalModel.setState({order_status: data});
       } catch ({response}) {}
+    },
+    async searchProducts(payload: {query: string}) {
+      try {
+        const {data} = await GeneralApi.searchProducts(payload.query);
+        dispatch.generalModel.setState({productSearch: data.results});
+        // console.log('searchProducts', JSON.stringify(data.results[0]));
+      } catch ({response}) {
+        dispatch.generalModel.setState({productSearch: []});
+      }
     },
     async getTrendingProducts() {
       try {

@@ -22,7 +22,6 @@ function VendorProductView({
   takingOrder: boolean;
 }) {
   const dispatch = useDispatch<Dispatch>();
-  console.log('product?.photo', product?.photo);
   return (
     <>
       <Image

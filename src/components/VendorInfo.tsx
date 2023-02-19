@@ -1,39 +1,21 @@
-/* eslint-disable react-native/no-inline-styles */
-import * as React from 'react';
+import React from 'react';
 import {View} from 'react-native';
+import {Icon, ListItem} from '@rneui/themed';
 import TouchableScale from 'react-native-touchable-scale';
-import {ListItem, Icon} from '@rneui/themed';
-
-import {styles} from './style';
-import {themeColors} from '../../constants/color';
+import {themeColors} from '../constants/color';
 import {s} from 'react-native-size-matters';
-import { Vendor } from '../../types/vendor';
+import {Vendor} from '../types/vendor';
+import {StyleSheet} from 'react-native';
 
-function VendorContactScreen({navigation, route}) {
-  const vendor: Vendor = route?.params?.vendor;
-
-  console.log(vendor);
-
-  React.useEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'Contact',
-      headerTintColor: themeColors.white,
-      headerStyle: {
-        backgroundColor: themeColors.mazarine,
-      },
-      headerShadowVisible: false,
-    });
-  }, [navigation]);
-
+function VendorInfo({vendor}: {vendor: Vendor}) {
   return (
-    <View style={styles.container}>
+    <View style={{flex: 1, paddingHorizontal: s(10)}}>
       <ListItem
         Component={TouchableScale}
         friction={90}
         tension={100}
         activeScale={0.95}
-        // onPressOut={m.nav}
-        containerStyle={[styles.listContainer, {paddingVertical: s(18)}]}>
+        containerStyle={[styles.listContainer]}>
         <Icon
           name="map-pin"
           type="feather"
@@ -44,7 +26,6 @@ function VendorContactScreen({navigation, route}) {
           <ListItem.Title
             style={{
               color: themeColors.white,
-              fontSize: s(16),
               textTransform: 'capitalize',
               fontWeight: 'bold',
             }}>
@@ -53,7 +34,6 @@ function VendorContactScreen({navigation, route}) {
           <ListItem.Subtitle
             style={{
               color: themeColors.white,
-              fontSize: s(14),
               paddingTop: s(7),
             }}>
             {vendor?.address}
@@ -65,8 +45,7 @@ function VendorContactScreen({navigation, route}) {
         friction={90}
         tension={100}
         activeScale={0.95}
-        // onPressOut={m.nav
-        containerStyle={[styles.listContainer, {paddingVertical: s(18)}]}>
+        containerStyle={[styles.listContainer]}>
         <Icon
           name="phone"
           type="feather"
@@ -78,25 +57,17 @@ function VendorContactScreen({navigation, route}) {
             selectable
             style={{
               color: themeColors.white,
-              fontSize: s(16),
             }}>
             {vendor?.phone}
           </ListItem.Title>
         </ListItem.Content>
-        {/* <Icon
-          name="copy"
-          type="feather"
-          color={themeColors.white}
-          size={s(20)}
-        /> */}
       </ListItem>
       <ListItem
         Component={TouchableScale}
         friction={90}
         tension={100}
         activeScale={0.95}
-        // onPressOut={m.nav}
-        containerStyle={[styles.listContainer, {paddingVertical: s(18)}]}>
+        containerStyle={[styles.listContainer]}>
         <Icon
           name="mail"
           type="feather"
@@ -108,20 +79,63 @@ function VendorContactScreen({navigation, route}) {
             selectable
             style={{
               color: themeColors.white,
-              fontSize: s(16),
             }}>
-            {vendor.email}
+            {vendor.vendor?.username}
           </ListItem.Title>
         </ListItem.Content>
-        {/* <Icon
-          name="copy"
-          type="feather"
-          color={themeColors.white}
-          size={s(20)}
-        /> */}
       </ListItem>
+      {vendor?.orderNoticeInfo ? (
+        <ListItem
+          Component={TouchableScale}
+          friction={90}
+          tension={100}
+          activeScale={0.95}
+          containerStyle={{
+            borderRadius: 7,
+            backgroundColor: themeColors.pico,
+            // height: 90,
+            width: '100%',
+            marginTop: s(10),
+            paddingVertical: s(10),
+          }}>
+          <Icon
+            name="alert-circle"
+            type="feather"
+            color={themeColors.white}
+            size={s(20)}
+          />
+          <ListItem.Content>
+            <ListItem.Title
+              style={{
+                color: themeColors.white,
+                fontWeight: 'bold',
+                paddingBottom: 8,
+              }}>
+              Notice
+            </ListItem.Title>
+            <ListItem.Subtitle
+              style={{
+                color: themeColors.white,
+              }}>
+              {vendor?.orderNoticeInfo}
+            </ListItem.Subtitle>
+          </ListItem.Content>
+        </ListItem>
+      ) : (
+        <></>
+      )}
     </View>
   );
 }
 
-export default VendorContactScreen;
+const styles = StyleSheet.create({
+  listContainer: {
+    borderRadius: 7,
+    backgroundColor: themeColors.pico,
+    // height: 90,
+    width: '100%',
+    marginTop: 10,
+  },
+});
+
+export default VendorInfo;

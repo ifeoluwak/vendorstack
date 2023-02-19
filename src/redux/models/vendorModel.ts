@@ -48,13 +48,14 @@ const vendorModel = createModel<RootModel>()({
         });
       } catch ({response}) {}
     },
-    async searchVendors(payload: {query: string; category: string}) {
+    async searchVendors(payload: {query: string; category?: string}) {
       try {
         const {data} = await VendorApi.searchVendors(
           payload.query,
           payload.category,
         );
-        dispatch.vendorModel.setState({searchResult: data.vendors});
+        console.log('searchVendors', data);
+        dispatch.vendorModel.setState({searchResult: data.results});
       } catch ({response}) {}
     },
     async getVendorProducts(vendorId: string, state) {

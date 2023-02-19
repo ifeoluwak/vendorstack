@@ -37,10 +37,10 @@ function OrderDetailScreen({navigation, route}) {
   }, [navigation, orderId]);
 
   React.useEffect(() => {
-    if (!order) {
+    if (orderId) {
       dispatch.generalModel.getOrder(orderId);
     }
-  }, [dispatch, orderId, order]);
+  }, [dispatch, orderId]);
 
   const handleOrderStatus = (status: 'RECEIVED' | 'RETURNED' | 'CANCELED') => {
     dispatch.userModel.updateOrderStatus({
@@ -71,7 +71,9 @@ function OrderDetailScreen({navigation, route}) {
         <></>
       ) : (
         <>
-          <ScrollView>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{paddingBottom: 100}}>
             <ListItem
               containerStyle={{
                 borderRadius: 7,
@@ -109,6 +111,42 @@ function OrderDetailScreen({navigation, route}) {
                 </ListItem.Subtitle>
               </ListItem.Content>
             </ListItem>
+            {order?.business?.orderNoticeInfo ? (
+              <ListItem
+                containerStyle={{
+                  borderRadius: 7,
+                  backgroundColor: themeColors.pico,
+                  // height: 90,
+                  width: '100%',
+                  marginTop: s(20),
+                  paddingVertical: s(20),
+                }}>
+                <Icon
+                  name="alert-circle"
+                  type="feather"
+                  color={themeColors.white}
+                  size={s(20)}
+                />
+                <ListItem.Content>
+                  <ListItem.Title
+                    style={{
+                      color: themeColors.white,
+                      fontWeight: 'bold',
+                      paddingBottom: 8,
+                    }}>
+                    Notice
+                  </ListItem.Title>
+                  <ListItem.Subtitle
+                    style={{
+                      color: themeColors.white,
+                    }}>
+                    {order?.business?.orderNoticeInfo}
+                  </ListItem.Subtitle>
+                </ListItem.Content>
+              </ListItem>
+            ) : (
+              <></>
+            )}
             <View style={{paddingTop: 25, width: '100%'}}>
               <Text h4 style={{color: themeColors.white, paddingBottom: 10}}>
                 Products
@@ -211,43 +249,6 @@ function OrderDetailScreen({navigation, route}) {
                 </ListItem.Content>
               </ListItem>
             </View>
-
-            {order?.business?.orderNoticeInfo ? (
-              <ListItem
-                containerStyle={{
-                  borderRadius: 7,
-                  backgroundColor: themeColors.pico,
-                  // height: 90,
-                  width: '100%',
-                  marginTop: s(20),
-                  paddingVertical: s(20),
-                }}>
-                <Icon
-                  name="alert-circle"
-                  type="feather"
-                  color={themeColors.white}
-                  size={s(20)}
-                />
-                <ListItem.Content>
-                  <ListItem.Title
-                    style={{
-                      color: themeColors.white,
-                      fontWeight: 'bold',
-                      paddingBottom: 8,
-                    }}>
-                    Notice
-                  </ListItem.Title>
-                  <ListItem.Subtitle
-                    style={{
-                      color: themeColors.white,
-                    }}>
-                    {order?.business?.orderNoticeInfo}
-                  </ListItem.Subtitle>
-                </ListItem.Content>
-              </ListItem>
-            ) : (
-              <></>
-            )}
 
             <View style={{paddingTop: 25, width: '100%'}}>
               <Text h4 style={{color: themeColors.white, paddingBottom: 10}}>

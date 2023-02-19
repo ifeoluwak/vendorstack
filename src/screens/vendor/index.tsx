@@ -17,12 +17,12 @@ import VendorActionButtons from '../../components/VendorActionButtons';
 import VendorProductView from '../../components/VendorProductView';
 import VendorHeader from '../../components/VendorHeader';
 import VendorReviews from '../../components/VendorReviews';
-import VendorOrders from '../../components/VendorOrders';
+import VendorInfo from '../../components/VendorInfo';
 
 enum Section {
   PRODUCTS = 0,
   REVIEWS = 1,
-  ORDERS = 2,
+  INFO = 2,
 }
 
 function VendorScreen({navigation, route}) {
@@ -65,9 +65,6 @@ function VendorScreen({navigation, route}) {
         dispatch.vendorModel.getVendorProducts(vendorId),
         dispatch.vendorModel.getVendorReviews(vendorId),
       ]);
-      if (token) {
-        dispatch.userModel.getUserVendorOrders(vendorId);
-      }
     }
   }, [dispatch.vendorModel, vendorId, token, dispatch.userModel]);
 
@@ -112,7 +109,7 @@ function VendorScreen({navigation, route}) {
     }
   };
 
-  // console.log('VendorScreen', vendor);
+  // console.log('VendorScreen', vendor?.socialUsername);
 
   return (
     <View style={styles.wrapper}>
@@ -135,21 +132,26 @@ function VendorScreen({navigation, route}) {
             setActiveBtn={setActiveBtn}
             btns={[
               'Products',
-              `Reviews(${vendorReviews?.length | 0})`,
-              'Your Orders',
+              `Reviews(${vendorReviews?.length || 0})`,
+              'Info',
             ]}
             style={{height: mvs(40), marginBottom: 5}}
             textStyle={{fontWeight: 'normal'}}
             stickBorderRadius={10}
           />
 
-          {activeBtn === Section.ORDERS && <VendorOrders orders={[]} />}
+          {activeBtn === Section.INFO && <VendorInfo vendor={vendor} />}
           {activeBtn === Section.REVIEWS && (
             <VendorReviews reviews={vendorReviews} />
           )}
           {activeBtn === Section.PRODUCTS && (
             <MasonryFlashList
-              ListHeaderComponent={<VendorActionButtons id={vendor?._id} />}
+              ListHeaderComponent={
+                <VendorActionButtons
+                  id={vendor?._id}
+                  ownerId={vendor?.vendor?._id!}
+                />
+              }
               data={vendorProducts}
               numColumns={3}
               renderItem={({item}) => (

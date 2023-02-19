@@ -19,7 +19,7 @@ function HomeVendors() {
 
   return (
     <View style={{width: '100%', marginBottom: 30}}>
-      <HomeSectionHeader title="Vendors you follow" />
+      <HomeSectionHeader title="Vendors" />
       <FlatList
         data={homeVendors}
         showsHorizontalScrollIndicator={false}

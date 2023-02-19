@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {themeColors} from '../constants/color';
 import {Dispatch, RootState} from '../redux/store';
 
-function VendorActionButtons({id}: {id: string}) {
+function VendorActionButtons({id, ownerId}: {id: string; ownerId: string}) {
   const navigation = useNavigation();
   const dispatch = useDispatch<Dispatch>();
 
@@ -26,11 +26,7 @@ function VendorActionButtons({id}: {id: string}) {
     dispatch.userModel.unfollowVendor(id);
   };
 
-  // console.log(id)
-  console.log(user?.businessFollowings);
-
-
-  console.log(following);
+  const isOwner = user?._id === ownerId;
 
   return (
     <View
@@ -55,7 +51,7 @@ function VendorActionButtons({id}: {id: string}) {
         // disabledStyle={{
         //   backgroundColor: themeColors.white,
         // }}
-        disabled={!token}
+        disabled={!token || isOwner}
         loading={loading}
         onPress={following ? handleUnFollow : handleFollow}
       />

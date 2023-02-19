@@ -9,10 +9,11 @@ export default {
     ApiHandler.get(`/businesses?limit=${limit}`, null, {}),
   searchVendors: (
     query: string,
-    category: string,
-  ): Promise<AxiosResponse<{vendors: Vendor[]}, any>> =>
+    category?: string,
+    limit = 20,
+  ): Promise<AxiosResponse<{results: Vendor[]}, any>> =>
     ApiHandler.get(
-      `/api/search_business_api?query=${query}&category=${category}`,
+      `/businesses?businessSearch=${query}&businessCategoryIds=${category}&limit=${limit}`,
       null,
       {},
     ),

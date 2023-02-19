@@ -63,7 +63,7 @@ function HomeScreen({navigation}) {
   const home_data = React.useMemo(
     () => [
       <HomeVendors />,
-      <HomeUserVendors onRefresh={onRefresh} />,
+      // <HomeUserVendors onRefresh={onRefresh} />,
       // <PromotedProductList />,
       // <HomeTrendingProduct />,
       // <HomeTrendingVendor />,

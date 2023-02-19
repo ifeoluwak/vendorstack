@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     borderRadius: 7,
     backgroundColor: themeColors.white,
     alignItems: 'center',
-    width: '70%',
+    width: '90%',
     marginTop: 10,
     alignSelf: 'center',
     paddingVertical: 20,

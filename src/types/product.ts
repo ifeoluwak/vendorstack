@@ -1,4 +1,4 @@
-import {OrderItem} from './general';
+import {Vendor} from './vendor';
 
 export type Product = {
   _id: string;
@@ -8,7 +8,7 @@ export type Product = {
   quantity: number | string;
   costPrice: number | string;
   sellingPrice: number | string;
-  businessId: string;
+  business: Vendor;
   createdAt: string;
   active: boolean;
   pin: boolean;
