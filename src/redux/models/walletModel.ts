@@ -73,7 +73,6 @@ const walletModel = createModel<RootModel>()({
       payload: {dateRange: string; selectedStatus: string},
       state,
     ) {
-      console.log('lllloo p p p p ');
       const {user} = state.userModel;
       try {
         const {dateRange, selectedStatus} = payload;

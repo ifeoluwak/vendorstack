@@ -131,11 +131,19 @@ export type Newsletter = {
 };
 
 export type Subscription = {
-  id: number;
-  business: Vendor;
-  user: User;
-  newsletter: Newsletter;
-  created_at: string;
+  _id: string;
+  name: string;
+  description: string;
+  amount: number;
+  active: boolean;
+  enabledFeatures: SubscriptionFeature[];
+};
+
+export type SubscriptionFeature = {
+  name: string;
+  status: boolean;
+  action: string;
+  description: string;
 };
 
 export type Bank = {

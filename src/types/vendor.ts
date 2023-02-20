@@ -1,4 +1,4 @@
-import {Category} from './general';
+import {Category, Subscription} from './general';
 import {User} from './user';
 
 export type Vendor = {
@@ -22,7 +22,6 @@ export type Vendor = {
   socialUsername: string;
   website: string;
   created_at: string;
-  sale: [];
   customerFollowers: [];
   customers: [];
   orderNoticeInfo: string;
@@ -32,6 +31,13 @@ export type Vendor = {
     reviewRating: number;
     reviewRatingAvg: number;
   };
+  sale: {
+    saleId: string;
+    soldCount: number;
+    totalSold: number;
+    pendingSold: number;
+  };
+  subscription: Subscription;
 };
 
 export type TrendingVendor = {

@@ -4,16 +4,16 @@ import TouchableScale from 'react-native-touchable-scale';
 import {ListItem, Button, Chip, Icon} from '@rneui/themed';
 import DatePicker from 'react-native-date-picker';
 
-import {themeColors} from '../../../constants/color';
+import {themeColors} from '../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
-import {Dispatch, RootState} from '../../../redux/store';
+import {Dispatch, RootState} from '../../redux/store';
 import moment from 'moment';
-import {yesterday} from '../../../helpers';
+import {yesterday} from '../../helpers';
 import {styles} from '../wallet/style';
-import {WithdrawStatus} from '../../../types/general';
-import {Naira} from '../../../constants/general';
+import {WithdrawStatus} from '../../types/general';
+import {Naira} from '../../constants/general';
 
-function BusinessWithdrawalHistoryScreen({navigation}) {
+function UserWithdrawalHistoryScreen({navigation}) {
   const dispatch = useDispatch<Dispatch>();
 
   const [dateOne, setDateOne] = useState(yesterday.toDate());
@@ -209,8 +209,18 @@ function BusinessWithdrawalHistoryScreen({navigation}) {
           }}
         />
       </View>
+
+      <View style={styles.btnView}>
+        <Button
+          title="Make a Withdrawal"
+          titleStyle={{fontWeight: 'bold', color: themeColors.mazarine}}
+          buttonStyle={styles.btnStyle}
+          radius={30}
+          onPress={() => navigation.navigate('UserWalletWithdraw')}
+        />
+      </View>
     </View>
   );
 }
 
-export default BusinessWithdrawalHistoryScreen;
+export default UserWithdrawalHistoryScreen;

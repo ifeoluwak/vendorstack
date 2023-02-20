@@ -51,15 +51,15 @@ function BusinessScreen({navigation}) {
         nav: () => navigation.navigate('BusinessProfile'),
       },
       {
-        label: 'Wallet',
+        label: 'Sales',
         icon: 'credit-card',
-        nav: () => navigation.navigate('BusinessWallet'),
+        nav: () => navigation.navigate('BusinessSale'),
       },
-      {
-        label: 'Withdrawals',
-        icon: 'list',
-        nav: () => navigation.navigate('BusinessWithdrawalHistory'),
-      },
+      // {
+      //   label: 'Withdrawals',
+      //   icon: 'list',
+      //   nav: () => navigation.navigate('BusinessWithdrawalHistory'),
+      // },
       {
         label: 'Bank account',
         icon: 'key',

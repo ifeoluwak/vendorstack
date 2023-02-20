@@ -71,7 +71,7 @@ const userModel = createModel<RootModel>()({
     async getUserProfile() {
       try {
         const {data} = await UserApi.getUserProfile();
-        console.log('getUserProfile', data);
+        console.log('getUserProfile', JSON.stringify(data));
         if (data) {
           dispatch.userModel.setState({
             user: data,

@@ -6,11 +6,18 @@ export type User = {
   username: string;
   firstName: string;
   lastName: string;
-  business?: Vendor;
   businesses?: Vendor[];
   addresses: Address[];
   businessFollowings: string[];
   wallet: UserWallet;
+  isBusinessOwner: boolean;
+  rating: {
+    overallReviewRatingAvg: number;
+    overallReviewRating: number;
+    overallReviewCount: number;
+  };
+  type: 'USER';
+  emailVerification: boolean;
 };
 
 export type Profile = {

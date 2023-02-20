@@ -3,13 +3,13 @@ import {View, ActivityIndicator, ScrollView} from 'react-native';
 import {ListItem, Button, Icon, Input} from '@rneui/themed';
 import CurrencyInput from 'react-native-currency-input';
 
-import {themeColors} from '../../../constants/color';
+import {themeColors} from '../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
-import {Dispatch, RootState} from '../../../redux/store';
+import {Dispatch, RootState} from '../../redux/store';
 import {styles} from '../wallet/style';
 import TouchableScale from 'react-native-touchable-scale';
 
-function BusinessWalletWithdrawScreen({navigation}) {
+function UserWalletWithdrawScreen({navigation}) {
   const [value, setValue] = React.useState('0.00');
 
   const loading = useSelector(
@@ -116,4 +116,4 @@ function BusinessWalletWithdrawScreen({navigation}) {
   );
 }
 
-export default BusinessWalletWithdrawScreen;
+export default UserWalletWithdrawScreen;

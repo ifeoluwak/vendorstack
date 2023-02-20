@@ -14,13 +14,13 @@ import {Dispatch, RootState} from '../../../redux/store';
 import {styles} from './style';
 import {Naira} from '../../../constants/general';
 
-function BusinessWalletScreen({navigation}) {
+function BusinessSaleScreen({navigation}) {
   const loading = useSelector(
     (root: RootState) => root.loading.effects.userModel.getUserProfile,
   );
   const {user} = useSelector((root: RootState) => root.userModel);
 
-  const wallet = user?.wallet;
+  const business = user?.businesses?.[0];
 
   const dispatch = useDispatch<Dispatch>();
 
@@ -30,7 +30,6 @@ function BusinessWalletScreen({navigation}) {
 
   React.useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Wallet',
       headerTintColor: themeColors.white,
       headerStyle: {
         backgroundColor: themeColors.mazarine,
@@ -43,38 +42,40 @@ function BusinessWalletScreen({navigation}) {
     onRefresh();
   }, []);
 
-  const balanceItems = React.useMemo(() => {
-    return Object.keys(wallet || {}).map((balance, index) => {
-      const title = balance;
-      const even = index % 2 === 0;
-      return (
-        <View
-          style={[
-            styles.currBalanceView,
-            {backgroundColor: even ? themeColors.white : themeColors.pico},
-          ]}>
-          <Text
-            style={[
-              styles.currBalanceTitle,
-              {color: even ? themeColors.pico : themeColors.white},
-            ]}>
-            {Naira} {wallet?.[balance]}
-          </Text>
-          <Divider />
-          <Text
-            style={{
-              fontSize: 14,
-              color: even ? themeColors.pico : themeColors.white,
-              textTransform: 'capitalize',
-            }}>
-            {title.replace(/([a-z](?=[A-Z]))/g, '$1 ')}
-          </Text>
-        </View>
-      );
-    });
-  }, [wallet]);
+  //   const keys = ['']
 
-  console.log(user?.wallet);
+  const balanceItems = React.useMemo(() => {
+    return Object.keys(business?.sale || {}).map((key, index) => {
+      const title = key;
+      const even = index % 2 === 0;
+      if (key !== 'saleId') {
+        return (
+          <View
+            style={[
+              styles.currSaleView,
+              {backgroundColor: even ? themeColors.white : themeColors.pico},
+            ]}>
+            <Text
+              style={[
+                styles.currSaleTitle,
+                {color: even ? themeColors.pico : themeColors.white},
+              ]}>
+              {key !== 'soldCount' ? Naira : ''} {business?.sale?.[key]}
+            </Text>
+            <Divider />
+            <Text
+              style={{
+                fontSize: 14,
+                color: even ? themeColors.pico : themeColors.white,
+                textTransform: 'capitalize',
+              }}>
+              {title.replace(/([a-z](?=[A-Z]))/g, '$1 ')}
+            </Text>
+          </View>
+        );
+      }
+    });
+  }, [business?.sale]);
 
   return (
     <View style={styles.container}>
@@ -111,23 +112,9 @@ function BusinessWalletScreen({navigation}) {
             </View>
           </View> */}
         </ScrollView>
-
-        {wallet?.currentBalance > 0 ? (
-          <View style={styles.btnView}>
-            <Button
-              title="Make a Withdrawal"
-              titleStyle={{fontWeight: 'bold', color: themeColors.mazarine}}
-              buttonStyle={styles.btnStyle}
-              radius={30}
-              onPress={() => navigation.navigate('BusinessWalletWithdrawals')}
-            />
-          </View>
-        ) : (
-          <></>
-        )}
       </View>
     </View>
   );
 }
 
-export default BusinessWalletScreen;
+export default BusinessSaleScreen;

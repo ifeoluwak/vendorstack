@@ -29,15 +29,16 @@ import {Product} from '../types/product';
 import {Customer} from '../types/user';
 import {Order} from '../types/general';
 import VendorOptionsScreen from '../screens/vendor/options';
-import BusinessWalletScreen from '../screens/business/wallet';
 import AddReviewScreen from '../screens/vendor/addReview';
 import VendorContactScreen from '../screens/vendor/contact';
 import BusinessCreateScreen from '../screens/business/create';
 import BankAccountScreen from '../screens/business/bank';
 import AddBankAccountScreen from '../screens/business/bank/addBank';
-import BusinessWalletWithdrawScreen from '../screens/business/withdrawals/withdraw';
-import BusinessWithdrawalHistoryScreen from '../screens/business/withdrawals';
 import TransactionOrderDetailScreen from '../screens/orders/transactionOrder';
+import UserWithdrawalHistoryScreen from '../screens/withdrawals';
+import UserWalletWithdrawScreen from '../screens/withdrawals/withdraw';
+import UserWalletScreen from '../screens/wallet';
+import BusinessSaleScreen from '../screens/business/sales';
 
 type RootStackParamList = {
   Home: undefined;
@@ -45,6 +46,9 @@ type RootStackParamList = {
   Basket: {id: string; title: string};
   More: undefined;
   Profile: undefined;
+  UserWallet: undefined;
+  UserWalletWithdraw: undefined;
+  UserWithdrawalHistory: undefined;
   Login: undefined;
   Signup: undefined;
   Address: undefined;
@@ -54,12 +58,10 @@ type RootStackParamList = {
   BusinessCustomers: undefined;
   BusinessMore: undefined;
   BusinessProfile: undefined;
-  BusinessWallet: undefined;
-  BusinessWalletWithdraw: undefined;
-  BusinessWithdrawalHistory: undefined;
   BusinessOrders: undefined;
   BusinessProducts: undefined;
   BusinessAddProduct: undefined;
+  BusinessSale: undefined;
   BusinessBankAccount: undefined;
   BusinessAddBankAccount: undefined;
   BusinessOrderDetail: {order: Order};
@@ -104,6 +106,16 @@ export default function RootNavigation() {
       <RootStack.Screen name="Basket" component={BasketScreen} />
       <RootStack.Screen name="More" component={MoreScreen} />
       <RootStack.Screen name="Profile" component={ProfileScreen} />
+      <RootStack.Screen name="UserWallet" component={UserWalletScreen} />
+      <RootStack.Screen
+        name="UserWithdrawalHistory"
+        component={UserWithdrawalHistoryScreen}
+      />
+      <RootStack.Screen
+        name="UserWalletWithdraw"
+        options={{title: 'Make a Withdrawal'}}
+        component={UserWalletWithdrawScreen}
+      />
       <RootStack.Screen name="Orders" component={UserOrdersScreen} />
       <RootStack.Screen name="OrderDetail" component={OrderDetailScreen} />
       <RootStack.Screen
@@ -119,19 +131,6 @@ export default function RootNavigation() {
       <RootStack.Screen
         name="BusinessProducts"
         component={BusinessProductsScreen}
-      />
-      <RootStack.Screen
-        name="BusinessWallet"
-        component={BusinessWalletScreen}
-      />
-      <RootStack.Screen
-        name="BusinessWithdrawalHistory"
-        component={BusinessWithdrawalHistoryScreen}
-      />
-      <RootStack.Screen
-        name="BusinessWalletWithdraw"
-        options={{title: 'Make a Withdrawal'}}
-        component={BusinessWalletWithdrawScreen}
       />
       <RootStack.Screen
         name="BusinessCustomers"
@@ -166,6 +165,11 @@ export default function RootNavigation() {
       <RootStack.Screen
         name="BusinessCustomerDetail"
         component={CustomerDetailScreen}
+      />
+      <RootStack.Screen
+        name="BusinessSale"
+        options={{title: 'Business Sales'}}
+        component={BusinessSaleScreen}
       />
       <RootStack.Screen
         name="BusinessBankAccount"

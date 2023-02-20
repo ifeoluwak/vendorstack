@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import * as React from 'react';
 import {View} from 'react-native';
 import TouchableScale from 'react-native-touchable-scale';
@@ -40,6 +39,16 @@ function MoreScreen({navigation}) {
       icon: 'shopping-bag',
       nav: () => navigation.navigate('Basket'),
     },
+    {
+      label: 'Wallet',
+      icon: 'credit-card',
+      nav: () => navigation.navigate('UserWallet'),
+    },
+    {
+      label: 'Withdrawals',
+      icon: 'list',
+      nav: () => navigation.navigate('UserWithdrawalHistory'),
+    },
     ...(!user?.businesses?.length
       ? [
           {
@@ -80,13 +89,22 @@ function MoreScreen({navigation}) {
           <Icon
             name={m.icon}
             type="feather"
-            color={themeColors.white}
+            color={
+              m.icon === 'power' ? themeColors.nasturcian : themeColors.white
+            }
             size={18}
           />
           <ListItem.Content>
-            <ListItem.Title style={styles.listTitle}>{m.label}</ListItem.Title>
+            <ListItem.Title
+              style={m.icon === 'power' ? styles.logout : styles.listTitle}>
+              {m.label}
+            </ListItem.Title>
           </ListItem.Content>
-          <ListItem.Chevron color={themeColors.white} />
+          <ListItem.Chevron
+            color={
+              m.icon === 'power' ? themeColors.nasturcian : themeColors.white
+            }
+          />
         </ListItem>
       ))}
     </View>

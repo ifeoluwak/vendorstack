@@ -19,7 +19,7 @@ export default {
     },
     userId: string,
   ): Promise<AxiosResponse<any>> =>
-    ApiHandler.get(`/payments/users/${userId}/transfer`, data, {}),
+    ApiHandler.post(`/payments/users/${userId}/transfer`, data, {}),
   getWithdrawHistory: (
     userId: string,
     dateRange: string,
