@@ -4,12 +4,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 
-import {Dispatch, RootState} from '../../../redux/store';
-import {themeColors} from '../../../constants/color';
+import {Dispatch, RootState} from '../../redux/store';
+import {themeColors} from '../../constants/color';
 import {Button, Input, Text} from '@rneui/themed';
 import {styles} from './style';
-import {DropDownFlatlist} from '../../../components/DropDown';
-import {Bank} from '../../../types/general';
+import {DropDownFlatlist} from '../../components/DropDown';
+import {Bank} from '../../types/general';
 
 const BankAccountSchema = Yup.object().shape({
   bankName: Yup.string().required('Required'),

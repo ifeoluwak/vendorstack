@@ -32,8 +32,8 @@ import VendorOptionsScreen from '../screens/vendor/options';
 import AddReviewScreen from '../screens/vendor/addReview';
 import VendorContactScreen from '../screens/vendor/contact';
 import BusinessCreateScreen from '../screens/business/create';
-import BankAccountScreen from '../screens/business/bank';
-import AddBankAccountScreen from '../screens/business/bank/addBank';
+import BankAccountScreen from '../screens/bank';
+import AddBankAccountScreen from '../screens/bank/addBank';
 import TransactionOrderDetailScreen from '../screens/orders/transactionOrder';
 import UserWithdrawalHistoryScreen from '../screens/withdrawals';
 import UserWalletWithdrawScreen from '../screens/withdrawals/withdraw';
@@ -54,6 +54,8 @@ type RootStackParamList = {
   Address: undefined;
   Orders: undefined;
   AddReview: undefined;
+  BankAccount: undefined;
+  AddBankAccount: undefined;
   BusinessCreate: undefined;
   BusinessCustomers: undefined;
   BusinessMore: undefined;
@@ -62,8 +64,6 @@ type RootStackParamList = {
   BusinessProducts: undefined;
   BusinessAddProduct: undefined;
   BusinessSale: undefined;
-  BusinessBankAccount: undefined;
-  BusinessAddBankAccount: undefined;
   BusinessOrderDetail: {order: Order};
   BusinessProductDetail: {product: Product};
   BusinessCustomerDetail: {customer: Customer};
@@ -172,12 +172,12 @@ export default function RootNavigation() {
         component={BusinessSaleScreen}
       />
       <RootStack.Screen
-        name="BusinessBankAccount"
+        name="BankAccount"
         options={{title: 'Bank Account'}}
         component={BankAccountScreen}
       />
       <RootStack.Screen
-        name="BusinessAddBankAccount"
+        name="AddBankAccount"
         options={{title: 'Add Bank Account'}}
         component={AddBankAccountScreen}
       />

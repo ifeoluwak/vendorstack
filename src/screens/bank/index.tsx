@@ -2,9 +2,9 @@ import * as React from 'react';
 import {View, ActivityIndicator, ScrollView} from 'react-native';
 import {ListItem, Button, Icon} from '@rneui/themed';
 
-import {themeColors} from '../../../constants/color';
+import {themeColors} from '../../constants/color';
 import {useDispatch, useSelector} from 'react-redux';
-import {Dispatch, RootState} from '../../../redux/store';
+import {Dispatch, RootState} from '../../redux/store';
 import {styles} from './style';
 import TouchableScale from 'react-native-touchable-scale';
 
@@ -71,7 +71,7 @@ function BankAccountScreen({navigation}) {
             titleStyle={{fontWeight: 'bold'}}
             buttonStyle={styles.btnStyle}
             radius={30}
-            onPress={() => navigation.navigate('BusinessAddBankAccount')}
+            onPress={() => navigation.navigate('AddBankAccount')}
           />
         </View>
       )}

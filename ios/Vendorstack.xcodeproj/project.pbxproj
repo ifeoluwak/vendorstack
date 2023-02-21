@@ -520,7 +520,7 @@
 				CODE_SIGN_ENTITLEMENTS = Vendorstack/Vendorstack.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = TLKPUR6X95;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Vendorstack/Info.plist;
@@ -557,7 +557,7 @@
 				CODE_SIGN_ENTITLEMENTS = Vendorstack/Vendorstack.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = TLKPUR6X95;
 				INFOPLIST_FILE = Vendorstack/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Vendorstack;

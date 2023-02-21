@@ -49,6 +49,11 @@ function MoreScreen({navigation}) {
       icon: 'list',
       nav: () => navigation.navigate('UserWithdrawalHistory'),
     },
+    {
+      label: 'Bank',
+      icon: 'briefcase',
+      nav: () => navigation.navigate('BankAccount'),
+    },
     ...(!user?.businesses?.length
       ? [
           {

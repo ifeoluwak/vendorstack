@@ -60,11 +60,11 @@ function BusinessScreen({navigation}) {
       //   icon: 'list',
       //   nav: () => navigation.navigate('BusinessWithdrawalHistory'),
       // },
-      {
-        label: 'Bank account',
-        icon: 'key',
-        nav: () => navigation.navigate('BusinessBankAccount'),
-      },
+      // {
+      //   label: 'Bank account',
+      //   icon: 'key',
+      //   nav: () => navigation.navigate('BusinessBankAccount'),
+      // },
       {
         label: 'Orders',
         icon: 'shopping-cart',
